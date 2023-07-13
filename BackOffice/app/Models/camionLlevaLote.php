@@ -7,5 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Camion_Lleva_Lote extends Model
 {
+    
+    protected $table = 'camionLlevaLote';
     use HasFactory;
 }

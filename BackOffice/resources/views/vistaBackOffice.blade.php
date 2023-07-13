@@ -11,11 +11,10 @@
     @csrf
     <button type="submit">Ejecutar</button>
 </form>
-    <button onclick="fotosintesis()">Ver dato</button>
+    <button onclick="mostrarDato()">Ver dato</button>
 
         <script>
-           function fotosintesis(){
-                console.log('wait, that is ilegal')
+           function mostrarDato(){
                 console.log(@json($datos))
            }
          </script>

@@ -7,5 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Direccion_Almacen extends Model
 {
+    protected $table = 'dirreccionAlmacen';
     use HasFactory;
 }
