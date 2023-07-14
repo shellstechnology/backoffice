@@ -17,6 +17,7 @@ use App\Http\Controllers\productoController;
 Route::get('/', function () {
     return view('vistaBackOffice');
 });
-
-
+Route::get('vistaBackOfficeAlmacenes', function(){
+    return view('vistaBackOfficeAlmacenes');
+})-> name('backoffice.almacenes');
 Route::post('/producto/action', [productoController::class, 'action'])->name('producto.action');

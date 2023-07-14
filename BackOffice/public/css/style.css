@@ -1,0 +1,40 @@
+:root {
+    --colorPalido: #D4E9F7;
+    --colorClaro1: #A6C8E4;
+    --ColorClaro2:#FFF9D6;
+    --colorFuerte: #7092B8;
+}
+
+body {
+    background-color: var(--colorPalido);
+    background-repeat: no-repeat;
+
+}
+
+.barraDeNavegacion {
+    background-color: var(--colorClaro1);
+    margin-left: 10%;
+    width: 80%;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    
+}
+
+.cuerpo{
+    background-color:var(--ColorClaro2);
+    margin-top:50px;
+    width: 850px;
+    height: 450px;
+    margin-left: 15%;
+    margin-right: 15%;
+}
+
+.item{
+    flex:1;
+    padding-top: 15px;
+    margin-left: 3px;
+    margin-right: 3px;
+    border: 2px black solid;
+    text-align: center;
+}
