@@ -17,7 +17,7 @@
     <div class="item"> Lotes</div>
 </div>
     <br>
-<form action="{{ route('producto.action') }}" method="POST">
+<form id="formularioBackoffice"action="{{ route('producto.action') }}" method="POST">
     @csrf
     <button type="submit">Ejecutar</button>
 </form>
@@ -25,11 +25,8 @@
 
         <script>
            function mostrarDato(){
-                var x=@json($datos ?? []);
-                console.log(x);
-                <?php 
-                    $valor = $datos
-                ?>
+                var infoProducto=@json(session('datoProducto'));
+                console.log(infoProducto);
            }
 
            function almacenes(){

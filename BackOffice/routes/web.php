@@ -20,4 +20,7 @@ Route::get('/', function () {
 Route::get('vistaBackOfficeAlmacenes', function(){
     return view('vistaBackOfficeAlmacenes');
 })-> name('backoffice.almacenes');
+Route::get('vistaBackOffice', function(){
+    return view('vistaBackOffice');
+})-> name('backoffice');
 Route::post('/producto/action', [productoController::class, 'action'])->name('producto.action');

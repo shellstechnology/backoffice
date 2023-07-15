@@ -1,4 +1,5 @@
 :root {
+    --blanco:#FFFFFF;
     --colorPalido: #D4E9F7;
     --colorClaro1: #A6C8E4;
     --ColorClaro2:#FFF9D6;
@@ -37,4 +38,25 @@ body {
     margin-right: 3px;
     border: 2px black solid;
     text-align: center;
+}
+
+#contenedor-tabla{
+    background-color: var(--colorPalido);
+    border: solid black 2px;
+    margin-top: 75px;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+table{
+    height:"300px";
+    width:"600px";
+    table-layout:fixed;
+    overflow-y: scroll;
+}
+
+table th, table td{
+    width: 50%;
+    padding: 10px;
+    text-align: left;
 }

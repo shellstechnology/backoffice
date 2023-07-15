@@ -9,7 +9,7 @@ class productoController extends Controller
 {
     public function action()
     {
-        $datos = producto::all();
-        return view('vistaBackOffice', compact('datos'));
+        $datoProducto = producto::all();
+        return back()->with('datoProducto', $datoProducto);
     }
 }
