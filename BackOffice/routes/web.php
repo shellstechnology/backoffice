@@ -17,10 +17,14 @@ use App\Http\Controllers\productoController;
 Route::get('/', function () {
     return view('vistaBackOffice');
 });
-Route::get('vistaBackOfficeAlmacenes', function(){
-    return view('vistaBackOfficeAlmacenes');
-})-> name('backoffice.almacenes');
+Route::get('vistaBackOfficeProducto', function(){
+    return view('vistaBackOfficeProducto');
+})-> name('backoffice.producto');
 Route::get('vistaBackOffice', function(){
     return view('vistaBackOffice');
 })-> name('backoffice');
 Route::post('/producto/action', [productoController::class, 'action'])->name('producto.action');
+
+Route::post('/producto/agregar', [productoController::class, 'agregar'])->name('producto.agregar');
+Route::post('/producto/modificar', [productoController::class, 'modificar'])->name('producto.modificar');
+Route::post('/producto/eliminar', [productoController::class, 'eliminar'])->name('producto.eliminar');

@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BackOffice:Menu Principal</title>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}"> 
+    <script src="{{asset('js/funciones.js')}}"> </script>
 </head>
 <body>
 <div class="barraDeNavegacion">
-    <div class="item" onclick=almacenes()>Almacenes</div>
+    <div class="item" onclick=redireccionar()>Almacenes</div>
     <div class="item"> Almaceneros</div>
     <div class="item"> Camiones</div>
     <div class="item"> Camioneros</div>
-    <div class="item"> Productos</div>
+    <div class="item" onclick="redireccionar('{{route('backoffice.producto')}}')"> Productos</div>
     <div class="item"> Paquetes</div>
     <div class="item"> Lotes</div>
 </div>
@@ -22,16 +23,5 @@
     <button type="submit">Ejecutar</button>
 </form>
     <button onclick="mostrarDato()">Ver dato</button>
-
-        <script>
-           function mostrarDato(){
-                var infoProducto=@json(session('datoProducto'));
-                console.log(infoProducto);
-           }
-
-           function almacenes(){
-            window.location.href = "{{ route('backoffice.almacenes') }}";
-           }
-         </script>
 </body>
 </html>

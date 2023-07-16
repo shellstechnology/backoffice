@@ -12,4 +12,18 @@ class productoController extends Controller
         $datoProducto = producto::all();
         return back()->with('datoProducto', $datoProducto);
     }
+
+    public function agregar(Request $request){
+        dd($request);
+
+        return response()->json(['mensaje' => 'Datos recibidos correctamente']);
+    }
+
+    public function modificar(){
+
+    }
+
+    public function eliminar(){
+
+    }
 }
