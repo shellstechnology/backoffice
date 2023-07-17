@@ -1,6 +1,6 @@
+var identificador = null;
 function crearTabla(infoProducto) {
     console.log(infoProducto);
-
     // Crear la tabla dinámicamente
     var tabla = document.createElement("table");
     tabla.style.borderCollapse = "collapse";
@@ -10,6 +10,17 @@ function crearTabla(infoProducto) {
     var filaCabecera = cabecera.insertRow();
     for (var key in infoProducto[0]) {
         var th = document.createElement("th"); // th es table header
+        if (key == "updated_at") {
+            key = "Ultima Actualizacion"
+        } else {
+            if (key == "created_at") {
+                key = "Fecha de creacion"
+            } else {
+                if (key == "deleted_at") {
+                    key = "Fecha de borrado"
+                }
+            }
+        }
         th.textContent = key;
         filaCabecera.appendChild(th);
     }
@@ -41,31 +52,34 @@ function crearTabla(infoProducto) {
     } else {
         console.error("Elemento contenedor-tabla no encontrado.");
     }
-
 }
 // Función para imprimir en consola los datos de la línea seleccionada
 function imprimirDatos(fila) {
     var datosFila = Array.from(fila.cells).map(function (celda) {
         return celda.textContent;
     });
-    console.log("Datos de la línea:", datosFila);
+    var nombrePagina = window.location.pathname.split('/').pop();
+    console.log(nombrePagina)
+    if (nombrePagina == "vistaBackOfficeProducto") {
+        cargarInputsProducto(datosFila);
+    }
 }
 
 function redireccionar(ruta) {
     window.location.href = ruta;
 }
 
-function cargarTabla(rutaDestino,rutaOrigen){
+function cargarTabla(rutaDestino) {
     var xhr = new XMLHttpRequest();
-  xhr.open('GET', rutaDestino, true);
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState === 4 && xhr.status === 200) {
-      // Procesar los datos recibidos del servidor
-      var datos = JSON.parse(xhr.responseText);
-     crearTabla(datos)
-    }
-  };
-  xhr.send();
+    xhr.open('GET', rutaDestino, true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            // Procesar los datos recibidos del servidor
+            var datos = JSON.parse(xhr.responseText);
+            crearTabla(datos)
+        }
+    };
+    xhr.send();
 }
 
 /****************************************************************/
@@ -92,41 +106,44 @@ function comprobarCbxEliminar() {
 }
 
 /****************************************************/
-function validarInputs(ruta1, ruta2, ruta3) {
+function validarInputs(ruta1, ruta2, ruta3, rutaDestino) {
     var cbxAgregar = document.getElementById('cbxAgregar');
-    var cbxModificar = document.getElementById('cbxModificar');
-    if (cbxAgregar.checked || cbxModificar.checked) {
-        procesarInputs(ruta1)
+    if (cbxAgregar.checked) {
+        var inputsProcesados = procesarInputs()
+        if (inputsProcesados != null)
+            enviarDatos(ruta1, inputsProcesados, rutaDestino)
     } else {
-        var cbxEliminar = document.getElementById('cbxEliminar');
-        if (cbxEliminar.checked) {
-            eliminarInput(ruta3)
+        var cbxModificar = document.getElementById('cbxModificar');
+        if (cbxModificar.checked) {
+            var inputsProcesados = procesarInputs()
+            if (inputsProcesados != null)
+                modificarDatos(ruta2, inputsProcesados, rutaDestino)
         } else {
-            alert("Error:no hay ninguna checkbox activa")
+            var cbxEliminar = document.getElementById('cbxEliminar');
+            if (cbxEliminar.checked) {
+                eliminarInput(ruta3, rutaDestino)
+            } else {
+                alert("Error:no hay ninguna checkbox activa")
+            }
         }
     }
-
 }
 
-function procesarInputs(ruta) {
+function procesarInputs() {
     var inputs = document.querySelectorAll('input');
     var inputsArray = Array.from(inputs);
-    var validarInputs = inputsArray.filter(elemento => !elemento.id.includes(""));
-    console.log(validarInputs)
-    if (validarInputs.length == 0) {
-        inputs = inputsArray.filter(elemento => !elemento.id.includes("cbx"));
-        var datosInputs = [];
-        inputs.forEach(input => {
-            datosInputs.push(input.value);
-        });
-        console.log(datosInputs)
-        enviarDatos(ruta, datosInputs)
-    } else {
-        alert("Error:Por favor, rellene todos los campos")
+    inputs = inputsArray.filter(elemento => !elemento.id.includes("cbx"));
+    var datosInputs = inputs.map(input => input.value);
+    if (datosInputs.some(valor => valor === "")) {
+        alert("Error: Por favor, rellene todos los campos");
+        return null;
     }
+    console.log(datosInputs);
+    return datosInputs;
+
 }
 
-function enviarDatos(ruta, datosInputs) {
+function enviarDatos(ruta, datosInputs, rutaDestino) {
     console.log(datosInputs)
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     const xhr = new XMLHttpRequest();
@@ -134,33 +151,57 @@ function enviarDatos(ruta, datosInputs) {
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('X-CSRF-TOKEN', token);
     xhr.onload = function () {
-      if (xhr.status === 200) {
-        console.log('Respuesta del controlador:', xhr.responseText);
-        var datos = JSON.parse(xhr.responseText);
-        console.log(datos)
-      } else {
-        console.error('Error en la solicitud:', xhr.statusText);
-      }
+        if (xhr.status === 200) {
+            console.log('Respuesta del controlador:', xhr.responseText);
+            var datos = JSON.parse(xhr.responseText);
+            console.log(datos)
+        } else {
+            console.error('Error en la solicitud:', xhr.statusText);
+        }
     };
     xhr.onerror = function () {
-      console.error('Error en la solicitud:', xhr.statusText);
+        console.error('Error en la solicitud:', xhr.statusText);
     };
     xhr.send(JSON.stringify(datosInputs));
-  
+    cargarTabla(rutaDestino)
+}
+function modificarDatos(ruta, datosInputs,rutaDestino){
+    var idModificar=[]
+    idModificar=idModificar.concat(identificador,datosInputs);
+    enviarDatos(ruta,idModificar,rutaDestino)
 }
 
-function eliminarInput() {
-    var inputs = document.querySelectorAll('input');
-    var inputsArray = Array.from(inputs);
-    inputs = inputsArray.filter(elemento => elemento.id.includes("id"));
-    var datosInputs = [];
-    inputs.forEach(input => {
-        datosInputs.push(input.value);
-    });
-    console.log(datosInputs)
-    if (datosInputs != "") {
-    } else {
-        alert("Error:Por favor, ingrese un Id")
-    }
+function eliminarInput(ruta, rutaDestino) {
+    if (identificador != null) {
+        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', ruta);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('X-CSRF-TOKEN', token);
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                console.log('Respuesta del controlador:', xhr.responseText);
+                var datos = JSON.parse(xhr.responseText);
+                console.log(datos)
+            } else {
+                console.error('Error en la solicitud:', xhr.statusText);
+            }
+        };
+        xhr.onerror = function () {
+            console.error('Error en la solicitud:', xhr.statusText);
+        };
+        xhr.send(JSON.stringify({ 'identificador': identificador }));
+        cargarTabla(rutaDestino)
 
+    } else {
+        alert("Error, por favor seleccione algun atributo de la tabla para eliminar")
+    }
+}
+
+function cargarInputsProducto(datosFila) {
+    identificador = datosFila[0];
+    document.getElementById('nombre').value = datosFila[1];
+    document.getElementById('precio').value = datosFila[2];
+    document.getElementById('tipoMoneda').value = datosFila[3];
+    document.getElementById('stock').value = datosFila[4];
 }

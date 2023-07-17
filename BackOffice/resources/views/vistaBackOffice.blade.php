@@ -26,7 +26,7 @@
 
     <script> 
     function mostrar(){
-        console.log("{{ route('producto.action') }}")
+        console.log("{{ route('producto.cargarDatos') }}")
     }
 </script>
 </body>

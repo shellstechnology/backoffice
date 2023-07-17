@@ -30,10 +30,6 @@
        <input type="checkbox" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
        <div class="contenedorDatos">
          <div class="campo">
-             <input type="number" id="id" min="1"></input>
-            <label for="idProducto" > Id </label>
-       </div>
-         <div class="campo">
           <input type="text" id="nombre"></input>
           <label for="nombreProducto" > Nombre</label>
         </div>
@@ -52,7 +48,8 @@
     </div>
     <button onclick="validarInputs('{{ route('producto.agregar') }}',
                                    '{{ route('producto.modificar') }}',
-                                   '{{ route('producto.eliminar') }}')">Aceptar</button>
+                                   '{{ route('producto.eliminar') }}',
+                                   '{{route('producto.cargarDatos')}}')">Aceptar</button>
   <button onclick="cargarTabla('{{route('producto.cargarDatos')}}'), '{{route('backoffice.producto')}}'">cargarTabla</button>
 </body>
 </html>

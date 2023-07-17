@@ -14,29 +14,39 @@ class productoController extends Controller
         return response()->json($datoProducto);
     }
 
-    public function agregar(Request $request)  {
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'precio' => 'required|integer',
-            'tipoMoneda' => 'required|string|max:255',
-            'stock' => 'required|integer',
-        ]);
-        $datosRequest= $request->all();
-        $producto=new Producto;
-        $producto->Id=intval($datosRequest[0]);
-        $producto->Nombre=$datosRequest[1];
-        $producto->Precio=intval($datosRequest[2]);
-        $producto->TipoMoneda=$datosRequest[3];
-        $producto->Stock=intval($datosRequest[4]);
-        Producto::insert($producto);
+    public function agregar(Request $request)
+    {
+        $datosRequest = $request->all();
+        $producto = new Producto;
+        $producto->Nombre = $datosRequest[0];
+        $producto->Precio = intval($datosRequest[1]);
+        $producto->TipoMoneda = $datosRequest[2];
+        $producto->Stock = intval($datosRequest[3]);
+        $producto->save();
         return response()->json($producto);
     }
 
-    public function modificar(){
-
+    public function modificar(Request $request)
+    {
+        $datosRequest = $request->all();
+        $producto = Producto::find($datosRequest[0]);
+        $producto->Nombre = $datosRequest[1];
+        $producto->Precio = intval($datosRequest[2]);
+        $producto->TipoMoneda = $datosRequest[3];
+        $producto->Stock = intval($datosRequest[4]);
+        $producto->save();
+        return response()->json($request);
     }
 
-    public function eliminar(){
-
+    public function eliminar(Request $request)
+    {
+        $idProducto=$request->get('identificador');
+        $producto = Producto::find($idProducto);
+        $producto->delete();
+        if ($producto) {
+            return response()->json("Usuario $producto eliminado correctamente");
+        } else {
+            return response()->json("El usuario con el ID $idProducto no existe");
+        }
     }
 }
