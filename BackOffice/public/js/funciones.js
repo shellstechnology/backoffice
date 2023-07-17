@@ -109,27 +109,21 @@ function validarInputs(ruta1, ruta2, ruta3) {
 }
 
 function procesarInputs(ruta) {
-    // Obtener los valores de los campos de texto
-  var nombre = document.getElementById('nombre').value;
-  var precio = parseInt(document.getElementById('precio').value);
-  var tipoMoneda = document.getElementById('tipoMoneda').value;
-  var stock = parseInt(document.getElementById('stock').value);
-
-  // Verificar que ninguno sea vacío
-  if (nombre === '' || isNaN(precio) || tipoMoneda === '' || isNaN(stock)) {
-    alert('Por favor, rellene todos los campos correctamente.');
-    return;
-  }
-
-  // Crear el objeto con los datos
-  var datosInputs = {
-    nombre: nombre,
-    precio: precio,
-    tipoMoneda: tipoMoneda,
-    stock: stock
-  };
-
-  enviarDatos(ruta,datosInputs)
+    var inputs = document.querySelectorAll('input');
+    var inputsArray = Array.from(inputs);
+    var validarInputs = inputsArray.filter(elemento => !elemento.id.includes(""));
+    console.log(validarInputs)
+    if (validarInputs.length == 0) {
+        inputs = inputsArray.filter(elemento => !elemento.id.includes("cbx"));
+        var datosInputs = [];
+        inputs.forEach(input => {
+            datosInputs.push(input.value);
+        });
+        console.log(datosInputs)
+        enviarDatos(ruta, datosInputs)
+    } else {
+        alert("Error:Por favor, rellene todos los campos")
+    }
 }
 
 function enviarDatos(ruta, datosInputs) {
@@ -143,7 +137,7 @@ function enviarDatos(ruta, datosInputs) {
       if (xhr.status === 200) {
         console.log('Respuesta del controlador:', xhr.responseText);
         var datos = JSON.parse(xhr.responseText);
-        console.log(datos);
+        console.log(datos)
       } else {
         console.error('Error en la solicitud:', xhr.statusText);
       }

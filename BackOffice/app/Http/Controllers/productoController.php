@@ -14,41 +14,29 @@ class productoController extends Controller
         return response()->json($datoProducto);
     }
 
-    public function agregar(Request $request)
-    {
-        // Validar los datos recibidos del formulario
+    public function agregar(Request $request)  {
         $request->validate([
             'nombre' => 'required|string|max:255',
             'precio' => 'required|integer',
             'tipoMoneda' => 'required|string|max:255',
             'stock' => 'required|integer',
         ]);
-
-        // Obtener los datos del formulario
-        $nombre = $request->input('nombre');
-        $precio = $request->input('precio');
-        $tipoMoneda = $request->input('tipoMoneda');
-        $stock = $request->input('stock');
-
-        // Insertar los datos en la base de datos
-        $producto = new Producto();
-        $producto->nombre = $nombre;
-        $producto->precio = $precio;
-        $producto->tipoMoneda = $tipoMoneda;
-        $producto->stock = $stock;
-
-
-        // Devolver una respuesta (puedes personalizarla según tus necesidades)
-        return response()->json(['mensaje' => 'Producto insertado correctamente']);
+        $datosRequest= $request->all();
+        $producto=new Producto;
+        $producto->Id=intval($datosRequest[0]);
+        $producto->Nombre=$datosRequest[1];
+        $producto->Precio=intval($datosRequest[2]);
+        $producto->TipoMoneda=$datosRequest[3];
+        $producto->Stock=intval($datosRequest[4]);
+        Producto::insert($producto);
+        return response()->json($producto);
     }
 
-    public function modificar()
-    {
+    public function modificar(){
 
     }
 
-    public function eliminar()
-    {
+    public function eliminar(){
 
     }
 }
