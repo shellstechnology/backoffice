@@ -7,6 +7,8 @@
     <title>BackOffice:Almacenes</title>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}"> 
     <script src="{{asset('js/funciones.js')}}"> </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body>
 <div class="barraDeNavegacion">
@@ -28,31 +30,29 @@
        <input type="checkbox" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
        <div class="contenedorDatos">
          <div class="campo">
-             <input type="number" id="idProducto" min="1"></input>
+             <input type="number" id="id" min="1"></input>
             <label for="idProducto" > Id </label>
        </div>
          <div class="campo">
-          <input type="text" id="nombreProducto"></input>
+          <input type="text" id="nombre"></input>
           <label for="nombreProducto" > Nombre</label>
         </div>
         <div class="campo">
-          <input type="number" id="precioProducto" min="1"></input>
+          <input type="number" id="precio" min="1"></input>
           <label for="precioProducto" > Precio </label>
         </div>
        <div class="campo">
-          <input type="text" id="monedaProducto" maxlength="3"></input>
+          <input type="text" id="tipoMoneda" maxlength="3"></input>
           <label for="monedaProducto" >Tipo de moneda</label>
        </div>
       <div class="campo">
-          <input type="number" id="stockProducto" min="1"></input>
+          <input type="number" id="stock" min="1"></input>
           <label for="stockProducto" > stock</label>
-          <button type="submit">Ejecutar</button>
       </div>
     </div>
     <button onclick="validarInputs('{{ route('producto.agregar') }}',
                                    '{{ route('producto.modificar') }}',
                                    '{{ route('producto.eliminar') }}')">Aceptar</button>
-  </div>
-         
+  <button onclick="cargarTabla('{{route('producto.cargarDatos')}}'), '{{route('backoffice.producto')}}'">cargarTabla</button>
 </body>
 </html>

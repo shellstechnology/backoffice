@@ -55,6 +55,19 @@ function redireccionar(ruta) {
     window.location.href = ruta;
 }
 
+function cargarTabla(rutaDestino,rutaOrigen){
+    var xhr = new XMLHttpRequest();
+  xhr.open('GET', rutaDestino, true);
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      // Procesar los datos recibidos del servidor
+      var datos = JSON.parse(xhr.responseText);
+     crearTabla(datos)
+    }
+  };
+  xhr.send();
+}
+
 /****************************************************************/
 
 function comprobarCbxAgregar() {
@@ -79,7 +92,7 @@ function comprobarCbxEliminar() {
 }
 
 /****************************************************/
-function validarInputs(ruta1,ruta2,ruta3) {
+function validarInputs(ruta1, ruta2, ruta3) {
     var cbxAgregar = document.getElementById('cbxAgregar');
     var cbxModificar = document.getElementById('cbxModificar');
     if (cbxAgregar.checked || cbxModificar.checked) {
@@ -96,53 +109,63 @@ function validarInputs(ruta1,ruta2,ruta3) {
 }
 
 function procesarInputs(ruta) {
-    var inputs = document.querySelectorAll('input');
-    var inputsArray = Array.from(inputs);
-    var validarInputs = inputsArray.filter(elemento => !elemento.id.includes(""));
-    console.log(validarInputs)
-    if (validarInputs.length == 0) {
-        inputs = inputsArray.filter(elemento => !elemento.id.includes("cbx"));
-        var datosInputs = [];
-        inputs.forEach(input => {
-            datosInputs.push(input.value);
-        });
-        console.log(datosInputs)
-        enviarDatos(ruta,datosInputs)
-    } else {
-        alert("Error:Por favor, rellene todos los campos")
-    }
+    // Obtener los valores de los campos de texto
+  var nombre = document.getElementById('nombre').value;
+  var precio = parseInt(document.getElementById('precio').value);
+  var tipoMoneda = document.getElementById('tipoMoneda').value;
+  var stock = parseInt(document.getElementById('stock').value);
+
+  // Verificar que ninguno sea vacío
+  if (nombre === '' || isNaN(precio) || tipoMoneda === '' || isNaN(stock)) {
+    alert('Por favor, rellene todos los campos correctamente.');
+    return;
+  }
+
+  // Crear el objeto con los datos
+  var datosInputs = {
+    nombre: nombre,
+    precio: precio,
+    tipoMoneda: tipoMoneda,
+    stock: stock
+  };
+
+  enviarDatos(ruta,datosInputs)
 }
 
-function enviarDatos(ruta,datosInputs){
-    fetch(ruta, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(datosInputs)
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert("TA BIEN")
-        console.log(data)
-    })
-    .catch(error => {
-        alert("TA MAL")
-        console.log(error)
-    });
+function enviarDatos(ruta, datosInputs) {
+    console.log(datosInputs)
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', ruta);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('X-CSRF-TOKEN', token);
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        console.log('Respuesta del controlador:', xhr.responseText);
+        var datos = JSON.parse(xhr.responseText);
+        console.log(datos);
+      } else {
+        console.error('Error en la solicitud:', xhr.statusText);
+      }
+    };
+    xhr.onerror = function () {
+      console.error('Error en la solicitud:', xhr.statusText);
+    };
+    xhr.send(JSON.stringify(datosInputs));
+  
 }
 
 function eliminarInput() {
     var inputs = document.querySelectorAll('input');
     var inputsArray = Array.from(inputs);
     inputs = inputsArray.filter(elemento => elemento.id.includes("id"));
-    var datosInputs=[];
+    var datosInputs = [];
     inputs.forEach(input => {
         datosInputs.push(input.value);
     });
     console.log(datosInputs)
-    if(datosInputs!=""){
-    }else{
+    if (datosInputs != "") {
+    } else {
         alert("Error:Por favor, ingrese un Id")
     }
 

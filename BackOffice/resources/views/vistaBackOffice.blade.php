@@ -18,10 +18,16 @@
     <div class="item"> Lotes</div>
 </div>
     <br>
-<form id="formularioBackoffice"action="{{ route('producto.action') }}" method="POST">
+<form id="formularioBackoffice"action="{{ route('producto.cargarDatos') }}" method="POST">
     @csrf
     <button type="submit">Ejecutar</button>
 </form>
-    <button onclick="mostrarDato()">Ver dato</button>
+    <button onclick="mostrar()"> data</button>
+
+    <script> 
+    function mostrar(){
+        console.log("{{ route('producto.action') }}")
+    }
+</script>
 </body>
 </html>

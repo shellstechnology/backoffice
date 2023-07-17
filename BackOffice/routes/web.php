@@ -23,7 +23,7 @@ Route::get('vistaBackOfficeProducto', function(){
 Route::get('vistaBackOffice', function(){
     return view('vistaBackOffice');
 })-> name('backoffice');
-Route::post('/producto/action', [productoController::class, 'action'])->name('producto.action');
+Route::get('/producto/cargarDatos', [productoController::class, 'cargarDatos'])->name('producto.cargarDatos');
 
 Route::post('/producto/agregar', [productoController::class, 'agregar'])->name('producto.agregar');
 Route::post('/producto/modificar', [productoController::class, 'modificar'])->name('producto.modificar');
