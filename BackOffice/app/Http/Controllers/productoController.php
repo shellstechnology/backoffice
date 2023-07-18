@@ -15,7 +15,7 @@ class productoController extends Controller
     }
 
     public function agregar(Request $request)
-    {
+    {{try{
         $datosRequest = $request->all();
         $producto = new Producto;
         $producto->Nombre = $datosRequest[0];
@@ -24,29 +24,39 @@ class productoController extends Controller
         $producto->Stock = intval($datosRequest[3]);
         $producto->save();
         return response()->json($producto);
+    }catch(\Exception $e){
+        return response()->json(['error' => 'Error al agregar el producto'], 500);
+
+    }
+}
     }
 
     public function modificar(Request $request)
-    {
-        $datosRequest = $request->all();
-        $producto = Producto::find($datosRequest[0]);
-        $producto->Nombre = $datosRequest[1];
-        $producto->Precio = intval($datosRequest[2]);
-        $producto->TipoMoneda = $datosRequest[3];
-        $producto->Stock = intval($datosRequest[4]);
-        $producto->save();
-        return response()->json($request);
+    {{
+        try {
+            $datosRequest = $request->all();
+            Producto::where('id', $datosRequest[0])->update([
+                'Nombre' => $datosRequest[1],
+                'Precio' => $datosRequest[2],
+                'TipoMoneda' => $datosRequest[3],
+                'Stock' => $datosRequest[4],
+            ]);
+            return response()->json($datosRequest);
+        }catch(\Exception $e){
+            return response()->json(['error' => 'Error al modificar el producto'], 500);
+        }
+    }
     }
 
     public function eliminar(Request $request)
     {
-        $idProducto=$request->get('identificador');
-        $producto = Producto::find($idProducto);
-        $producto->delete();
-        if ($producto) {
-            return response()->json("Usuario $producto eliminado correctamente");
-        } else {
-            return response()->json("El usuario con el ID $idProducto no existe");
+        $id = $request->get('identificador'); {
+            try {
+                Producto::where('id', $id)->delete();
+                return response()->json(['mensaje' => 'Producto eliminado correctamente']);
+            } catch (\Exception $e) {
+                return response()->json(['error' => 'Error al eliminar el producto'], 500);
+            }
         }
     }
 }

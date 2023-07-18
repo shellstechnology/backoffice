@@ -27,4 +27,4 @@ Route::get('/producto/cargarDatos', [productoController::class, 'cargarDatos'])-
 
 Route::post('/producto/agregar', [productoController::class, 'agregar'])->name('producto.agregar');
 Route::post('/producto/modificar', [productoController::class, 'modificar'])->name('producto.modificar');
-Route::post('/producto/eliminar', [productoController::class, 'eliminar'])->name('producto.eliminar');
+Route::delete('/producto/eliminar', [productoController::class, 'eliminar'])->name('producto.eliminar');

@@ -1,5 +1,7 @@
 var identificador = null;
-function crearTabla(infoProducto) {
+var idTabla=0;
+function crearTabla(idTablaPagina,infoProducto) {
+    if(idTabla!=idTablaPagina){
     console.log(infoProducto);
     // Crear la tabla dinámicamente
     var tabla = document.createElement("table");
@@ -24,7 +26,7 @@ function crearTabla(infoProducto) {
         th.textContent = key;
         filaCabecera.appendChild(th);
     }
-
+}
     // Crear el cuerpo de la tabla
     var cuerpo = document.createElement("tbody");
     for (var i = 0; i < infoProducto.length; i++) {
@@ -65,21 +67,21 @@ function imprimirDatos(fila) {
     }
 }
 
-function redireccionar(ruta) {
-    window.location.href = ruta;
-}
-
-function cargarTabla(rutaDestino) {
+function cargarTabla(rutaDestino,idTablaPagina) {
+    console.time("tiempo-ejecucion");
     var xhr = new XMLHttpRequest();
     xhr.open('GET', rutaDestino, true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            // Procesar los datos recibidos del servidor
             var datos = JSON.parse(xhr.responseText);
-            crearTabla(datos)
+            crearTabla(idTablaPagina,datos)
         }
     };
     xhr.send();
+    console.timeEnd("tiempo-ejecucion");
+}
+function redireccionar(ruta) {
+    window.location.href = ruta;
 }
 
 /****************************************************************/
@@ -165,24 +167,25 @@ function enviarDatos(ruta, datosInputs, rutaDestino) {
     xhr.send(JSON.stringify(datosInputs));
     cargarTabla(rutaDestino)
 }
-function modificarDatos(ruta, datosInputs,rutaDestino){
-    var idModificar=[]
-    idModificar=idModificar.concat(identificador,datosInputs);
-    enviarDatos(ruta,idModificar,rutaDestino)
+function modificarDatos(ruta, datosInputs, rutaDestino) {
+    var idModificar = []
+    idModificar = idModificar.concat(identificador, datosInputs);
+    enviarDatos(ruta, idModificar, rutaDestino)
 }
 
 function eliminarInput(ruta, rutaDestino) {
     if (identificador != null) {
         const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', ruta);
+        console.log(ruta)
+        xhr.open('DELETE', (ruta));
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.setRequestHeader('X-CSRF-TOKEN', token);
         xhr.onload = function () {
             if (xhr.status === 200) {
                 console.log('Respuesta del controlador:', xhr.responseText);
                 var datos = JSON.parse(xhr.responseText);
-                console.log(datos)
+                console.log(datos);
             } else {
                 console.error('Error en la solicitud:', xhr.statusText);
             }
@@ -190,8 +193,9 @@ function eliminarInput(ruta, rutaDestino) {
         xhr.onerror = function () {
             console.error('Error en la solicitud:', xhr.statusText);
         };
+
         xhr.send(JSON.stringify({ 'identificador': identificador }));
-        cargarTabla(rutaDestino)
+        cargarTabla(rutaDestino);
 
     } else {
         alert("Error, por favor seleccione algun atributo de la tabla para eliminar")

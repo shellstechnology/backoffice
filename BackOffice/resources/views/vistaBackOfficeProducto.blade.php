@@ -48,8 +48,8 @@
     </div>
     <button onclick="validarInputs('{{ route('producto.agregar') }}',
                                    '{{ route('producto.modificar') }}',
-                                   '{{ route('producto.eliminar') }}',
+                                   '{{ route('producto.eliminar')}}',
                                    '{{route('producto.cargarDatos')}}')">Aceptar</button>
-  <button onclick="cargarTabla('{{route('producto.cargarDatos')}}'), '{{route('backoffice.producto')}}'">cargarTabla</button>
+  <button onclick="cargarTabla('{{route('producto.cargarDatos')}}'), 5">cargarTabla</button>
 </body>
 </html>
