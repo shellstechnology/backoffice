@@ -24,32 +24,35 @@
     <div class="cuerpo">
     <div id="contenedor-tabla"></div>
     </div>
+    <div> 
     <div class="cajaDatos"> 
        <input type="checkbox" id="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
        <input type="checkbox" id="cbxModificar" onclick="comprobarCbxModificar()">Modificar </input>
        <input type="checkbox" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
        <div class="contenedorDatos">
          <div class="campo">
-          <input type="text" id="nombre"></input>
-          <label for="nombreProducto" > Nombre</label>
+          <input type="text" id="nombre" maxlength="20" onpaste="return false;"></input>
+          <label for="nombreProducto" >Nombre</label>
         </div>
         <div class="campo">
-          <input type="number" id="precio" min="1"></input>
-          <label for="precioProducto" > Precio </label>
+          <input type="number" id="precio" min="1" max="9999999" onkeydown="filtro(event)" onpaste="return false";></input>
+          <label for="precioProducto" >Precio </label>
         </div>
        <div class="campo">
-          <input type="text" id="tipoMoneda" maxlength="3"></input>
+          <input type="text" id="tipoMoneda" maxlength="3" onpaste="return false;"></input>
           <label for="monedaProducto" >Tipo de moneda</label>
        </div>
       <div class="campo">
-          <input type="number" id="stock" min="1"></input>
-          <label for="stockProducto" > stock</label>
+          <input type="number" id="stock" min="0" max="9999999" onkeydown="filtro(event) onpaste="return false;""></input>
+          <label for="stockProducto" >Stock</label>
       </div>
-    </div>
-    <button onclick="validarInputs('{{ route('producto.agregar') }}',
+      <button onclick="validarInputs('{{ route('producto.agregar') }}',
                                    '{{ route('producto.modificar') }}',
                                    '{{ route('producto.eliminar')}}',
                                    '{{route('producto.cargarDatos')}}')">Aceptar</button>
-  <button onclick="cargarTabla('{{route('producto.cargarDatos')}}'), 5">cargarTabla</button>
+    <button onclick="cargarTabla('{{route('producto.cargarDatos')}}'), 5">cargarTabla</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
