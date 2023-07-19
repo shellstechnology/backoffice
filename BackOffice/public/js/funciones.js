@@ -46,12 +46,12 @@ function crearTabla(idTablaPagina, infoProducto) {
         });
     }
     // Agregar la tabla al div
-    var contenedorTabla = document.getElementById("contenedor-tabla");
+    var contenedorTabla = document.getElementById("contenedorTabla");
     if (contenedorTabla) {
         contenedorTabla.innerHTML = "";
         contenedorTabla.appendChild(tabla);
     } else {
-        console.error("Elemento contenedor-tabla no encontrado.");
+        console.error("Elemento contenedorTabla no encontrado.");
     }
 }
 

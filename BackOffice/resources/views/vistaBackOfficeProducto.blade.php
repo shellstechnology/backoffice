@@ -22,7 +22,7 @@
    </div>
   <div class="container">
     <div class="cuerpo">
-    <div id="contenedor-tabla"></div>
+    <div id="contenedorTabla"></div>
     </div>
     <div> 
     <div class="cajaDatos"> 
@@ -50,7 +50,8 @@
                                    '{{ route('producto.modificar') }}',
                                    '{{ route('producto.eliminar')}}',
                                    '{{route('producto.cargarDatos')}}')">Aceptar</button>
-    <button onclick="cargarTabla('{{route('producto.cargarDatos')}}'), 5">cargarTabla</button>
+    <button onclick="cargarTabla('{{route('producto.cargarDatos')}}'), 5">Cargar Tabla</button>
+    <button onclick="reestablecerDatos()">Reestablecer Dato</button>
       </div>
     </div>
   </div>
