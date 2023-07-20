@@ -1,8 +1,24 @@
 var identificador = null;
 var idTabla = 0;
+var tipoDeMoneda = ["USD", "EUR", "UYU"];
+document.addEventListener('DOMContentLoaded', function () {
+    crearTipoMoneda(tipoDeMoneda)
+});
+
+
+function crearTipoMoneda(tipoDeMoneda) {
+    var inputTipoMoneda = document.getElementById('tipoMoneda');
+    if (inputTipoMoneda) {
+        tipoDeMoneda.forEach(function (moneda) {
+            var divisa = document.createElement('option');
+            divisa.value = moneda;
+            divisa.textContent = moneda;
+            inputTipoMoneda.appendChild(divisa);
+        });
+    }
+}
 function crearTabla(idTablaPagina, infoProducto) {
     if (idTabla != idTablaPagina) {
-        console.log(infoProducto);
         var tabla = document.createElement("table");
         tabla.style.borderCollapse = "collapse";
 
@@ -60,7 +76,6 @@ function imprimirDatos(fila) {
         return celda.textContent;
     });
     var nombrePagina = window.location.pathname.split('/').pop();
-    console.log(nombrePagina)
     if (nombrePagina == "vistaBackOfficeProducto") {
         cargarInputsProducto(datosFila);
     }
@@ -105,10 +120,10 @@ function comprobarCbxEliminar() {
         cbxModificar.checked = false
     }
 }
-function filtro(event){
-var tecla = event.key;
-if (['.','e'].includes(tecla))
-   event.preventDefault()
+function filtro(event) {
+    var tecla = event.key;
+    if (['.', 'e'].includes(tecla))
+        event.preventDefault()
 }
 /****************************************************/
 function validarInputs(ruta1, ruta2, ruta3, rutaDestino) {
@@ -117,8 +132,7 @@ function validarInputs(ruta1, ruta2, ruta3, rutaDestino) {
     if (cbxAgregar.checked) {
         var inputsProcesados = procesarInputs()
         if (inputsProcesados != null)
-            if (enviarDatos(ruta1, inputsProcesados, rutaDestino))
-                alert("Elemento agregado")
+            enviarDatos(ruta1, inputsProcesados, rutaDestino)
     } else {
         var cbxModificar = document.getElementById('cbxModificar');
         if (cbxModificar.checked) {
@@ -138,7 +152,7 @@ function validarInputs(ruta1, ruta2, ruta3, rutaDestino) {
 }
 
 function procesarInputs() {
-    var inputs = document.querySelectorAll('input');
+    var inputs = document.querySelectorAll('input,select');
     var inputsArray = Array.from(inputs);
     inputs = inputsArray.filter(elemento => !elemento.id.includes("cbx"));
     var datosInputs = inputs.map(input => input.value);
@@ -146,23 +160,12 @@ function procesarInputs() {
         alert("Error: Por favor, rellene todos los campos");
         return null;
     }
-    var validacion = 0;
-    var inputNumero = document.querySelectorAll('input[type="number"]');
-    inputNumero.forEach(function (numero) {
-        if (numero > 9999999) {
-            validacion = 1;
-            return
-        }
-    })
-    if (validacion != 0) {
-        console.log(datosInputs);
-        datosInputs=0;
-    }
     return datosInputs;
 
 }
 
 function enviarDatos(ruta, datosInputs, rutaDestino) {
+    console.log(datosInputs);
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     const xhr = new XMLHttpRequest();
     xhr.open('POST', ruta);
@@ -174,7 +177,7 @@ function enviarDatos(ruta, datosInputs, rutaDestino) {
             console.log(datos)
         } else {
             console.error('Error en la solicitud:', xhr.statusText);
-            alert('Error en la solicitud:' + xhr.statusText + ", verifica los datos que ingresaste pedazo de un anormal");
+            alert('Error en la solicitud:' + xhr.statusText + ", verifica los datos que ingresaste");
         }
     };
     xhr.onerror = function () {
@@ -188,8 +191,7 @@ function modificarDatos(ruta, datosInputs, rutaDestino) {
 
         var idModificar = []
         idModificar = idModificar.concat(identificador, datosInputs);
-        if(enviarDatos(ruta, idModificar, rutaDestino))
-        alert("Elemento modificado")
+        enviarDatos(ruta, idModificar, rutaDestino)
     } else {
         alert('Error,por favor seleccione un dato de la lista para modificar')
     }
@@ -197,7 +199,7 @@ function modificarDatos(ruta, datosInputs, rutaDestino) {
 
 function eliminarInput(ruta, rutaDestino) {
     if (identificador != null) {
-        if (window.confirm('¿Quieres eliminar el elemento de id?' + identificador + ", no podras recuperarlo")) {
+        if (window.confirm('¿Quieres eliminar el elemento de id ' + identificador + "?, podras recuperarlo mas tarde")) {
             const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             const xhr = new XMLHttpRequest();
             xhr.open('DELETE', (ruta));
@@ -206,7 +208,7 @@ function eliminarInput(ruta, rutaDestino) {
             xhr.onload = function () {
                 if (xhr.status === 200) {
                     var datos = JSON.parse(xhr.responseText);
-                    console.log(datos);
+                    alert(datos)
                 } else {
                     console.error('Error en la solicitud:', xhr.statusText);
                 }
@@ -217,13 +219,12 @@ function eliminarInput(ruta, rutaDestino) {
 
             xhr.send(JSON.stringify({ 'identificador': identificador }));
             cargarTabla(rutaDestino);
-            alert("Elemento borrado")
 
         } else {
             alert("Elemento NO borrado")
         }
     } else {
-        alert("Error, por favor seleccione algun atributo de la tabla para eliminar")
+        alert("Error, por favor seleccione algun elemento de la tabla para eliminar")
     }
 }
 
@@ -233,4 +234,35 @@ function cargarInputsProducto(datosFila) {
     document.getElementById('precio').value = datosFila[2];
     document.getElementById('tipoMoneda').value = datosFila[3];
     document.getElementById('stock').value = datosFila[4];
+}
+
+function recuperarDatos(rutaRecuperar, rutaCargar) {
+    if (identificador != null) {
+        if (window.confirm('¿Quieres reestablecer el elemento de id ' + identificador + "?")) {
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', (rutaRecuperar));
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('X-CSRF-TOKEN', token);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var datos = JSON.parse(xhr.responseText);
+                    alert(datos);
+                } else {
+                    console.error('Error en la solicitud:', xhr.statusText);
+                }
+            };
+            xhr.onerror = function () {
+                console.error('Error en la solicitud:', xhr.statusText);
+            };
+
+            xhr.send(JSON.stringify({ 'identificador': identificador }));
+            cargarTabla(rutaCargar);
+
+        } else {
+        }
+    } else {
+        alert("Error, por favor seleccione algun elemento para recuperar")
+    }
+
 }

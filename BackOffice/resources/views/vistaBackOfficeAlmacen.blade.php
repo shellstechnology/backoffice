@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BackOffice:Producto</title>
+    <title>BackOffice:Almacenes</title>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}"> 
     <script src="{{asset('js/funciones.js')}}"> </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -12,11 +12,11 @@
 <body>
 <div class="barraDeNavegacion">
       <div class="item" onclick="redireccionar('{{route('backoffice')}}')"> Menu Principal</div>
-      <div class="item" onclick="redireccionar('{{route('backoffice.almacen')}}')">Almacenes</div>
       <div class="item"> Almaceneros</div>
       <div class="item"> Camiones</div>
       <div class="item"> Camioneros</div>
       <div class="item"> Paquetes</div>
+      <div class="item" onclick="redireccionar('{{route('backoffice.producto')}}')"> Productos</div>
       <div class="item"> Lotes</div>
    </div>
   <div class="container">
@@ -38,11 +38,11 @@
           <label for="precioProducto" >Precio </label>
         </div>
        <div class="campo">
-          <select id="tipoMoneda"> <select>
-          <label for="tipoMoneda" >Tipo de moneda</label>
+          <input type="text" id="tipoMoneda" maxlength="3" onpaste="return false;"></input>
+          <label for="monedaProducto" >Tipo de moneda</label>
        </div>
       <div class="campo">
-          <input type="number" id="stock" min="0" max="9999999" onkeydown="filtro(event)" onpaste="return false";></input>
+          <input type="number" id="stock" min="0" max="9999999" onkeydown="filtro(event) onpaste="return false;""></input>
           <label for="stockProducto" >Stock</label>
       </div>
     <button onclick="cargarTabla('{{route('producto.cargarDatos')}}'), 5">Cargar Tabla</button>

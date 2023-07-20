@@ -9,7 +9,7 @@
 </head>
 <body>
 <div class="barraDeNavegacion">
-    <div class="item" onclick=redireccionar()>Almacenes</div>
+<div class="item" onclick="redireccionar('{{route('backoffice.almacen')}}')">Almacenes</div>
     <div class="item"> Almaceneros</div>
     <div class="item"> Camiones</div>
     <div class="item"> Camioneros</div>
