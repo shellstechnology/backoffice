@@ -42,7 +42,7 @@ class productoController extends Controller
                 $producto->TipoMoneda = $datosRequest[2];
                 $producto->Stock = $datosRequest[3];
                 $producto->save();
-                return response()->json("SI");
+                return response()->json("Producto Ingresado");
             } catch (\Exception $e) {
                 return response()->json(['Error al ingresar el paquete'], 500);
 

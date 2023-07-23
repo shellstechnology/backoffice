@@ -13,5 +13,4 @@ class Almacen extends Model
     use SoftDeletes;
     use ValidatesRequests;
     public $timestamps = true;
-
 }

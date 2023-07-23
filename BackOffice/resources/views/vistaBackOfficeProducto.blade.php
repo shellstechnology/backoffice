@@ -16,7 +16,7 @@
       <div class="item"> Almaceneros</div>
       <div class="item"> Camiones</div>
       <div class="item"> Camioneros</div>
-      <div class="item"> Paquetes</div>
+      <div class="item" onclick="redireccionar('{{route('backoffice.paquete')}}')"> Paquetes</div>
       <div class="item"> Lotes</div>
    </div>
   <div class="container">
@@ -30,7 +30,7 @@
        <input type="checkbox" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
        <div class="contenedorDatos">
          <div class="campo">
-          <input type="text" id="nombre" maxlength="20" onpaste="return false;"></input>
+          <input type="text" id="nombre" maxlength="20"></input>
           <label for="nombreProducto" >Nombre</label>
         </div>
         <div class="campo">
@@ -45,7 +45,7 @@
           <input type="number" id="stock" min="0" max="9999999" onkeydown="filtro(event)" onpaste="return false";></input>
           <label for="stockProducto" >Stock</label>
       </div>
-    <button onclick="cargarTabla('{{route('producto.cargarDatos')}}'), 5">Cargar Tabla</button>
+    <button id="cargar"onclick="cargarTabla('{{route('producto.cargarDatos')}}'), 7">Cargar Tabla</button>
     <button onclick="validarInputs('{{ route('producto.agregar') }}',
                                    '{{ route('producto.modificar') }}',
                                    '{{ route('producto.eliminar')}}',
