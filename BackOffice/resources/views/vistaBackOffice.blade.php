@@ -14,7 +14,7 @@
     <div class="item" onclick="redireccionar('{{route('backoffice.producto')}}')"> Productos</div>
     <div class="item" onclick="redireccionar('{{route('backoffice.lote')}}')"> Lotes</div>
 </div>
-<div class="cajaUsuario">
+<div class="cajaUsuario"  onclick="redireccionar('{{route('backoffice.usuarios')}}')">
 <div class="head"></div>
 <div class="body"></div>
 </div>
@@ -26,7 +26,7 @@
             <h2>Use la barra de navegación para desplazarse entre las distintas ventanas para ingresar datos</h2>
         </section>
         <section>
-            <h2>Algunas paginas tienen un boton para acceder a una pagina anexada/h2>
+            <h2>Algunas paginas tienen un boton para acceder a una pagina anexada</h2>
         </section>
         <section>
             <h2>Use la ventana de la derecha para crear/modificar usuarios</h2>

@@ -15,6 +15,7 @@ class paqueteController extends Controller
     public function cargarDatos()
     {
         $datoProducto = Paquete::withTrashed()->get();
+        if($datoProducto){
         foreach ($datoProducto as $dato) {
             $lugarEntrega = LugarEntrega::withTrashed()->find($dato['IdLugarEntrega']);
             $caracteristica = Caracteristica::withTrashed()->find($dato['IdCaracteristica']);
@@ -39,7 +40,7 @@ class paqueteController extends Controller
                     ];
                 }
           
-
+            }
         }
         return response()->json($infoPaquete);
     }

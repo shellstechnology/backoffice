@@ -1,11 +1,13 @@
 var identificador = null;
 var idTabla = 0;
 var tipoDeMoneda = ["USD", "EUR", "UYU"];
+var arrayUsuarios = ["Administrador","Almacenero","Chofer","Cliente"];
 var arrayDia = [];
 var arrayMes = [];
 var arrayAnio = [];
 document.addEventListener('DOMContentLoaded', function () {
     var boton = document.getElementById('cargar');
+    if(boton){
     boton.click();
     var nombrePagina = window.location.pathname.split('/').pop();
     switch (nombrePagina) {
@@ -13,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
             crearTipoMoneda(tipoDeMoneda)
             break;
     }
+}
 });
 function cargarAlmacenes(ruta) {
     console.log('a')
@@ -181,6 +184,17 @@ function crearTipoMoneda(tipoDeMoneda) {
             divisa.value = moneda;
             divisa.textContent = moneda;
             inputTipoMoneda.appendChild(divisa);
+        });
+    }
+}
+function cargarSelectUsuario() {
+    var inputUsuarios = document.getElementById('tipoUsuario');
+    if (inputUsuarios) {
+        arrayUsuarios.forEach(function (datoUsuario) {
+            var usuario = document.createElement('option');
+            usuario.value = datoUsuario;
+            usuario.textContent = datoUsuario;
+            inputUsuarios.appendChild(usuario);
         });
     }
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\paqueteController;
 use App\Http\Controllers\productoController;
 use App\Http\Controllers\paqueteContieneLoteController;
 use App\Http\Controllers\loteController;
+use App\Http\Controllers\usuarioController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,6 +27,9 @@ Route::get('/', function () {
 Route::get('vistaBackOffice', function(){
     return view('vistaBackOffice');
 })-> name('backoffice');
+Route::get('vistaBackOfficeUsuarios', function(){
+    return view('vistaBackOfficeUsuarios');
+})-> name('backoffice.usuarios');
 
 Route::get('vistaBackOfficeAlmacen', function(){
     return view('vistaBackOfficeAlmacen');
@@ -86,3 +90,10 @@ Route::post('/paqueteContieneLote/agregar', [paqueteContieneLoteController::clas
 Route::post('/paqueteContieneLote/modificar', [paqueteContieneLoteController::class, 'modificar'])->name('paqueteContieneLote.modificar');
 Route::delete('/paqueteContieneLote/eliminar', [paqueteContieneLoteController::class, 'eliminar'])->name('paqueteContieneLote.eliminar');
 Route::post('/paqueteContieneLote/recuperar', [paqueteContieneLoteController::class, 'recuperar'])->name('paqueteContieneLote.recuperar');
+
+
+Route::get('/usuario/cargarDatos', [usuarioController::class, 'cargarDatos'])->name('usuario.cargarDatos');
+Route::post('/usuario/agregar', [usuarioController::class, 'agregar'])->name('usuario.agregar');
+Route::post('/usuario/modificar', [usuarioController::class, 'modificar'])->name('usuario.modificar');
+Route::delete('/usuario/eliminar', [usuarioController::class, 'eliminar'])->name('usuario.eliminar');
+Route::post('/usuario/recuperar', [usuarioController::class, 'recuperar'])->name('usuario.recuperar');
