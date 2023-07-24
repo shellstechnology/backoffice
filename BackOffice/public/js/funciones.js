@@ -1,21 +1,21 @@
 var identificador = null;
 var idTabla = 0;
 var tipoDeMoneda = ["USD", "EUR", "UYU"];
-var arrayUsuarios = ["Administrador","Almacenero","Chofer","Cliente"];
+var arrayUsuarios = ["Administrador", "Almacenero", "Chofer", "Cliente"];
 var arrayDia = [];
 var arrayMes = [];
 var arrayAnio = [];
 document.addEventListener('DOMContentLoaded', function () {
     var boton = document.getElementById('cargar');
-    if(boton){
-    boton.click();
-    var nombrePagina = window.location.pathname.split('/').pop();
-    switch (nombrePagina) {
-        case 'vistaBackOfficeProducto':
-            crearTipoMoneda(tipoDeMoneda)
-            break;
+    if (boton) {
+        boton.click();
+        var nombrePagina = window.location.pathname.split('/').pop();
+        switch (nombrePagina) {
+            case 'vistaBackOfficeProducto':
+                crearTipoMoneda(tipoDeMoneda)
+                break;
+        }
     }
-}
 });
 function cargarAlmacenes(ruta) {
     console.log('a')
@@ -55,7 +55,7 @@ function cargarFechasPaquete(ruta, ruta2) {
     cargarIdLugarEntrega(ruta2)
 }
 
-function cargarSelectsLote(rutaLote,rutaPaquete,rutaAlmacen,rutaDestino){
+function cargarSelectsLote(rutaLote, rutaPaquete, rutaAlmacen, rutaDestino) {
     cargarLotes(rutaLote)
     cargarPaquetes(rutaPaquete)
     cargarAlmacenes(rutaAlmacen)
@@ -86,7 +86,7 @@ function cargarLotes(ruta) {
     xhr.send();
 }
 
- function crearPaquetes(infoPaquete){
+function crearPaquetes(infoPaquete) {
     var inputIdPaquete = document.getElementById('idPaquete');
     infoPaquete.forEach(function (datoPaquete) {
         var paquete = document.createElement('option');
@@ -95,7 +95,7 @@ function cargarLotes(ruta) {
         inputIdPaquete.appendChild(paquete);
     });
 }
-function crearLotes(infoLotes){
+function crearLotes(infoLotes) {
     var inputIdLote = document.getElementById('idLote');
     infoLotes.forEach(function (datoLote) {
         var lote = document.createElement('option');
@@ -274,9 +274,12 @@ function imprimirDatos(fila) {
         case 'vistaBackOfficeLote':
             cargarInputsLote(datosFila);
             break;
-            case 'vistaBackOfficePaqueteContieneLote':
-                cargarInputsPaqueteContieneLote(datosFila);
-                break;
+        case 'vistaBackOfficePaqueteContieneLote':
+            cargarInputsPaqueteContieneLote(datosFila);
+            break;
+        case 'vistaBackOfficeUsuarios':
+            cargarInputsUsuarios(datosFila);
+            break;
     }
 }
 
@@ -505,14 +508,22 @@ function cargarInputsProducto(datosFila) {
     document.getElementById('tipoMoneda').value = datosFila[3];
     document.getElementById('stock').value = datosFila[4];
 }
-function cargarInputsLote(datosFila){
-    identificador=datosFila[0];
+function cargarInputsLote(datosFila) {
+    identificador = datosFila[0];
 }
 function cargarInputsPaqueteContieneLote(datosFila) {
     identificador = datosFila[1];
     document.getElementById('idLote').value = datosFila[0];
     document.getElementById('idPaquete').value = datosFila[1];
     document.getElementById('idAlmacen').value = datosFila[4];
+}
+function cargarInputsUsuarios(datosFila) {
+    identificador = datosFila[0];
+    document.getElementById('nombre').value = datosFila[1];
+    document.getElementById('contraseña').value = datosFila[2];
+    document.getElementById('tipoUsuario').value = datosFila[3];
+    document.getElementById('mail').value = datosFila[5];
+    document.getElementById('telefono').value = datosFila[4];
 }
 
 function recuperarDatos(rutaRecuperar, rutaCargar) {

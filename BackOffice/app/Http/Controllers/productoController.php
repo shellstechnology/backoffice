@@ -98,7 +98,7 @@ class productoController extends Controller
     public function recuperar(Request $request)
     {
         $id = $request->get('identificador');
-        $producto = Producto::withTrashed()->find($id);
+        $producto = Producto::onlyTrashed()->find($id);
         if ($producto) {
             try {
                 Producto::where('id', $id)->restore();

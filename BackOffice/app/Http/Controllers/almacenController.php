@@ -114,7 +114,7 @@ class almacenController extends Controller
     public function recuperar(Request $request)
     {
         $id = $request->get('identificador');
-        $almacen = DireccionAlmacen::withTrashed()->find($id);
+        $almacen = DireccionAlmacen::onlyTrashed()->find($id);
         if ($almacen) {
             try {
                 DireccionAlmacen::where('Id', $id)->restore();

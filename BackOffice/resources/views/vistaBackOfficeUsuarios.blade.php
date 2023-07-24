@@ -41,8 +41,8 @@
           <label for="mail" >Correo electronico</label>
         </div>
       <div class="campo">
-          <input type="number" id="numero" min="0" max="999999999" onkeydown="filtro(event)" onpaste="return false";></input>
-          <label for="numero" >Numero de Telefono</label>
+          <input type="number" id="telefono" min="0" max="999999999" onkeydown="filtro(event)" onpaste="return false";></input>
+          <label for="telefono" >Numero de Telefono</label>
         </div>
         <div class="campo">
           <select id="tipoUsuario"> <select>

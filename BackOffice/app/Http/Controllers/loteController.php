@@ -52,7 +52,7 @@ class loteController extends Controller
 
     public function recuperar(Request $request){
         $id = $request->get('identificador');
-        $lote = Lote::withTrashed()->find($id);
+        $lote = Lote::onlyTrashed()->find($id);
         if ($lote) {
             try {
                 Lote::where('Id',$id )->restore();

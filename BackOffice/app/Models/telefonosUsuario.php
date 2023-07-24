@@ -9,7 +9,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class TelefonosUsuario extends Model
 {
-    protected $table = 'telefonosUsuarios';
+    protected $table = 'telefonosusuario';
     use HasFactory;
     use SoftDeletes;
     use ValidatesRequests;

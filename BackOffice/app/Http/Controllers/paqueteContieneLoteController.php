@@ -133,7 +133,7 @@ class paqueteContieneLoteController extends Controller
         if ($paqueteContieneLote) {
             try {
 
-                PaqueteContieneLote::withTrashed()->where('IdPaquete', $id)->restore();
+                PaqueteContieneLote::onlyTrashed()->where('IdPaquete', $id)->restore();
                 $paquete = PaqueteContieneLote::where('IdPaquete', $id)->first();
                 $valoresAntiguos = Paquete::withTrashed()->where('Id', $paquete['IdPaquete'])->first();
                 $valoresNuevos = $paquete;

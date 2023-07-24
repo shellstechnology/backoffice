@@ -17,10 +17,10 @@ class paqueteController extends Controller
         $datoProducto = Paquete::withTrashed()->get();
         if($datoProducto){
         foreach ($datoProducto as $dato) {
-            $lugarEntrega = LugarEntrega::withTrashed()->find($dato['IdLugarEntrega']);
-            $caracteristica = Caracteristica::withTrashed()->find($dato['IdCaracteristica']);
+            $lugarEntrega = LugarEntrega::withTrashed()->where('Id',$dato['IdLugarEntrega'])->first();
+            $caracteristica = Caracteristica::withTrashed()->find('Id',$dato['IdCaracteristica'])->first();
             $producto = Producto::withTrashed()->find($dato['IdProducto']);
-            if($producto){
+            if($producto&&$lugarEntrega&&$caracteristica){
                 $infoPaquete[] =
                     [
                         'Id Paquete' => $dato['Id'],
@@ -153,14 +153,14 @@ class paqueteController extends Controller
     public function recuperar(Request $request)
     {
         $id = $request->get('identificador');
-        $paquete = Paquete::withTrashed()->find($id);
+        $paquete = Paquete::onlyTrashed()->find($id);
         if ($paquete) {
             try {
                 Caracteristica::where('Id', $paquete['IdCaracteristica'])->restore();
                 Paquete::where('Id',$id )->restore();
                 return response()->json(['Paquete restaurado correctamente']);
             } catch (\Exception $e) {
-                return response()->json(['Error al restaurar el Paquete'], 500);
+                return response()->json(['Error al restaurar el paquete'], 500);
             }
         } else {
             return response()->json(['El paquete no puede ser recuperado porque ya existe']);
