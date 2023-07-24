@@ -16,29 +16,32 @@ class paqueteController extends Controller
     {
         $datoProducto = Paquete::withTrashed()->get();
         foreach ($datoProducto as $dato) {
-            $lugarEntrega = LugarEntrega::withTrashed()->findOrFail($dato['IdLugarEntrega']);
-            $caracteristica = Caracteristica::withTrashed()->findOrFail($dato['IdCaracteristica']);
-            $producto = Producto::withTrashed()->findOrFail($dato['IdProducto']);
-            $infoAlmacen[] =
-                [
-                    'Id Paquete' => $dato['Id'],
-                    'Fecha de Entrega' => $dato['FechaDeEntrega'],
-                    'Id Lugar Entrega' => $lugarEntrega['Id'],
-                    'Direccion' => $lugarEntrega['Direccion'],
-                    'Caracteristicas' => $caracteristica['Descripcion'],
-                    'Nombre del Remitente' => $dato['NombreRemitente'],
-                    'Nombre del Destinatario' => $dato['NombreDestinatario'],
-                    'Id del Producto' => $producto['Id'],
-                    'Producto' => $producto['Nombre'],
-                    'Volumen(L)' => $dato['VolumenL'],
-                    'Peso(Kg)' => $dato['PesoKg'],
-                    'created_at' => $dato['created_at'],
-                    'updated_at' => $dato['updated_at'],
-                    'deleted_at' => $dato['deleted_at'],
-                ];
+            $lugarEntrega = LugarEntrega::withTrashed()->find($dato['IdLugarEntrega']);
+            $caracteristica = Caracteristica::withTrashed()->find($dato['IdCaracteristica']);
+            $producto = Producto::withTrashed()->find($dato['IdProducto']);
+            if($producto){
+                $infoPaquete[] =
+                    [
+                        'Id Paquete' => $dato['Id'],
+                        'Fecha de Entrega' => $dato['FechaDeEntrega'],
+                        'Id Lugar Entrega' => $lugarEntrega['Id'],
+                        'Direccion' => $lugarEntrega['Direccion'],
+                        'Caracteristicas' => $caracteristica['Descripcion'],
+                        'Nombre del Remitente' => $dato['NombreRemitente'],
+                        'Nombre del Destinatario' => $dato['NombreDestinatario'],
+                        'Id del Producto' => $producto['Id'],
+                        'Producto' => $producto['Nombre'],
+                        'Volumen(L)' => $dato['VolumenL'],
+                        'Peso(Kg)' => $dato['PesoKg'],
+                        'created_at' => $dato['created_at'],
+                        'updated_at' => $dato['updated_at'],
+                        'deleted_at' => $dato['deleted_at'],
+                    ];
+                }
+          
 
         }
-        return response()->json($infoAlmacen);
+        return response()->json($infoPaquete);
     }
 
     public function agregar(Request $request)

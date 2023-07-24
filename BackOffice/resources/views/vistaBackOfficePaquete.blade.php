@@ -13,11 +13,8 @@
 <div class="barraDeNavegacion">
       <div class="item" onclick="redireccionar('{{route('backoffice')}}')"> Menu Principal</div>
       <div class="item" onclick="redireccionar('{{route('backoffice.almacen')}}')">Almacenes</div>
-      <div class="item"> Almaceneros</div>
-      <div class="item"> Camiones</div>
-      <div class="item"> Camioneros</div>
       <div class="item" onclick="redireccionar('{{route('backoffice.producto')}}')"> Productos</div>
-      <div class="item"> Lotes</div>
+      <div class="item" onclick="redireccionar('{{route('backoffice.lote')}}')"> Lotes</div>
    </div>
   <div class="container">
     <div class="cuerpo">
@@ -60,11 +57,11 @@
       </div>
       <div class="campo">
           <input type="number" id="volumen" min=0 max=999></input>
-          <label for="volumen" >Volumen</label>
+          <label for="volumen" >Volumen(L)</label>
       </div>
       <div class="campo">
           <input type="number" id="peso" min=0 max=999></input>
-          <label for="peso" >Peso</label>
+          <label for="peso" >Peso(Kg)</label>
       </div>
       <button id="cargar" onclick="cargarFechasPaquete('{{route('producto.cargarDatos')}}','{{route('lugarEntrega.cargarDatos')}}');cargarTabla('{{route('paquete.cargarDatos')}}', 6)">Cargar Tabla</button>
     <button onclick="validarInputs('{{ route('paquete.agregar') }}',

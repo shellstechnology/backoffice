@@ -14,5 +14,9 @@ class DireccionAlmacen extends Model
     use SoftDeletes;
     use ValidatesRequests;
     public $timestamps = true;
+    public function almacenes()
+    {
+        return $this->hasMany(Almacen::class, 'IdDireccionAlmacen');
+    }
  
 }

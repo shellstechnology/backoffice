@@ -13,15 +13,14 @@ class almacenController extends Controller
     public function cargarDatos()
     {   
         $infoAlmacen=[];
-        $datoAlmacen = Almacen::withTrashed()->get();
-        foreach ($datoAlmacen as $dato) {
-            $almacen = DireccionAlmacen::withTrashed()->findOrFail($dato['IdDireccionAlmacen']);
+        $datoDireccion = DireccionAlmacen::withTrashed()->get();
+        foreach ($datoDireccion as $dato) {
             $infoAlmacen[]=
             [
                 'Id Almacen'=>$dato['Id'],
-                'Direccion Almacen'=>$almacen['Direccion'],
-                'Lat Almacen'=>$almacen['Latitud'],
-                'Lng Almacen'=>$almacen['Longitud'],
+                'Direccion Almacen'=>$dato['Direccion'],
+                'Lat Almacen'=>$dato['Latitud'],
+                'Lng Almacen'=>$dato['Longitud'],
                 'created_at'=>$dato['created_at'],
                 'updated_at'=>$dato['updated_at'],
                 'deleted_at'=>$dato['deleted_at'],
@@ -86,14 +85,13 @@ class almacenController extends Controller
                     $errores = $validador->getMessageBag();
                     return response()->json(['error:' => $errores], 422);
                 }
-                $almacen = Almacen::where('Id', $datosRequest[0])->first();
-                DireccionAlmacen::where('Id', $almacen['IdDireccionAlmacen'])->update([
+                DireccionAlmacen::where('Id',$datosRequest[0])->update([
                     'Direccion' => $datosRequest[1],
                     'Latitud' => $datosRequest[2],
                     'Longitud' => $datosRequest[3],
                 ]);
 
-                return response()->json($almacen);
+                return response()->json('Almacen Modificado');
             } catch (\Exception $e) {
                 return response()->json(['Error al modificar el almacen'], 500);
             }
@@ -104,8 +102,7 @@ class almacenController extends Controller
     {
         $id = $request->get('identificador'); {
             try {
-                $almacen = Almacen::where('Id',$id )->first();
-                DireccionAlmacen::where('Id', $almacen['IdDireccionAlmacen'])->delete();
+                DireccionAlmacen::where('Id', $id)->delete();
                 Almacen::where('Id',$id )->delete();
                 return response()->json(['Almacen eliminado correctamente']);
             } catch (\Exception $e) {
@@ -117,11 +114,11 @@ class almacenController extends Controller
     public function recuperar(Request $request)
     {
         $id = $request->get('identificador');
-        $almacen = Almacen::withTrashed()->find($id);
+        $almacen = DireccionAlmacen::withTrashed()->find($id);
         if ($almacen) {
             try {
-                Almacen::where('Id',$id )->restore();
-                DireccionAlmacen::where('Id', $almacen['IdDireccionAlmacen'])->restore();
+                DireccionAlmacen::where('Id', $id)->restore();
+                Almacen::where('IdDireccionAlmacen',$id )->restore();
                 return response()->json(['Almacen restaurado correctamente']);
             } catch (\Exception $e) {
                 return response()->json(['Error al restaurar el almacen'], 500);

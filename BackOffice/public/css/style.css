@@ -101,3 +101,33 @@ button{
 .campo{
     display: block;
 }
+
+.cajaUsuario {
+    width: 50px;
+    height: 50px;
+    border: 2px solid black;
+    position: relative;
+    background-color: var(--colorFuerte);
+    float: right;
+  }
+  
+  .head {
+    width: 25px;
+    height: 25px;
+    background-color: black;
+    border-radius: 50%;
+    position: absolute;
+    top: 5px;
+    left: 13px;
+  }
+  
+  .body {
+    width: 32px;
+    height: 25px;
+    background-color: black;
+    border-top-left-radius: 100%;
+    border-top-right-radius: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 10px;
+  }

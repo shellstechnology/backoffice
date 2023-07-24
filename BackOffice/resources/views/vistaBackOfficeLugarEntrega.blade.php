@@ -12,9 +12,6 @@
 <body>
 <div class="barraDeNavegacion">
       <div class="item" onclick="redireccionar('{{route('backoffice')}}')"> Menu Principal</div>
-      <div class="item"> Almaceneros</div>
-      <div class="item"> Camiones</div>
-      <div class="item"> Camioneros</div>
       <div class="item" onclick="redireccionar('{{route('backoffice.paquete')}}')"> Paquetes</div>
       <div class="item" onclick="redireccionar('{{route('backoffice.producto')}}')"> Productos</div>
       <div class="item"> Lotes</div>

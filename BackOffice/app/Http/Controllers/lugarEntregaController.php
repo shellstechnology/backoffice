@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Almacen;
+use App\Models\DireccionAlmacen;
 use App\Models\LugarEntrega;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -12,26 +13,31 @@ class lugarEntregaController extends Controller
 {
     public function cargarDatos()
     {
-        $infoLugar = [];
+        $infoAlmacen = [];
         $datoAlmacen = Almacen::withTrashed()->get();
-        $datoLugar = LugarEntrega::withTrashed()->get();
-        foreach ($datoLugar as $dato) {
-                foreach ($datoAlmacen as $datoA) {
-                    if ($datoA->IdLugarDeEntrega) {
-                        $infoLugar[] = [
-                            'Id Lugar' => $dato->Id,
-                            'Id Almacen' => $datoA->Id,
-                            'Direccion Lugar' => $dato->Direccion,
-                            'Lat Lugar' => $dato->Latitud,
-                            'Lng Lugar' => $dato->Longitud,
-                            'created_at' => $datoA->created_at,
-                            'updated_at' => $datoA->updated_at,
-                            'deleted_at' => $datoA->deleted_at,
-                        ];
-                    }
+
+        foreach ($datoAlmacen as $dato) {
+            $direccionAlmacen = DireccionAlmacen::withTrashed()->where('Id', $dato['IdDireccionAlmacen'])->first();
+            $lugarEntrega = LugarEntrega::withTrashed()->where('Id', $dato['IdLugarDeEntrega'])->first();
+
+            if ($direccionAlmacen) {
+                if ($lugarEntrega) {
+                    $infoAlmacen[] = [
+                        'Id Lugar' => $lugarEntrega['Id'],
+                        'Direccion Lugar' => $lugarEntrega['Direccion'],
+                        'Id Almacen' => $direccionAlmacen['Id'],
+                        'Direccion Almacen' => $direccionAlmacen['Direccion'],
+                        'Lat Lugar' => $lugarEntrega['Latitud'],
+                        'Lng Lugar' => $lugarEntrega['Longitud'],
+                        'created_at' => $lugarEntrega['created_at'],
+                        'updated_at' => $lugarEntrega['updated_at'],
+                        'deleted_at' => $lugarEntrega['deleted_at'],
+                    ];
                 }
-                return response()->json($infoLugar);
+            }
         }
+
+        return response()->json($infoAlmacen);
     }
 
     public function agregar(Request $request)
@@ -59,9 +65,10 @@ class lugarEntregaController extends Controller
                 $lugarEntrega->Longitud = $datosRequest[3];
                 $lugarEntrega->save();
 
-                Almacen::where('Id', $datosRequest[0])->update([
-                    'IdLugarDeEntrega' => $lugarEntrega->id
-                ]);
+                $almacen = new Almacen;
+                $almacen->IdDireccionAlmacen = $datosRequest[0];
+                $almacen->IdLugarDeEntrega = $lugarEntrega->id;
+                $almacen->save();
                 return response()->json('Lugar agregado');
             } catch (\Exception $e) {
                 return response()->json(['Error al ingresar el lugar'], 500);
@@ -89,32 +96,44 @@ class lugarEntregaController extends Controller
                     $errores = $validador->getMessageBag();
                     return response()->json(['error:' => $errores], 422);
                 }
-                $almacen = Almacen::where('Id', $datosRequest[0])->first();
-                $datoLugar = LugarEntrega::where('Id', $almacen['IdLugarDeEntrega'])->update([
+                LugarEntrega::where('Id', $datosRequest[0])->update([
                     'Direccion' => $datosRequest[2],
                     'Latitud' => $datosRequest[3],
                     'Longitud' => $datosRequest[4],
                 ]);
-                Almacen::where('IdLugarDeEntrega', $datoLugar)->update([
-                    'IdLugarDeEntrega' => null
-                ]);
-
-
-                return response()->json($almacen);
+                $datoLugar = LugarEntrega::where('Id', $datosRequest[0])->first();
+                Almacen::where('IdLugarDeEntrega', $datoLugar['Id'])->delete();
+                $almacen = new Almacen;
+                $almacen->IdDireccionAlmacen = $datosRequest[1];
+                $almacen->IdLugarDeEntrega = $datosRequest[0];
+                $almacen->save();
+                return response()->json('Actualizado');
             } catch (\Exception $e) {
                 return response()->json(['Error al modificar el lugar de entrega'], 500);
             }
         }
     }
 
+
     public function eliminar(Request $request)
     {
         $id = $request->get('identificador'); {
             try {
                 LugarEntrega::where('Id', $id)->delete();
-                Almacen::where('IdLugarDeEntrega', $id)->update([
-                    'IdLugarDeEntrega' => null
-                ]);
+                return response()->json(['Almacen eliminado correctamente']);
+            } catch (\Exception $e) {
+                return response()->json(['Error al eliminar el almacen'], 500);
+            }
+        }
+    }
+
+    public function recuperar(Request $request)
+    {
+        $id = $request->get('identificador');
+        $lugarEntrega= LugarEntrega::withTrashed()->find($id);
+        if ($lugarEntrega) {
+            try {
+                LugarEntrega::where('Id', $id)->restore();
                 return response()->json(['Almacen eliminado correctamente']);
             } catch (\Exception $e) {
                 return response()->json(['Error al eliminar el almacen'], 500);

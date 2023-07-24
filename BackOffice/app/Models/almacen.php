@@ -13,4 +13,14 @@ class Almacen extends Model
     use SoftDeletes;
     use ValidatesRequests;
     public $timestamps = true;
+    public function direccionAlmacen()
+    {
+        return $this->belongsTo(DireccionAlmacen::class, 'IdDireccionAlmacen');
+    }
+
+    // Relación con LugarEntrega
+    public function lugarEntrega()
+    {
+        return $this->belongsTo(LugarEntrega::class, 'IdLugarDeEntrega');
+    }
 }

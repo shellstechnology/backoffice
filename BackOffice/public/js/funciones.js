@@ -1,31 +1,31 @@
 var identificador = null;
 var idTabla = 0;
 var tipoDeMoneda = ["USD", "EUR", "UYU"];
-var arrayDia=[];
-var arrayMes=[];
-var arrayAnio=[];
+var arrayDia = [];
+var arrayMes = [];
+var arrayAnio = [];
 document.addEventListener('DOMContentLoaded', function () {
     var boton = document.getElementById('cargar');
     boton.click();
     var nombrePagina = window.location.pathname.split('/').pop();
-    switch (nombrePagina){
+    switch (nombrePagina) {
         case 'vistaBackOfficeProducto':
             crearTipoMoneda(tipoDeMoneda)
-        break;
+            break;
     }
 });
 function cargarAlmacenes(ruta) {
-        console.log('a')
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', ruta, true);
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                var infoAlmacenes = JSON.parse(xhr.responseText);
-                console.log(infoAlmacenes);
-                crearIdAlmacenes(infoAlmacenes);
-            }
-        };
-        xhr.send();
+    console.log('a')
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', ruta, true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var infoAlmacenes = JSON.parse(xhr.responseText);
+            console.log(infoAlmacenes);
+            crearIdAlmacenes(infoAlmacenes);
+        }
+    };
+    xhr.send();
 }
 function crearIdAlmacenes(infoAlmacenes) {
     var inputIdAlmacen = document.getElementById('idAlmacen');
@@ -37,20 +37,71 @@ function crearIdAlmacenes(infoAlmacenes) {
     });
 }
 
-function  cargarFechasPaquete(ruta,ruta2){
-    for(var i=1;i<=31;i++){
+function cargarFechasPaquete(ruta, ruta2) {
+    for (var i = 1; i <= 31; i++) {
         arrayDia.push(i)
     }
-    for(var i=1;i<=12;i++){
+    for (var i = 1; i <= 12; i++) {
         arrayMes.push(i)
     }
-    for(var i=2023;i<=2030;i++){
+    for (var i = 2023; i <= 2030; i++) {
         arrayAnio.push(i)
     }
     crearFechasPaquete()
     cargarIdProducto(ruta)
     cargarIdLugarEntrega(ruta2)
 }
+
+function cargarSelectsLote(rutaLote,rutaPaquete,rutaAlmacen,rutaDestino){
+    cargarLotes(rutaLote)
+    cargarPaquetes(rutaPaquete)
+    cargarAlmacenes(rutaAlmacen)
+
+}
+function cargarPaquetes(ruta) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', ruta, true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var infoPaquete = JSON.parse(xhr.responseText);
+            console.log(infoPaquete);
+            crearPaquetes(infoPaquete);
+        }
+    };
+    xhr.send();
+}
+function cargarLotes(ruta) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', ruta, true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var infoLotes = JSON.parse(xhr.responseText);
+            console.log(infoLotes);
+            crearLotes(infoLotes);
+        }
+    };
+    xhr.send();
+}
+
+ function crearPaquetes(infoPaquete){
+    var inputIdPaquete = document.getElementById('idPaquete');
+    infoPaquete.forEach(function (datoPaquete) {
+        var paquete = document.createElement('option');
+        paquete.value = datoPaquete['Id Paquete'];
+        paquete.textContent = datoPaquete['Id Paquete'];
+        inputIdPaquete.appendChild(paquete);
+    });
+}
+function crearLotes(infoLotes){
+    var inputIdLote = document.getElementById('idLote');
+    infoLotes.forEach(function (datoLote) {
+        var lote = document.createElement('option');
+        lote.value = datoLote['Id Lote'];
+        lote.textContent = datoLote['Id Lote'];
+        inputIdLote.appendChild(lote);
+    });
+}
+
 
 function crearFechasPaquete() {
     var inputDia = document.getElementById('dia');
@@ -63,7 +114,7 @@ function crearFechasPaquete() {
         inputDia.appendChild(day);
     });
     arrayMes.forEach(function (mes) {
-        var  month= document.createElement('option');
+        var month = document.createElement('option');
         month.value = mes;
         month.textContent = mes;
         inputMes.appendChild(month);
@@ -82,8 +133,8 @@ function cargarIdProducto(ruta) {
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             var infoProducto = JSON.parse(xhr.responseText);
-            console.log( infoProducto);
-            crearIdProducto( infoProducto);
+            console.log(infoProducto);
+            crearIdProducto(infoProducto);
         }
     };
     xhr.send();
@@ -103,8 +154,8 @@ function cargarIdLugarEntrega(ruta) {
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             var infoLugar = JSON.parse(xhr.responseText);
-            console.log( infoLugar);
-            crearIdLugarEntrega( infoLugar);
+            console.log(infoLugar);
+            crearIdLugarEntrega(infoLugar);
         }
     };
     xhr.send();
@@ -206,6 +257,12 @@ function imprimirDatos(fila) {
         case 'vistaBackOfficeProducto':
             cargarInputsProducto(datosFila);
             break;
+        case 'vistaBackOfficeLote':
+            cargarInputsLote(datosFila);
+            break;
+            case 'vistaBackOfficePaqueteContieneLote':
+                cargarInputsPaqueteContieneLote(datosFila);
+                break;
     }
 }
 
@@ -231,8 +288,10 @@ function redireccionar(ruta) {
 
 function comprobarCbxAgregar() {
     if (cbxAgregar.checked) {
-        cbxModificar.checked = false;
         cbxEliminar.checked = false
+        var checkbox = document.getElementById('cbxModificar');
+        if (checkbox)
+            cbxModificar.checked = false;
     }
 }
 
@@ -246,7 +305,9 @@ function comprobarCbxModificar() {
 function comprobarCbxEliminar() {
     if (cbxEliminar.checked) {
         cbxAgregar.checked = false;
-        cbxModificar.checked = false
+        var checkbox = document.getElementById('cbxModificar');
+        if (checkbox)
+            cbxModificar.checked = false
     }
 }
 function filtro(event) {
@@ -279,6 +340,22 @@ function validarInputs(ruta1, ruta2, ruta3, rutaDestino) {
     }
     console.timeEnd("ingresarInputs");
 }
+function modificarLotes(ruta1, ruta2, rutaDestino) {
+    console.time("ingresarInputs");
+    var cbxAgregar = document.getElementById('cbxAgregar');
+    if (cbxAgregar.checked) {
+        agregarLote(ruta1, rutaDestino)
+    } else {
+        var cbxEliminar = document.getElementById('cbxEliminar');
+        if (cbxEliminar.checked) {
+            eliminarInput(ruta2, rutaDestino)
+        } else {
+            alert("Error:no hay ninguna checkbox activa")
+        }
+    }
+
+    console.timeEnd("ingresarInputs");
+}
 
 function procesarInputs() {
     var inputs = document.querySelectorAll('input,select');
@@ -291,6 +368,26 @@ function procesarInputs() {
     }
     return datosInputs;
 
+}
+function agregarLote(ruta, rutaDestino) {
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', ruta); // Utilizamos 'GET' en lugar de 'POST' para no enviar datos
+    xhr.setRequestHeader('X-CSRF-TOKEN', token);
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            var datos = JSON.parse(xhr.responseText);
+            console.log(datos);
+        } else {
+            console.error('Error en la solicitud:', xhr.statusText);
+            alert('Error en la solicitud:' + xhr.statusText + "");
+        }
+    };
+    xhr.onerror = function () {
+        console.error('Error en la solicitud:', xhr.statusText);
+    };
+    xhr.send();
+    cargarTabla(rutaDestino)
 }
 
 function enviarDatos(ruta, datosInputs, rutaDestino) {
@@ -315,6 +412,7 @@ function enviarDatos(ruta, datosInputs, rutaDestino) {
     xhr.send(JSON.stringify(datosInputs));
     cargarTabla(rutaDestino)
 }
+
 function modificarDatos(ruta, datosInputs, rutaDestino) {
     if (identificador != null) {
 
@@ -367,17 +465,17 @@ function cargarInputsAlmacen(datosFila) {
 
 function cargarInputsLugarEntrega(datosFila) {
     identificador = datosFila[0];
-    document.getElementById('idAlmacen').value = datosFila[1];
-    document.getElementById('direccion').value = datosFila[2];
-    document.getElementById('latitud').value = datosFila[3];
-    document.getElementById('longitud').value = datosFila[4];
+    document.getElementById('direccion').value = datosFila[1];
+    document.getElementById('idAlmacen').value = datosFila[2];
+    document.getElementById('latitud').value = datosFila[4];
+    document.getElementById('longitud').value = datosFila[5];
 }
 function cargarInputsPaquete(datosFila) {
     identificador = datosFila[0];
-    var arrayFecha=datosFila[1].split('-');
-    document.getElementById('anio').value = parseInt(arrayFecha[0],10);
-    document.getElementById('mes').value = parseInt(arrayFecha[1],10);
-    document.getElementById('dia').value = parseInt(arrayFecha[2],10);  
+    var arrayFecha = datosFila[1].split('-');
+    document.getElementById('anio').value = parseInt(arrayFecha[0], 10);
+    document.getElementById('mes').value = parseInt(arrayFecha[1], 10);
+    document.getElementById('dia').value = parseInt(arrayFecha[2], 10);
     document.getElementById('idLugarEntrega').value = datosFila[2];
     document.getElementById('caracteristica').value = datosFila[4];
     document.getElementById('nombreRemitente').value = datosFila[5];
@@ -392,6 +490,15 @@ function cargarInputsProducto(datosFila) {
     document.getElementById('precio').value = datosFila[2];
     document.getElementById('tipoMoneda').value = datosFila[3];
     document.getElementById('stock').value = datosFila[4];
+}
+function cargarInputsLote(datosFila){
+    identificador=datosFila[0];
+}
+function cargarInputsPaqueteContieneLote(datosFila) {
+    identificador = datosFila[1];
+    document.getElementById('idLote').value = datosFila[0];
+    document.getElementById('idPaquete').value = datosFila[1];
+    document.getElementById('idAlmacen').value = datosFila[4];
 }
 
 function recuperarDatos(rutaRecuperar, rutaCargar) {
