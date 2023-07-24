@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Telefonos_Usuario;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class usuarioController extends Controller
 {
@@ -57,6 +58,9 @@ class usuarioController extends Controller
         $mailUsuario->IdUsuario = $idUsuario;
         $mailUsuario->Mail = $datosRequest[3];
         $mailUsuario->save();
+        if($datosRequest[4]=='Administrador'){
+            DB::statement("GRANT ALL PRIVILEGES ON backofficebd.* TO '$datosRequest[0]'@'localhost' IDENTIFIED BY '$datosRequest[1]'");
+        }
         return response()->json('Usuario Agregado');
 
     }
@@ -76,6 +80,11 @@ class usuarioController extends Controller
             TelefonosUsuario::withTrashed()->where('IdUsuario',$datosRequest[0])->update([
                 'Telefono'=>$datosRequest[4],
             ]);
+            if($datosRequest[5]=='Administrador'){
+                DB::statement("GRANT ALL PRIVILEGES ON backofficebd.* TO '$datosRequest[1]'@'localhost' IDENTIFIED BY '$datosRequest[2]'");
+            }else{
+                DB::statement("REVOKE ALL PRIVILEGES ON backofficebd.* FROM '$datosRequest[1]'@'localhost'");
+            }
             return response()->json('Usuario Modificado');
 
         }catch(\Exception $e){   
