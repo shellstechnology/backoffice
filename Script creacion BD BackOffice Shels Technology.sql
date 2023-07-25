@@ -137,7 +137,7 @@ CREATE TABLE `Usuario` (
 
 CREATE TABLE `TelefonosUsuario` (
 	`IdUsuario` INT NOT NULL AUTO_INCREMENT,
-	`Telefono` INT NOT NULL,
+	`Telefono` VARCHAR(9) NOT NULL,
 	PRIMARY KEY (`IdUsuario`),
 	`created_at` datetime,
     `updated_at` datetime,
@@ -221,4 +221,4 @@ ALTER TABLE `Almacenero` ADD CONSTRAINT `Almacenerofk0` FOREIGN KEY (`IdUsuario`
 ALTER TABLE `Cliente` ADD CONSTRAINT `Clientefk0` FOREIGN KEY (`IdUsuario`) REFERENCES `Usuario`(`Id`);
 
 ALTER TABLE `Administrador` ADD CONSTRAINT `Administradorfk0` FOREIGN KEY (`IdUsuario`) REFERENCES `Usuario`(`Id`);
-
+select * from mailusuario;
