@@ -15,11 +15,12 @@ class paqueteController extends Controller
     public function cargarDatos()
     {
         $datoProducto = Paquete::withTrashed()->get();
+        $infoPaquete=[];
         if($datoProducto){
         foreach ($datoProducto as $dato) {
             $lugarEntrega = LugarEntrega::withTrashed()->where('Id',$dato['IdLugarEntrega'])->first();
-            $caracteristica = Caracteristica::withTrashed()->find('Id',$dato['IdCaracteristica'])->first();
-            $producto = Producto::withTrashed()->find($dato['IdProducto']);
+            $caracteristica = Caracteristica::withTrashed()->where('Id',$dato['IdCaracteristica'])->first();
+            $producto = Producto::withTrashed()->where('Id',$dato['IdProducto'])->first();
             if($producto&&$lugarEntrega&&$caracteristica){
                 $infoPaquete[] =
                     [

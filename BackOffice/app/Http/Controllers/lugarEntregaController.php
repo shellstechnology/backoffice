@@ -102,11 +102,10 @@ class lugarEntregaController extends Controller
                     'Longitud' => $datosRequest[4],
                 ]);
                 $datoLugar = LugarEntrega::where('Id', $datosRequest[0])->first();
-                Almacen::where('IdLugarDeEntrega', $datoLugar['Id'])->delete();
-                $almacen = new Almacen;
-                $almacen->IdDireccionAlmacen = $datosRequest[1];
-                $almacen->IdLugarDeEntrega = $datosRequest[0];
-                $almacen->save();
+                Almacen::where('IdLugarDeEntrega', $datoLugar['Id'])->update([
+                    'IdDireccionAlmacen'=>$datosRequest[1],
+                    'IdLugarDeEntrega'=>$datosRequest[0]
+                ]);
                 return response()->json('Actualizado');
             } catch (\Exception $e) {
                 return response()->json(['Error al modificar el lugar de entrega'], 500);

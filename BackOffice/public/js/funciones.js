@@ -329,9 +329,14 @@ function comprobarCbxEliminar() {
 }
 function filtro(event) {
     var texto = event.key;
-    if (['.', 'e'].includes(texto))
+    if ([',', 'e','E'].includes(texto))
         event.preventDefault()
 }
+function limitarInput(input, maxLength) {
+    if (input.value.length > maxLength) {
+      input.value = input.value.slice(0, maxLength);
+    }
+  }
 /****************************************************/
 function validarInputs(ruta1, ruta2, ruta3, rutaDestino) {
     console.time("ingresarInputs");

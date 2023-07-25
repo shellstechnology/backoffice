@@ -39,7 +39,7 @@
         </section>
         <section>
             <h2>En caso de que quiera modificar, borrar o restaurar un dato,
-                seleccione el dato en la tabla de la derecha</h2>
+                seleccione el dato en la tabla de la izquierda</h2>
         </section>
         <section>
             <h2>Las tablas no se cargarán si no tienen ningún dato dentro</h2>
@@ -48,7 +48,10 @@
             <h2>Debe llenar todos los campos para agregar/modificar un dato</h2>
         </section>
         <section>
-            <h2>Los datos numéricos o decimales deben ser ingresados con un punto como separador</h2>
+            <h2>Los datos numéricos decimales deben ser ingresados con un punto como separador</h2>
+        </section>
+        <section>
+            <h2>Los valores de latitud van desde -90 a 90 y los valores de longitud desde -180 a 180</h2>
         </section>
     </main>
 </body>

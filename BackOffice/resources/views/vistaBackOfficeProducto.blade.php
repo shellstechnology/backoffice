@@ -31,7 +31,7 @@
           <label for="nombreProducto" >Nombre</label>
         </div>
         <div class="campo">
-          <input type="number" id="precio" min="1" max="9999999" onkeydown="filtro(event)" onpaste="return false";></input>
+          <input type="number" id="precio" min="1" max="9999999" onkeydown="filtro(event)" oninput="limitarInput(this, 7)" onpaste="return false";></input>
           <label for="precioProducto" >Precio </label>
         </div>
        <div class="campo">

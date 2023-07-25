@@ -21,7 +21,6 @@
     <div id="contenedorTabla"></div>
     </div>
     <div> 
-    <button onclick="redireccionar('{{route('almacen.lugarEntrega')}}')">Luares de entrega-></button>
     <div class="cajaDatos"> 
        <input type="checkbox" id="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
        <input type="checkbox" id="cbxModificar" onclick="comprobarCbxModificar()">Modificar </input>
@@ -56,11 +55,11 @@
           <label for="idProducto" >Id Del Producto</label>
       </div>
       <div class="campo">
-          <input type="number" id="volumen" min=0 max=999></input>
+          <input type="number" id="volumen" min=0 max=999  onkeydown="filtro(event)" oninput="limitarInput(this, 3)" onpaste="return false"></input>
           <label for="volumen" >Volumen(L)</label>
       </div>
       <div class="campo">
-          <input type="number" id="peso" min=0 max=999></input>
+          <input type="number" id="peso" min=0 max=999  onkeydown="filtro(event)" oninput="limitarInput(this, 3)" onpaste="return false"></input>
           <label for="peso" >Peso(Kg)</label>
       </div>
       <button id="cargar" onclick="cargarFechasPaquete('{{route('producto.cargarDatos')}}','{{route('lugarEntrega.cargarDatos')}}');cargarTabla('{{route('paquete.cargarDatos')}}', 6)">Cargar Tabla</button>

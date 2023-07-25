@@ -41,7 +41,7 @@
           <label for="mail" >Correo electronico</label>
         </div>
       <div class="campo">
-          <input type="number" id="telefono" min="0" max="999999999" onkeydown="filtro(event)" onpaste="return false";></input>
+          <input type="number" id="telefono" maxlength="9" onkeydown="filtro(event)" oninput="limitarInput(this, 9)" onpaste="return false";></input>
           <label for="telefono" >Numero de Telefono</label>
         </div>
         <div class="campo">

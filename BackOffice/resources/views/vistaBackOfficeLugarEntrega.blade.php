@@ -14,7 +14,7 @@
       <div class="item" onclick="redireccionar('{{route('backoffice')}}')"> Menu Principal</div>
       <div class="item" onclick="redireccionar('{{route('backoffice.paquete')}}')"> Paquetes</div>
       <div class="item" onclick="redireccionar('{{route('backoffice.producto')}}')"> Productos</div>
-      <div class="item"> Lotes</div>
+       <div class="item" onclick="redireccionar('{{route('backoffice.lote')}}')"> Lotes</div>
    </div>
   <div class="container">
     <div class="cuerpo">
@@ -37,11 +37,11 @@
           <label for="nombreProducto" >Direccion</label>
         </div>
       <div class="campo">
-          <input type="text" id="latitud" maxlength="20"></input>
+          <input type="number" id="latitud" min="-90" max="90"  onkeydown="filtro(event)" oninput="limitarInput(this, 15) " onpaste="return false"></input>
           <label for="stockProducto" >Latitud</label>
       </div>
       <div class="campo">
-          <input type="text" id="longitud" maxlength="20"></input>
+          <input type="number" id="longitud" min="-180" max="180" onkeydown="filtro(event)" oninput="limitarInput(this, 15)" onpaste="return false" ></input>
           <label for="stockProducto" >Longitud</label>
       </div>
     <button id="cargar" onclick="cargarAlmacenes('{{route('almacen.cargarDatos')}}');cargarTabla('{{route('lugarEntrega.cargarDatos')}}', 2)">Cargar Tabla</button>

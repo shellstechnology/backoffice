@@ -9,6 +9,7 @@ use App\Models\Telefonos_Usuario;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Validator;
 
 class usuarioController extends Controller
 {
@@ -44,6 +45,26 @@ class usuarioController extends Controller
     public function agregar(Request $request)
     {
         $datosRequest = $request->all();
+        $reglas = [
+            'NombreUsuario' => 'required|string|max:20',
+            'Contraseña' => 'required|string|max:20',
+            'TipoUsuario' => 'required|string|max:20',
+            'Telefono' => 'required|string|max:9',
+            'Mail' => 'required|string|max:40',
+        ];
+        $validador = Validator::make([
+            'NombreUsuario' => $datosRequest[0],
+            'Contraseña' => $datosRequest[1],
+            'TipoUsuario' => $datosRequest[4],
+            'Telefono' => $datosRequest[3],
+            'Mail' => $datosRequest[2]
+        ], $reglas);
+        
+        if ($validador->fails()) {
+            $errores = $validador->getMessageBag();
+            return response()->json(['error:' => $errores], 422);
+        }
+        $datosRequest = $request->all();
         $usuario = new Usuario;
         $usuario->NombreDeUsuario = $datosRequest[0];
         $usuario->Contraseña = $datosRequest[1];
@@ -56,7 +77,7 @@ class usuarioController extends Controller
         $usuarioTelefono->save();
         $mailUsuario = new MailUsuario;
         $mailUsuario->IdUsuario = $idUsuario;
-        $mailUsuario->Mail = $datosRequest[3];
+        $mailUsuario->Mail = $datosRequest[2];
         $mailUsuario->save();
         if($datosRequest[4]=='Administrador'){
             DB::statement("GRANT ALL PRIVILEGES ON backofficebd.* TO '$datosRequest[0]'@'localhost' IDENTIFIED BY '$datosRequest[1]'");

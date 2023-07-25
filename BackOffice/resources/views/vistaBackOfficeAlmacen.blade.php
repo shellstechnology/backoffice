@@ -32,12 +32,12 @@
           <label for="nombreProducto" >Direccion</label>
         </div>
         <div class="campo">
-          <input type="text" id="latitud" maxlength="20"></input>
-          <label for="precioProducto" >Latitud </label>
+          <input type="number" id="latitud" min="-90" max="90"  onkeydown="filtro(event)" oninput="limitarInput(this, 15)" onpaste="return false"></input>
+          <label for="latitud" >Latitud </label>
         </div>
       <div class="campo">
-          <input type="text" id="longitud" maxlength="20"></input>
-          <label for="stockProducto" >Longitud</label>
+          <input type="number" id="longitud" maxlength="20"  onkeydown="filtro(event)" oninput="limitarInput(this, 15)" onpaste="return false"></input>
+          <label for="longitud" >Longitud</label>
       </div>
     <button id="cargar" onclick="cargarTabla('{{route('almacen.cargarDatos')}}'), 1">Cargar Tabla</button>
     <button onclick="validarInputs('{{ route('almacen.agregar') }}',

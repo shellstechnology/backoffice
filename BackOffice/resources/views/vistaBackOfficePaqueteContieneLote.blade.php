@@ -15,6 +15,7 @@
       <div class="item" onclick="redireccionar('{{route('backoffice.almacen')}}')">Almacenes</div>
       <div class="item" onclick="redireccionar('{{route('backoffice.paquete')}}')"> Paquetes</div>
       <div class="item" onclick="redireccionar('{{route('backoffice.producto')}}')"> Productos</div>
+</div>
   <div class="container">
     <div class="cuerpo">
     <div id="contenedorTabla"></div>
