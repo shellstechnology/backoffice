@@ -5,18 +5,7 @@ var arrayUsuarios = ["Administrador", "Almacenero", "Chofer", "Cliente"];
 var arrayDia = [];
 var arrayMes = [];
 var arrayAnio = [];
-document.addEventListener('DOMContentLoaded', function () {
-    var boton = document.getElementById('cargar');
-    if (boton) {
-        boton.click();
-        var nombrePagina = window.location.pathname.split('/').pop();
-        switch (nombrePagina) {
-            case 'vistaBackOfficeProducto':
-                crearTipoMoneda(tipoDeMoneda)
-                break;
-        }
-    }
-});
+
 function cargarAlmacenes(ruta) {
     console.log('a')
     var xhr = new XMLHttpRequest();
@@ -201,6 +190,7 @@ function cargarSelectUsuario() {
 
 function crearTabla(idTablaPagina, infoProducto) {
     if (idTabla != idTablaPagina) {
+        console.log(infoProducto)
         var tabla = document.createElement("table");
         tabla.style.borderCollapse = "collapse";
 
@@ -283,20 +273,6 @@ function imprimirDatos(fila) {
     }
 }
 
-function cargarTabla(rutaDestino, idTablaPagina) {
-    console.time("tabla");
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', rutaDestino, true);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            var datos = JSON.parse(xhr.responseText);
-            console.log(datos)
-            crearTabla(idTablaPagina, datos)
-        }
-    };
-    xhr.send();
-    console.timeEnd("tabla");
-}
 function redireccionar(ruta) {
     window.location.href = ruta;
 }
@@ -362,124 +338,11 @@ function validarInputs(ruta1, ruta2, ruta3, rutaDestino) {
     }
     console.timeEnd("ingresarInputs");
 }
-function modificarLotes(ruta1, ruta2, rutaDestino) {
-    console.time("ingresarInputs");
-    var cbxAgregar = document.getElementById('cbxAgregar');
-    if (cbxAgregar.checked) {
-        agregarLote(ruta1, rutaDestino)
-    } else {
-        var cbxEliminar = document.getElementById('cbxEliminar');
-        if (cbxEliminar.checked) {
-            eliminarInput(ruta2, rutaDestino)
-        } else {
-            alert("Error:no hay ninguna checkbox activa")
-        }
-    }
-
-    console.timeEnd("ingresarInputs");
-}
-
-function procesarInputs() {
-    var inputs = document.querySelectorAll('input,select');
-    var inputsArray = Array.from(inputs);
-    inputs = inputsArray.filter(elemento => !elemento.id.includes("cbx"));
-    var datosInputs = inputs.map(input => input.value);
-    if (datosInputs.some(valor => valor === "")) {
-        alert("Error: Por favor, rellene todos los campos");
-        return null;
-    }
-    return datosInputs;
-
-}
-function agregarLote(ruta, rutaDestino) {
-    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', ruta); // Utilizamos 'GET' en lugar de 'POST' para no enviar datos
-    xhr.setRequestHeader('X-CSRF-TOKEN', token);
-    xhr.onload = function () {
-        if (xhr.status === 200) {
-            var datos = JSON.parse(xhr.responseText);
-            console.log(datos);
-        } else {
-            console.error('Error en la solicitud:', xhr.statusText);
-            alert('Error en la solicitud:' + xhr.statusText + "");
-        }
-    };
-    xhr.onerror = function () {
-        console.error('Error en la solicitud:', xhr.statusText);
-    };
-    xhr.send();
-    cargarTabla(rutaDestino)
-}
-
-function enviarDatos(ruta, datosInputs, rutaDestino) {
-    console.log(datosInputs);
-    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', ruta);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('X-CSRF-TOKEN', token);
-    xhr.onload = function () {
-        if (xhr.status === 200) {
-            var datos = JSON.parse(xhr.responseText);
-            console.log(datos)
-        } else {
-            console.error('Error en la solicitud:', xhr.statusText);
-            alert('Error en la solicitud:' + xhr.statusText + ", verifica los datos que ingresaste");
-        }
-    };
-    xhr.onerror = function () {
-        console.error('Error en la solicitud:', xhr.statusText);
-    };
-    xhr.send(JSON.stringify(datosInputs));
-    cargarTabla(rutaDestino)
-}
-
-function modificarDatos(ruta, datosInputs, rutaDestino) {
-    if (identificador != null) {
-
-        var idModificar = []
-        idModificar = idModificar.concat(identificador, datosInputs);
-        enviarDatos(ruta, idModificar, rutaDestino)
-    } else {
-        alert('Error,por favor seleccione un dato de la lista para modificar')
-    }
-}
-
-function eliminarInput(ruta, rutaDestino) {
-    if (identificador != null) {
-        if (window.confirm('¿Quieres eliminar el elemento de id ' + identificador + "?, podras recuperarlo mas tarde")) {
-            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            const xhr = new XMLHttpRequest();
-            xhr.open('DELETE', (ruta));
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.setRequestHeader('X-CSRF-TOKEN', token);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    var datos = JSON.parse(xhr.responseText);
-                    alert(datos)
-                } else {
-                    console.error('Error en la solicitud:', xhr.statusText);
-                }
-            };
-            xhr.onerror = function () {
-                console.error('Error en la solicitud:', xhr.statusText);
-            };
-
-            xhr.send(JSON.stringify({ 'identificador': identificador }));
-            cargarTabla(rutaDestino);
-
-        } else {
-            alert("Elemento NO borrado")
-        }
-    } else {
-        alert("Error, por favor seleccione algun elemento de la tabla para eliminar")
-    }
-}
 
 
 function cargarInputsAlmacen(datosFila) {
-    identificador = datosFila[0];
+    console.log(datosFila)
+    document.getElementById('identificador').value = datosFila[0];
     document.getElementById('direccion').value = datosFila[1];
     document.getElementById('latitud').value = datosFila[2];
     document.getElementById('longitud').value = datosFila[3];
@@ -531,31 +394,3 @@ function cargarInputsUsuarios(datosFila) {
     document.getElementById('telefono').value = datosFila[4];
 }
 
-function recuperarDatos(rutaRecuperar, rutaCargar) {
-    if (identificador != null) {
-        if (window.confirm('¿Quieres reestablecer el elemento de id ' + identificador + "?")) {
-            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', (rutaRecuperar));
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.setRequestHeader('X-CSRF-TOKEN', token);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    var datos = JSON.parse(xhr.responseText);
-                    alert(datos);
-                } else {
-                    console.error('Error en la solicitud:', xhr.statusText);
-                }
-            };
-            xhr.onerror = function () {
-                console.error('Error en la solicitud:', xhr.statusText);
-            };
-
-            xhr.send(JSON.stringify({ 'identificador': identificador }));
-            cargarTabla(rutaCargar);
-        } else {
-        }
-    } else {
-        alert("Error, por favor seleccione algun elemento para recuperar")
-    }
-}
