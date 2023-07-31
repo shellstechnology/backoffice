@@ -343,6 +343,7 @@ function validarInputs(ruta1, ruta2, ruta3, rutaDestino) {
 function cargarInputsAlmacen(datosFila) {
     console.log(datosFila)
     document.getElementById('identificador').value = datosFila[0];
+    document.getElementById('identificarId').value = datosFila[0];
     document.getElementById('direccion').value = datosFila[1];
     document.getElementById('latitud').value = datosFila[2];
     document.getElementById('longitud').value = datosFila[3];

@@ -6,6 +6,7 @@ use App\Models\Almacen;
 use App\Models\DireccionAlmacen;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 
@@ -18,13 +19,15 @@ class almacenController extends Controller
     
         if ($request->has('cbxAgregar')) {
             $this->agregar($datosRequest);
-        } elseif ($request->has('cbxModificar')) {
+        } 
+        if ($request->has('cbxModificar')) {
             $this->modificar($datosRequest);
-        } elseif ($request->has('cbxEliminar')) {
+        } 
+        if ($request->has('cbxEliminar')) {
             $this->eliminar($datosRequest);
         }
-
-        return view('vistaBackOfficeAlmacen');
+        $this->cargarDatos();
+        return redirect()->route('backoffice.almacen');
     }
     
     public function cargarDatos()
@@ -34,8 +37,8 @@ class almacenController extends Controller
         foreach ($arrayAlmacenes as $almacen) {
             $datosAlmacenes[] = $this->obtenerDatosAlmacenes($almacen);
         }
-        View::share('almacenes', $datosAlmacenes);
-        return back();
+        Session::put('almacenes', $datosAlmacenes);
+        return redirect()->route('backoffice.almacen');
     }
 
     public function agregar($datosRequest)
@@ -82,8 +85,9 @@ class almacenController extends Controller
 
     public function recuperar(Request $request)
     {
-        $id = $request->get('identificador');
+        $id = $request['identificarId'];
         $almacen = DireccionAlmacen::onlyTrashed()->find($id);
+        dd($id,$almacen);
         if ($almacen) {
             try {
                 DireccionAlmacen::where('Id', $id)->restore();
@@ -91,9 +95,8 @@ class almacenController extends Controller
             } catch (\Exception $e) {
                 return response()->json(['Error al restaurar el almacen'], 500);
             }
-        } else {
-            return response()->json(['El almacen no puede ser recuperado porque ya existe']);
         }
+        return redirect()->route('backoffice.almacen');
     }
 
     private function obtenerDatosAlmacenes($almacen)
@@ -112,15 +115,16 @@ class almacenController extends Controller
 
     private function validarDatos($almacen)
     {
+
         $reglas = [
             'Direccion Almacen' => 'required|string|max:25',
             'Lat Almacen' => 'required|numeric|min:-90|max:90',
             'Lng Almacen' => 'required|numeric|min:-180|max:180'
         ];
         return Validator::make([
-            'Direccion Almacen' => $almacen[0],
-            'Lat Almacen' => $almacen['Latitud'],
-            'Lng Almacen' => $almacen['Longitud'],
+            'Direccion Almacen' => $almacen['direccion'],
+            'Lat Almacen' => $almacen['latitud'],
+            'Lng Almacen' => $almacen['longitud'],
         ], $reglas);
     }
 
@@ -143,10 +147,10 @@ class almacenController extends Controller
 
     private function modificarAlmacen($direccionAlmacen)
     {
-        DireccionAlmacen::where('Id', $direccionAlmacen[0])->update([
-            'Direccion' => $direccionAlmacen['Direccion'],
-            'Latitud' => $direccionAlmacen['Latitud'],
-            'Longitud' => $direccionAlmacen['Longitud'],
+        DireccionAlmacen::where('Id', $direccionAlmacen['identificador'])->update([
+            'Direccion' => $direccionAlmacen['direccion'],
+            'Latitud' => $direccionAlmacen['latitud'],
+            'Longitud' => $direccionAlmacen['longitud'],
         ]);
 
     }

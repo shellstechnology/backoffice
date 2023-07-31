@@ -23,33 +23,36 @@
     <div> 
     <button onclick="redireccionar('{{route('almacen.lugarEntrega')}}')">Luares de entrega-></button>
     <div class="cajaDatos"> 
-      <form  action="{{route('almacen.realizarAccion')}}" method="POST"> 
-      @csrf
-       <input type="checkbox" name="cbxAgregar" id="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
-       <input type="checkbox" name="cbxModificar" id="cbxModificar" onclick="comprobarCbxModificar()">Modificar </input>
-       <input type="checkbox" name="cbxEliminar" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
-       <div class="contenedorDatos">
-    <div class="campo">
-        <input type="text" name="direccion" id="direccion" maxlength="25">
-        <label for="direccion">Direccion</label>
-    </div>
-    <div class="campo">
-        <input type="number" name="latitud" id="latitud" min="-90" max="90" onkeydown="filtro(event)" oninput="limitarInput(this, 15)" onpaste="return false">
-        <label for="latitud">Latitud</label>
-    </div>
-    <div class="campo">
-        <input type="number" name="longitud" id="longitud" min="-180" max="180" onkeydown="filtro(event)" oninput="limitarInput(this, 15)" onpaste="return false">
-        <label for="longitud">Longitud</label>
-    </div>
-    <input type="hidden" name="identificador" id="identificador">
-    <button type="submit" name='aceptar'>Aceptar</button>
-    </form>
-    <form action="{{route('almacen.cargarDatos')}}" method="GET">
-    <button type="submit" name="cargar">Cargar</button>
-    </form>
-    <button type="button" onclick="crearTabla(1, {{ json_encode($almacenes) }})">boton</button>
-    <button onclick="recuperarDatos('{{route('almacen.recuperar')}}',
-                                    '{{route('almacen.cargarDatos')}}')">Reestablecer Dato</button>
+     <form  action="{{route('almacen.realizarAccion')}}" method="POST"> 
+         @csrf
+         <input type="checkbox" name="cbxAgregar" id="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
+         <input type="checkbox" name="cbxModificar" id="cbxModificar" onclick="comprobarCbxModificar()">Modificar </input>
+         <input type="checkbox" name="cbxEliminar" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
+         <div class="contenedorDatos">
+           <div class="campo">
+            <input type="text" name="direccion" id="direccion" maxlength="25">
+            <label for="direccion">Direccion</label>
+          </div>
+           <div class="campo">
+             <input type="number" name="latitud" id="latitud" min="-90" max="90" onkeydown="filtro(event)" oninput="limitarInput(this, 15)" onpaste="return false">
+             <label for="latitud">Latitud</label>
+           </div>
+           <div class="campo">
+              <input type="number" name="longitud" id="longitud" min="-180" max="180" onkeydown="filtro(event)" oninput="limitarInput(this, 15)" onpaste="return false">
+              <label for="longitud">Longitud</label>
+            </div>
+            <input type="hidden" name="identificador" id="identificador">
+            <button type="submit" name='aceptar'>Aceptar</button>
+         </form>
+         <form action="{{route('almacen.cargarDatos')}}" method="GET">
+            <button type="submit" name="cargar">Cargar</button>
+         </form>
+        <button type="button" onclick="crearTabla(1, {{ json_encode(session('almacenes', [])) }})">boton</button>
+         <form action="{{route('almacen.recuperar')}}" method="POST">
+         @csrf
+          <input type="hidden" name="identificarId" id="identificarId">
+           <button type="submit" name="recuperar">Recuperar</button>
+        </form>
       </div>
     </div>
   </div>
