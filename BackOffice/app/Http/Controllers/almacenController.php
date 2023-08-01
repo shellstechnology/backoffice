@@ -8,28 +8,10 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\View;
 
 class almacenController extends Controller
 {
 
-    public function realizarAccion(Request $request)
-    {
-        $datosRequest = $request->all();
-    
-        if ($request->has('cbxAgregar')) {
-            $this->agregar($datosRequest);
-        } 
-        if ($request->has('cbxModificar')) {
-            $this->modificar($datosRequest);
-        } 
-        if ($request->has('cbxEliminar')) {
-            $this->eliminar($datosRequest);
-        }
-        $this->cargarDatos();
-        return redirect()->route('backoffice.almacen');
-    }
-    
     public function cargarDatos()
     {
         $datosAlmacenes = [];
@@ -40,61 +22,62 @@ class almacenController extends Controller
         Session::put('almacenes', $datosAlmacenes);
         return redirect()->route('backoffice.almacen');
     }
+    public function realizarAccion(Request $request)
+    {
+        $datosRequest = $request->all();
+
+        if ($request->has('cbxAgregar')) {
+            $this->agregar($datosRequest);
+        }
+        if ($request->has('cbxModificar')) {
+            $this->modificar($datosRequest);
+        }
+        if ($request->has('cbxEliminar')) {
+            $this->eliminar($datosRequest);
+        }
+        if ($request->has('cbxRecuperar')) {
+            $this->recuperar($datosRequest);
+        }
+        $this->cargarDatos();
+        return redirect()->route('backoffice.almacen');
+    }
 
     public function agregar($datosRequest)
-    { {
-            try {
-                $validador = $this->validarDatos($datosRequest);
-                if ($validador->fails()) {
-                    $errores = $validador->getMessageBag();
-                    return response()->json(['error:' => $errores], 422);
-                }
-                $this->crearDireccionAlmacen($datosRequest);
-            } catch (\Exception $e) {
-                return response()->json(['Error al ingresar el almacen'], 500);
-            }
+    {
+        $validador = $this->validarDatos($datosRequest);
+        if ($validador->fails()) {
+            $errores = $validador->getMessageBag();
+            return response()->json(['error:' => $errores], 422);
         }
+        $this->crearDireccionAlmacen($datosRequest);
     }
 
     public function modificar($datosRequest)
-    { {
-            try {
-                $validador = $this->validarDatos($datosRequest);
-                if ($validador->fails()) {
-                    $errores = $validador->getMessageBag();
-                    return response()->json(['error:' => $errores], 422);
-                }
-                $this->modificarAlmacen($datosRequest);
-            } catch (\Exception $e) {
-                return response()->json(['Error al modificar el almacen'], 500);
-            }
+    {
+        $validador = $this->validarDatos($datosRequest);
+        if ($validador->fails()) {
+            $errores = $validador->getMessageBag();
+            return response()->json(['error:' => $errores], 422);
         }
+        $this->modificarAlmacen($datosRequest);
+
     }
 
     public function eliminar($datosRequest)
     {
         $id = $datosRequest['identificador']; {
-            try {
-                DireccionAlmacen::where('Id', $id)->delete();
-                Almacen::where('Id', $id)->delete();
-            } catch (\Exception $e) {
-                return response()->json(['Error al eliminar el almacen'], 500);
-            }
+            DireccionAlmacen::where('Id', $id)->delete();
+            Almacen::where('Id', $id)->delete();
         }
     }
 
-    public function recuperar(Request $request)
+    public function recuperar($datosRequest)
     {
-        $id = $request['identificarId'];
+        $id = $datosRequest['identificador'];
         $almacen = DireccionAlmacen::onlyTrashed()->find($id);
-        dd($id,$almacen);
         if ($almacen) {
-            try {
-                DireccionAlmacen::where('Id', $id)->restore();
-                Almacen::where('IdDireccionAlmacen', $id)->restore();
-            } catch (\Exception $e) {
-                return response()->json(['Error al restaurar el almacen'], 500);
-            }
+            DireccionAlmacen::where('Id', $id)->restore();
+            Almacen::where('IdDireccionAlmacen', $id)->restore();
         }
         return redirect()->route('backoffice.almacen');
     }
@@ -154,4 +137,7 @@ class almacenController extends Controller
         ]);
 
     }
+
+  
 }
+

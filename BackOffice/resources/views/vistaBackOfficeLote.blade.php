@@ -23,15 +23,24 @@
     <div> 
     <button onclick="redireccionar('{{route('lote.paqueteContieneLote')}}')">Cargar Paquetes-></button>
     <div class="cajaDatos"> 
-       <input type="checkbox" id="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
-       <input type="checkbox" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
+      <form action="{{route('lote.realizarAccion')}}" method="POST">
+      @csrf
+       <input type="checkbox" id="cbxAgregar" name="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
+       <input type="checkbox" id="cbxEliminar" name="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
+       <input type="checkbox" id="cbxRecuperar" name="cbxRecuperar" onclick="comprobarCbxEliminar()">Recuperar </input>
        <div class="contenedorDatos">
-    <button id="cargar"onclick="cargarTabla('{{route('lote.cargarDatos')}}'), 8">Cargar Tabla</button>
-    <button onclick="modificarLotes('{{ route('lote.crearLote') }}',
-                                   '{{ route('lote.eliminar')}}',
-                                   '{{route('lote.cargarDatos')}}')">Aceptar</button>
-    <button onclick="recuperarDatos('{{route('lote.recuperar')}}',
-                                    '{{route('lote.cargarDatos')}}')">Reestablecer Dato</button>
+       <input type="hidden" name="identificador" id="identificador">
+       <button type="submit" name="aceptar">aceptar</button>
+</div>
+      </form>
+      <form action="{{route('lote.cargarDatos')}}" method="GET">
+      @csrf
+            <button type="submit" name="cargar">Cargar Datos</button>
+          </form>
+          <button type="button" onclick="crearTabla(1, {{ json_encode(session('lotes', [])) }})">CargarTabla</button>
+          <form action="{{route('lote.recuperar')}}" method="POST">
+            @csrf
+            <input type="hidden" name="identificarId" id="identificarId">
       </div>
     </div>
   </div>

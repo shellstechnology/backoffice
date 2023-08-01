@@ -79,11 +79,9 @@ Route::post('/paquete/modificar', [paqueteController::class, 'modificar'])->name
 Route::delete('/paquete/eliminar', [paqueteController::class, 'eliminar'])->name('paquete.eliminar');
 Route::post('/paquete/recuperar', [paqueteController::class, 'recuperar'])->name('paquete.recuperar');
 
-Route::get('/lote/cargarDatos', [LoteController::class, 'cargarDatos'])->name('lote.cargarDatos');
-Route::get('/lote/crearLote', [LoteController::class, 'crearLote'])->name('lote.crearLote');
-Route::post('/lote/modificar', [LoteController::class, 'modificar'])->name('lote.modificar');
-Route::delete('lLote/eliminar', [LoteController::class, 'eliminar'])->name('lote.eliminar');
-Route::post('/lote/recuperar', [LoteController::class, 'recuperar'])->name('lote.recuperar');
+Route::get('/lote/cargarDatos', [loteController::class, 'cargarDatos'])->name('lote.cargarDatos');
+Route::post('/lote/realizarAccion', [loteController::class, 'realizarAccion'])->name('lote.realizarAccion');
+Route::post('/lote/recuperar', [loteController::class, 'recuperar'])->name('lote.recuperar');
 
 Route::get('/paqueteContieneLote/cargarDatos', [paqueteContieneLoteController::class, 'cargarDatos'])->name('paqueteContieneLote.cargarDatos');
 Route::post('/paqueteContieneLote/agregar', [paqueteContieneLoteController::class, 'agregar'])->name('paqueteContieneLote.agregar');

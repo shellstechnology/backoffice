@@ -9,50 +9,50 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
-<body>
-<div class="barraDeNavegacion">
-      <div class="item" onclick="redireccionar('{{route('backoffice')}}')"> Menu Principal</div>
-      <div class="item" onclick="redireccionar('{{route('backoffice.paquete')}}')"> Paquetes</div>
-      <div class="item" onclick="redireccionar('{{route('backoffice.producto')}}')"> Productos</div>
-       <div class="item" onclick="redireccionar('{{route('backoffice.lote')}}')"> Lotes</div>
-   </div>
-  <div class="container">
-    <div class="cuerpo">
-    <div id="contenedorTabla"></div>
+  <body>
+  <div class="barraDeNavegacion">
+       <div class="item" onclick="redireccionar('{{route('backoffice')}}')"> Menu Principal</div>
+       <div class="item" onclick="redireccionar('{{route('backoffice.paquete')}}')"> Paquetes</div>
+       <div class="item" onclick="redireccionar('{{route('backoffice.producto')}}')"> Productos</div>
+        <div class="item" onclick="redireccionar('{{route('backoffice.lote')}}')"> Lotes</div>
     </div>
-    <div> 
-    <button onclick="redireccionar('{{route('backoffice.almacen')}}')"><-Almacen</button>
-    <div class="cajaDatos"> 
-       <input type="checkbox" id="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
-       <input type="checkbox" id="cbxModificar" onclick="comprobarCbxModificar()">Modificar </input>
-       <input type="checkbox" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
-       
-       <div class="contenedorDatos">
-       <div class="campo">
-        <select id="idAlmacen"> <select>
-          <label for="idAlmacen" >Id del Almacen</label>
-        </div>
-         <div class="campo">
-          <input type="text" id="direccion" maxlength="25"></input>
-          <label for="nombreProducto" >Direccion</label>
-        </div>
-      <div class="campo">
-          <input type="number" id="latitud" min="-90" max="90"  onkeydown="filtro(event)" oninput="limitarInput(this, 15) " onpaste="return false"></input>
-          <label for="stockProducto" >Latitud</label>
+    <div class="container">
+     <div class="cuerpo">
+     <div id="contenedorTabla"></div>
       </div>
-      <div class="campo">
+      <div> 
+      <button onclick="redireccionar('{{route('backoffice.almacen')}}')"><-Almacen</button>
+      <div class="cajaDatos"> 
+        <input type="checkbox" id="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
+        <input type="checkbox" id="cbxModificar" onclick="comprobarCbxModificar()">Modificar </input>
+        <input type="checkbox" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
+
+        <div class="contenedorDatos">
+        <div class="campo">
+         <select id="idAlmacen"> <select>
+           <label for="idAlmacen" >Id del Almacen</label>
+         </div>
+          <div class="campo">
+            <input type="text" id="direccion" maxlength="25"></input>
+           <label for="nombreProducto" >Direccion</label>
+         </div>
+       <div class="campo">
+           <input type="number" id="latitud" min="-90" max="90"  onkeydown="filtro(event)" oninput="limitarInput(this, 15) " onpaste="return false"></input>
+           <label for="stockProducto" >Latitud</label>
+        </div>
+        <div class="campo">
           <input type="number" id="longitud" min="-180" max="180" onkeydown="filtro(event)" oninput="limitarInput(this, 15)" onpaste="return false" ></input>
           <label for="stockProducto" >Longitud</label>
-      </div>
-    <button id="cargar" onclick="cargarAlmacenes('{{route('almacen.cargarDatos')}}');cargarTabla('{{route('lugarEntrega.cargarDatos')}}', 2)">Cargar Tabla</button>
-    <button onclick="validarInputs('{{ route('lugarEntrega.agregar') }}',
-                                   '{{ route('lugarEntrega.modificar') }}',
-                                   '{{ route('lugarEntrega.eliminar')}}',
-                                   '{{route('lugarEntrega.cargarDatos')}}')">Aceptar</button>
-    <button onclick="recuperarDatos('{{route('lugarEntrega.recuperar')}}',
-                                    '{{route('lugarEntrega.cargarDatos')}}')">Reestablecer Dato</button>
-      </div>
-    </div>
-  </div>
-</body>
+       </div>
+     <button id="cargar" onclick="cargarAlmacenes('{{route('almacen.cargarDatos')}}');cargarTabla('{{route('lugarEntrega.cargarDatos')}}', 2)">Cargar Tabla</button>
+     <button onclick="validarInputs('{{ route('lugarEntrega.agregar') }}',
+                                    '{{ route('lugarEntrega.modificar') }}',
+                                    '{{ route('lugarEntrega.eliminar')}}',
+                                    '{{route('lugarEntrega.cargarDatos')}}')">Aceptar</button>
+     <button onclick="recuperarDatos('{{route('lugarEntrega.recuperar')}}',
+                                     '{{route('lugarEntrega.cargarDatos')}}')">Reestablecer Dato</button>
+       </div>
+     </div>
+   </div>
+  </body>
 </html>

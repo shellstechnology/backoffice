@@ -6,6 +6,10 @@ var arrayDia = [];
 var arrayMes = [];
 var arrayAnio = [];
 
+document.addEventListener("DOMContentLoaded", () => {
+    cargarLotes();
+  });
+
 function cargarAlmacenes(ruta) {
     console.log('a')
     var xhr = new XMLHttpRequest();
@@ -62,9 +66,9 @@ function cargarPaquetes(ruta) {
     };
     xhr.send();
 }
-function cargarLotes(ruta) {
+function cargarLotes() {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', ruta, true);
+    xhr.open('GET', 'app\Http\Controllers\almacenController.php', true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             var infoLotes = JSON.parse(xhr.responseText);
@@ -343,7 +347,6 @@ function validarInputs(ruta1, ruta2, ruta3, rutaDestino) {
 function cargarInputsAlmacen(datosFila) {
     console.log(datosFila)
     document.getElementById('identificador').value = datosFila[0];
-    document.getElementById('identificarId').value = datosFila[0];
     document.getElementById('direccion').value = datosFila[1];
     document.getElementById('latitud').value = datosFila[2];
     document.getElementById('longitud').value = datosFila[3];
@@ -378,7 +381,8 @@ function cargarInputsProducto(datosFila) {
     document.getElementById('stock').value = datosFila[4];
 }
 function cargarInputsLote(datosFila) {
-    identificador = datosFila[0];
+    document.getElementById('identificador').value = datosFila[0];
+    document.getElementById('identificarId').value = datosFila[0];
 }
 function cargarInputsPaqueteContieneLote(datosFila) {
     identificador = datosFila[1];
