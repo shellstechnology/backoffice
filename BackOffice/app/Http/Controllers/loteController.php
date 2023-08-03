@@ -28,17 +28,10 @@ class loteController extends Controller
     public function cargarDatos()
     {
         $datoLote = Lote::withTrashed()->get();
-        $infoLote = [];
+        $infoLote= [];
         if ($datoLote) {
             foreach ($datoLote as $lote) {
-                $infoLote[] = [
-                    'Id Lote' => $lote['Id'],
-                    'Volumen(L)' => $lote['VolumenL'],
-                    'Peso(Kg)' => $lote['PesoKg'],
-                    'created_at' => $lote['created_at'],
-                    'updated_at' => $lote['updated_at'],
-                    'deleted_at' => $lote['deleted_at'],
-                ];
+                $infoLote []= $this->obtenerDatosLotes($lote);
             }
             Session::put('lotes', $infoLote);
             return redirect()->route('backoffice.lote');
@@ -70,5 +63,19 @@ class loteController extends Controller
             Lote::where('Id', $id)->restore();
         }
         return redirect()->route('backoffice.lote');
+    }
+
+    private function obtenerDatosLotes($lote)
+    {
+
+        return ([
+            'Id Lote' => $lote['Id'],
+            'Volumen(L)' => $lote['VolumenL'],
+            'Peso(Kg)' => $lote['PesoKg'],
+            'created_at' => $lote['created_at'],
+            'updated_at' => $lote['updated_at'],
+            'deleted_at' => $lote['deleted_at'],
+        ]);
+
     }
 }

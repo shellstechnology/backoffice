@@ -2,6 +2,7 @@
 
 
 use App\Models\Almacen;
+use App\Models\LugarEntrega;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\almacenController;
 use App\Http\Controllers\lugarEntregaController;
@@ -67,11 +68,9 @@ Route::get('/almacen/cargarDatos', [almacenController::class, 'cargarDatos'])->n
 Route::post('/almacen/realizarAccion', [almacenController::class, 'realizarAccion'])->name('almacen.realizarAccion');
 Route::post('/almacen/recuperar', [almacenController::class, 'recuperar'])->name('almacen.recuperar');
 
-Route::get('/lugarEntrega/cargarDatos', [lugarEntregaController::class, 'cargarDatos'])->name('lugarEntrega.cargarDatos');
-Route::post('/lugarEntrega/agregar', [lugarEntregaController::class, 'agregar'])->name('lugarEntrega.agregar');
-Route::post('/lugarEntrega/modificar', [lugarEntregaController::class, 'modificar'])->name('lugarEntrega.modificar');
-Route::delete('/lugarEntrega/eliminar', [lugarEntregaController::class, 'eliminar'])->name('lugarEntrega.eliminar');
-Route::post('/lugarEntrega/recuperar', [lugarEntregaController::class, 'recuperar'])->name('lugarEntrega.recuperar');
+Route::get('/lugarEntrega/cargarDatos', [LugarEntregaController::class, 'cargarDatos'])->name('lugarEntrega.cargarDatos');
+Route::post('/lugarEntrega/realizarAccion', [LugarEntregaController::class, 'realizarAccion'])->name('lugarEntrega.realizarAccion');
+Route::post('/lugarEntrega/recuperar', [LugarEntregaController::class, 'recuperar'])->name('lugarEntrega.recuperar');
 
 Route::get('/paquete/cargarDatos', [paqueteController::class, 'cargarDatos'])->name('paquete.cargarDatos');
 Route::post('/paquete/agregar', [paqueteController::class, 'agregar'])->name('paquete.agregar');

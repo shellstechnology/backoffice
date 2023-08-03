@@ -65,9 +65,10 @@ class almacenController extends Controller
 
     public function eliminar($datosRequest)
     {
-        $id = $datosRequest['identificador']; {
+        $id = $datosRequest['identificador'];
+        $almacen = DireccionAlmacen::withoutTrashed()->find($id);
+        if ($almacen) {
             DireccionAlmacen::where('Id', $id)->delete();
-            Almacen::where('Id', $id)->delete();
         }
     }
 
@@ -77,7 +78,6 @@ class almacenController extends Controller
         $almacen = DireccionAlmacen::onlyTrashed()->find($id);
         if ($almacen) {
             DireccionAlmacen::where('Id', $id)->restore();
-            Almacen::where('IdDireccionAlmacen', $id)->restore();
         }
         return redirect()->route('backoffice.almacen');
     }
@@ -118,14 +118,6 @@ class almacenController extends Controller
         $direccionAlmacen->Latitud = $almacen['latitud'];
         $direccionAlmacen->Longitud = $almacen['longitud'];
         $direccionAlmacen->save();
-        $this->crearAlmacen($direccionAlmacen);
-    }
-
-    private function crearAlmacen($direccionAlmacen)
-    {
-        $almacen = new Almacen;
-        $almacen->IdDireccionAlmacen = $direccionAlmacen->getKey();
-        $almacen->save();
     }
 
     private function modificarAlmacen($direccionAlmacen)
@@ -137,7 +129,5 @@ class almacenController extends Controller
         ]);
 
     }
-
-  
 }
 

@@ -28,7 +28,7 @@
             <input type="checkbox" name="cbxAgregar" id="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
             <input type="checkbox" name="cbxModificar" id="cbxModificar" onclick="comprobarCbxModificar()">Modificar </input>
             <input type="checkbox" name="cbxEliminar" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
-            <input type="checkbox" name="cbxRecuperar" id="cbxRecuperar" onclick="comprobarCbxEliminar()">Recuperar </input>
+            <input type="checkbox" name="cbxRecuperar" id="cbxRecuperar" onclick="comprobarCbxRecuperar()">Recuperar </input>
             <div class="contenedorDatos">
             <div class="campo">
               <input type="text" name="direccion" id="direccion" maxlength="25">
@@ -48,7 +48,7 @@
           <form action="{{route('almacen.cargarDatos')}}" method="GET">
             <button type="submit" name="cargar">Cargar Datos</button>
           </form>
-          <button type="button" onclick="crearTabla(1, {{ json_encode(session('almacenes', [])) }})">Cargar Tabla</button>
+          <button type="button"  name="cargarTabla" id="cargarTabla" onclick="crearTabla(1, {{ json_encode(session('almacenes', [])) }})">Cargar Tabla</button>
        </div>
      </div>
    </div>

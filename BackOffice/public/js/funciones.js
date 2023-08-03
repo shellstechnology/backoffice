@@ -1,4 +1,3 @@
-var identificador = null;
 var idTabla = 0;
 var tipoDeMoneda = ["USD", "EUR", "UYU"];
 var arrayUsuarios = ["Administrador", "Almacenero", "Chofer", "Cliente"];
@@ -6,8 +5,13 @@ var arrayDia = [];
 var arrayMes = [];
 var arrayAnio = [];
 
-document.addEventListener("DOMContentLoaded", () => {
-    cargarLotes();
+window.addEventListener("DOMContentLoaded", (event) => {
+    
+    document.getElementById('cargarTabla').click()
+    var idAlmacenes=((document.getElementById('idAlmacenes').value).replace('[','').replace(']','')).split(',')
+    if(idAlmacenes){
+        crearIdAlmacenes(idAlmacenes)
+    }
   });
 
 function cargarAlmacenes(ruta) {
@@ -26,9 +30,10 @@ function cargarAlmacenes(ruta) {
 function crearIdAlmacenes(infoAlmacenes) {
     var inputIdAlmacen = document.getElementById('idAlmacen');
     infoAlmacenes.forEach(function (datoAlmacen) {
+        console.log(datoAlmacen)
         var almacen = document.createElement('option');
-        almacen.value = datoAlmacen['Id Almacen'];
-        almacen.textContent = datoAlmacen['Id Almacen'];
+        almacen.value = datoAlmacen;
+        almacen.textContent = datoAlmacen;
         inputIdAlmacen.appendChild(almacen);
     });
 }
@@ -66,9 +71,9 @@ function cargarPaquetes(ruta) {
     };
     xhr.send();
 }
-function cargarLotes() {
+function cargarLotes(ruta) {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'app\Http\Controllers\almacenController.php', true);
+    xhr.open('GET', ruta, true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             var infoLotes = JSON.parse(xhr.responseText);
@@ -88,14 +93,8 @@ function crearPaquetes(infoPaquete) {
         inputIdPaquete.appendChild(paquete);
     });
 }
-function crearLotes(infoLotes) {
-    var inputIdLote = document.getElementById('idLote');
-    infoLotes.forEach(function (datoLote) {
-        var lote = document.createElement('option');
-        lote.value = datoLote['Id Lote'];
-        lote.textContent = datoLote['Id Lote'];
-        inputIdLote.appendChild(lote);
-    });
+function crearLotes() {
+ 
 }
 
 
@@ -193,11 +192,11 @@ function cargarSelectUsuario() {
 }
 
 function crearTabla(idTablaPagina, infoProducto) {
+    console.log(infoProducto);
     if (idTabla != idTablaPagina) {
         console.log(infoProducto)
         var tabla = document.createElement("table");
         tabla.style.borderCollapse = "collapse";
-
         // Crear la cabecera de la tabla
         var cabecera = tabla.createTHead();
         var filaCabecera = cabecera.insertRow();
@@ -294,19 +293,32 @@ function comprobarCbxAgregar() {
 
 function comprobarCbxModificar() {
     if (cbxModificar.checked) {
-        cbxAgregar.checked = false;
+        cbxAgregar.checked = false
         cbxEliminar.checked = false
+        cbxRecuperar.checked=false
     }
 }
 
 function comprobarCbxEliminar() {
     if (cbxEliminar.checked) {
         cbxAgregar.checked = false;
+        cbxRecuperar.checked=false
         var checkbox = document.getElementById('cbxModificar');
         if (checkbox)
             cbxModificar.checked = false
     }
 }
+
+function comprobarCbxRecuperar() {
+    if (cbxEliminar.checked) {
+        cbxAgregar.checked = false;
+        cbxEliminar.checked = false;
+        var checkbox = document.getElementById('cbxModificar');
+        if (checkbox)
+            cbxModificar.checked = false
+    }
+}
+
 function filtro(event) {
     var texto = event.key;
     if ([',', 'e','E'].includes(texto))
@@ -318,31 +330,6 @@ function limitarInput(input, maxLength) {
     }
   }
 /****************************************************/
-function validarInputs(ruta1, ruta2, ruta3, rutaDestino) {
-    console.time("ingresarInputs");
-    var cbxAgregar = document.getElementById('cbxAgregar');
-    if (cbxAgregar.checked) {
-        var inputsProcesados = procesarInputs()
-        if (inputsProcesados != null)
-            enviarDatos(ruta1, inputsProcesados, rutaDestino)
-    } else {
-        var cbxModificar = document.getElementById('cbxModificar');
-        if (cbxModificar.checked) {
-            var inputsProcesados = procesarInputs()
-            if (inputsProcesados != null)
-                modificarDatos(ruta2, inputsProcesados, rutaDestino)
-        } else {
-            var cbxEliminar = document.getElementById('cbxEliminar');
-            if (cbxEliminar.checked) {
-                eliminarInput(ruta3, rutaDestino)
-            } else {
-                alert("Error:no hay ninguna checkbox activa")
-            }
-        }
-    }
-    console.timeEnd("ingresarInputs");
-}
-
 
 function cargarInputsAlmacen(datosFila) {
     console.log(datosFila)
@@ -353,7 +340,7 @@ function cargarInputsAlmacen(datosFila) {
 }
 
 function cargarInputsLugarEntrega(datosFila) {
-    identificador = datosFila[0];
+    document.getElementById('identificador').value = datosFila[0];
     document.getElementById('direccion').value = datosFila[1];
     document.getElementById('idAlmacen').value = datosFila[2];
     document.getElementById('latitud').value = datosFila[4];
