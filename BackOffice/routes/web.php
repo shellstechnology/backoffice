@@ -1,8 +1,6 @@
 <?php
 
 
-use App\Models\Almacen;
-use App\Models\LugarEntrega;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\almacenController;
 use App\Http\Controllers\lugarEntregaController;
@@ -73,9 +71,7 @@ Route::post('/lugarEntrega/realizarAccion', [LugarEntregaController::class, 'rea
 Route::post('/lugarEntrega/recuperar', [LugarEntregaController::class, 'recuperar'])->name('lugarEntrega.recuperar');
 
 Route::get('/paquete/cargarDatos', [paqueteController::class, 'cargarDatos'])->name('paquete.cargarDatos');
-Route::post('/paquete/agregar', [paqueteController::class, 'agregar'])->name('paquete.agregar');
-Route::post('/paquete/modificar', [paqueteController::class, 'modificar'])->name('paquete.modificar');
-Route::delete('/paquete/eliminar', [paqueteController::class, 'eliminar'])->name('paquete.eliminar');
+Route::post('/paquete/realizarAccion', [paqueteController::class, 'realizarAccion'])->name('paquete.realizarAccion');
 Route::post('/paquete/recuperar', [paqueteController::class, 'recuperar'])->name('paquete.recuperar');
 
 Route::get('/lote/cargarDatos', [loteController::class, 'cargarDatos'])->name('lote.cargarDatos');
@@ -83,9 +79,7 @@ Route::post('/lote/realizarAccion', [loteController::class, 'realizarAccion'])->
 Route::post('/lote/recuperar', [loteController::class, 'recuperar'])->name('lote.recuperar');
 
 Route::get('/paqueteContieneLote/cargarDatos', [paqueteContieneLoteController::class, 'cargarDatos'])->name('paqueteContieneLote.cargarDatos');
-Route::post('/paqueteContieneLote/agregar', [paqueteContieneLoteController::class, 'agregar'])->name('paqueteContieneLote.agregar');
-Route::post('/paqueteContieneLote/modificar', [paqueteContieneLoteController::class, 'modificar'])->name('paqueteContieneLote.modificar');
-Route::delete('/paqueteContieneLote/eliminar', [paqueteContieneLoteController::class, 'eliminar'])->name('paqueteContieneLote.eliminar');
+Route::post('/paqueteContieneLote/realizarAccion', [paqueteContieneLoteController::class, 'realizarAccion'])->name('paqueteContieneLote.realizarAccion');
 Route::post('/paqueteContieneLote/recuperar', [paqueteContieneLoteController::class, 'recuperar'])->name('paqueteContieneLote.recuperar');
 
 

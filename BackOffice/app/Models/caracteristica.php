@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
-class Caracteristica extends Model
+class Caracteristicas extends Model
 {
-    protected $table = 'caracteristica';
+    protected $table = 'caracteristicas';
     use HasFactory;
     use SoftDeletes;
     use ValidatesRequests;

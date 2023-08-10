@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Almacen;
-use App\Models\DireccionAlmacen;
+use App\Models\Almacenes;
+use App\Models\Lugares_Entrega;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
@@ -15,7 +15,7 @@ class almacenController extends Controller
     public function cargarDatos()
     {
         $datosAlmacenes = [];
-        $arrayAlmacenes = DireccionAlmacen::withTrashed()->get();
+        $arrayAlmacenes = Almacenes::withTrashed()->get();
         foreach ($arrayAlmacenes as $almacen) {
             $datosAlmacenes[] = $this->obtenerDatosAlmacenes($almacen);
         }
@@ -84,14 +84,15 @@ class almacenController extends Controller
 
     private function obtenerDatosAlmacenes($almacen)
     {
+        $lugarAlmacen=Lugares_Entrega::withTrashed()->where('id',$almacen['id_lugar_entrega'])->first();
         return [
-            'Id Almacen' => $almacen['Id'],
-            'Direccion Almacen' => $almacen['Direccion'],
-            'Lat Almacen' => $almacen['Latitud'],
-            'Lng Almacen' => $almacen['Longitud'],
-            'created_at' => $almacen['created_at'],
-            'updated_at' => $almacen['updated_at'],
-            'deleted_at' => $almacen['deleted_at'],
+            'Id Almacen' => $lugarAlmacen['id'],
+            'Direccion Almacen' => $lugarAlmacen['direccion'],
+            'Lat Almacen' => $lugarAlmacen['latitud'],
+            'Lng Almacen' => $lugarAlmacen['longitud'],
+            'created_at' => $lugarAlmacen['created_at'],
+            'updated_at' => $lugarAlmacen['updated_at'],
+            'deleted_at' => $lugarAlmacen['deleted_at'],
         ];
 
     }
@@ -130,4 +131,3 @@ class almacenController extends Controller
 
     }
 }
-

@@ -6,17 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-
-class DireccionAlmacen extends Model
+class Almacenes extends Model
 {
-    protected $table = 'direccionalmacen';
+    protected $table = 'almacenes';
     use HasFactory;
     use SoftDeletes;
     use ValidatesRequests;
     public $timestamps = true;
-    public function almacenes()
-    {
-        return $this->hasMany(Almacen::class, 'IdDireccionAlmacen');
-    }
- 
 }

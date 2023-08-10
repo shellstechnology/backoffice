@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Chofer_Conduce_Camion extends Model
 {
-    protected $table = 'choferConduceCamion';
+    protected $table = 'chofer_conduce_camion';
     use HasFactory;
 }

@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Modelo extends Model
+class Modelos extends Model
 {
-    protected $table = 'modelo';
+    protected $table = 'modelos';
     use HasFactory;
 }

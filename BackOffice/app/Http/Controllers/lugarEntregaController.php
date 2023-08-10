@@ -86,7 +86,7 @@ class lugarEntregaController extends Controller
         $lugarEntregaRestaurable = LugarEntrega::onlyTrashed()->find($id);
         if ($lugarEntregaRestaurable) {
             LugarEntrega::where('Id', $id)->restore();
-            Almacen::where('IdLugarDeEntrega',$id)->restore();
+            Almacen::where('IdLugarDerEntrega',$id)->restore();
         }
     }
     private function definirLugarEntrega($dato)

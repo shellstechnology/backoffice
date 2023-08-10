@@ -37,7 +37,7 @@
          @csrf
          <button type="submit" name="cargar">Cargar Datos</button>
        </form>
-       <button type="button"  name="cargarTabla" id="cargarTabla" onclick="crearTabla(1, {{ json_encode(session('lotes', [])) }})">CargarTabla</button>
+       <button type="button"  name="cargarTabla" id="cargarTabla" onclick="crearTabla(2, {{ json_encode(session('lotes', [])) }})">CargarTabla</button>
     </div>
   </div>
 </body>

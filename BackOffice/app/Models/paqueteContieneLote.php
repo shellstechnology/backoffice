@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
-class PaqueteContieneLote extends Model
+class Paquete_Contiene_Lote extends Model
 {
-    protected $table = 'paqueteContieneLote';
+    protected $table = 'paquete_contiene_lote';
     use HasFactory;
     use SoftDeletes;
     use ValidatesRequests;

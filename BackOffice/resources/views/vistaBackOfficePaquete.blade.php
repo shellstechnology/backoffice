@@ -22,9 +22,11 @@
     </div>
     <div> 
     <div class="cajaDatos"> 
-       <input type="checkbox" id="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
-       <input type="checkbox" id="cbxModificar" onclick="comprobarCbxModificar()">Modificar </input>
-       <input type="checkbox" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
+    <form action="{{route('paquete.realizarAccion')}}" method="POST">
+       <input type="checkbox" id="cbxAgregar" name="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
+       <input type="checkbox" id="cbxModificar" name="cbxModificar"onclick="comprobarCbxModificar()">Modificar </input>
+       <input type="checkbox" id="cbxEliminar" name="cbxEliminar"onclick="comprobarCbxEliminar()">Eliminar </input>
+       <input type="checkbox" name="cbxRecuperar" id="cbxRecuperar" onclick="comprobarCbxRecuperar()">Recuperar </input>
        <div class="contenedorDatos">
          <div class="campo">
          <select id="anio"> <select>
@@ -61,14 +63,17 @@
       <div class="campo">
           <input type="number" id="peso" min=0 max=999  onkeydown="filtro(event)" oninput="limitarInput(this, 3)" onpaste="return false"></input>
           <label for="peso" >Peso(Kg)</label>
+</div>
+<input type="hidden" name="identificador" id="identificador">
+          <input type="hidden" name="idLugaresEntrega" id="idLugaresEntrega" value="{{ json_encode(session('idLugaresEntrega', [])) }}"></input>
+          <button type="submit" name="aceptar">Aceptar</button>
+</form>
       </div>
-      <button id="cargar" onclick="cargarFechasPaquete('{{route('producto.cargarDatos')}}','{{route('lugarEntrega.cargarDatos')}}');cargarTabla('{{route('paquete.cargarDatos')}}', 6)">Cargar Tabla</button>
-    <button onclick="validarInputs('{{ route('paquete.agregar') }}',
-                                   '{{ route('paquete.modificar') }}',
-                                   '{{ route('paquete.eliminar')}}',
-                                   '{{route('paquete.cargarDatos')}}')">Aceptar</button>
-    <button onclick="recuperarDatos('{{route('paquete.recuperar')}}',
-                                    '{{route('paquete.cargarDatos')}}')">Reestablecer Dato</button>
+      <form action="{{route('paquete.cargarDatos')}}" method="GET">
+         @csrf
+         <button type="submit" name="cargar" id="cargar">Cargar Datos</button>
+       </form>
+       <button type="button" name="cargarTabla" id="cargarTabla" onclick="crearTabla(5, {{json_encode(session('paquete', []))}})">Cargar Tabla</button>
       </div>
     </div>
   </div>

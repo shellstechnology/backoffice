@@ -6,27 +6,25 @@ var arrayMes = [];
 var arrayAnio = [];
 
 window.addEventListener("DOMContentLoaded", (event) => {
-    
-    document.getElementById('cargarTabla').click()
-    var idAlmacenes=((document.getElementById('idAlmacenes').value).replace('[','').replace(']','')).split(',')
-    if(idAlmacenes){
-        crearIdAlmacenes(idAlmacenes)
+    var botonCargar=document.getElementById('cargarTabla')
+    if(botonCargar!=null){
+        botonCargar.click()
+      var idAlmacenes=document.getElementById('idAlmacenes')
+      var idPaquetes=document.getElementById('idPaquetes')
+      var idLotes=document.getElementById('idLotes')
+    if(idAlmacenes!=null){
+        crearIdAlmacenes(idAlmacenes.value.replace('[','').replace(']','').split(','))
     }
+    if(idPaquetes!=null){
+        crearIdPaquetes(idPaquetes.value.replace('[','').replace(']','').split(','))
+    }
+    if(idLotes!=null){
+        crearIdLotes(idLotes.value.replace('[','').replace(']','').split(','))
+    }
+}
   });
 
-function cargarAlmacenes(ruta) {
-    console.log('a')
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', ruta, true);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            var infoAlmacenes = JSON.parse(xhr.responseText);
-            console.log(infoAlmacenes);
-            crearIdAlmacenes(infoAlmacenes);
-        }
-    };
-    xhr.send();
-}
+
 function crearIdAlmacenes(infoAlmacenes) {
     var inputIdAlmacen = document.getElementById('idAlmacen');
     infoAlmacenes.forEach(function (datoAlmacen) {
@@ -35,6 +33,26 @@ function crearIdAlmacenes(infoAlmacenes) {
         almacen.value = datoAlmacen;
         almacen.textContent = datoAlmacen;
         inputIdAlmacen.appendChild(almacen);
+    });
+}
+function crearIdPaquetes(infoPaquete) {
+    var inputIdPaquete = document.getElementById('idPaquete');
+    infoPaquete.forEach(function (datoPaquete) {
+        console.log(datoPaquete)
+        var paquete = document.createElement('option');
+        paquete.value = datoPaquete;
+        paquete.textContent = datoPaquete;
+        inputIdPaquete.appendChild(paquete);
+    });
+}
+function crearIdLotes(infoLote) {
+    var inputIdLote = document.getElementById('idLote');
+    infoLote.forEach(function (datoLote) {
+        console.log(datoLote)
+        var lote = document.createElement('option');
+        lote.value = datoLote;
+        lote.textContent = datoLote;
+        inputIdLote.appendChild(lote);
     });
 }
 

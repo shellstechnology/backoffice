@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-class LugarEntrega extends Model
+class Lugares_Entrega extends Model
 {
-    protected $table = 'lugarentrega';
+    protected $table = 'lugares_entrega';
     use HasFactory;
     use SoftDeletes;
     use ValidatesRequests;

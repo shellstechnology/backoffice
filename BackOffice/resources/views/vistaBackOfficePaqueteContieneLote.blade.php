@@ -23,9 +23,12 @@
     <div> 
     <button onclick="redireccionar('{{route('backoffice.lote')}}')"><-Crear Lotes</button>
     <div class="cajaDatos"> 
+    <form action="{{route('paqueteContieneLote.realizarAccion')}}" method="POST">
+        @csrf
        <input type="checkbox" id="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
        <input type="checkbox" id="cbxModificar" onclick="comprobarCbxModificar()">Modificar </input>
        <input type="checkbox" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
+       <input type="checkbox" name="cbxRecuperar" id="cbxRecuperar" onclick="comprobarCbxRecuperar()">Recuperar </input>
        
        <div class="contenedorDatos">
        <div class="campo">
@@ -39,18 +42,20 @@
         <div class="campo">
         <select id="idAlmacen"> <select>
           <label for="idAlmacen" >Id del Almacen</label>
-        </div>
-        <button id="cargar"onclick="cargarSelectsLote('{{route('lote.cargarDatos')}}',
-                                                 '{{route('paquete.cargarDatos')}}',
-                                                 '{{route('almacen.cargarDatos')}}');
-                                                  cargarTabla('{{route('paqueteContieneLote.cargarDatos')}}'), 9">Cargar Tabla</button>
-    <button onclick="validarInputs('{{ route('paqueteContieneLote.agregar') }}',
-                                   '{{ route('paqueteContieneLote.modificar') }}',
-                                   '{{ route('paqueteContieneLote.eliminar')}}',
-                                   '{{route('paqueteContieneLote.cargarDatos')}}')">Aceptar</button>
-    <button onclick="recuperarDatos('{{route('paqueteContieneLote.recuperar')}}',
-                                    '{{route('paqueteContieneLote.cargarDatos')}}')">Reestablecer Dato</button>
-      </div>
+          </div>
+          <div class="contenedorDatos">
+          <input type="hidden" name="identificador" id="identificador"></input>
+          <input type="hidden" name="idAlmacenes" id="idAlmacenes" value="{{ json_encode(session('idAlmacenes', [])) }}"></input>
+          <input type="hidden" name="idPaquetes" id="idPaquetes" value="{{ json_encode(session('idPaquetes', [])) }}"></input>
+          <input type="hidden" name="idLotes" id="idLotes" value="{{ json_encode(session('idLotes', [])) }}"></input>
+          <button type="submit" name="aceptar">Aceptar</button>
+          </form>
+         </div>
+      <form action="{{route('paqueteContieneLote.cargarDatos')}}" method="GET">
+         @csrf
+         <button type="submit" name="cargar" id="cargar">Cargar Datos</button>
+       </form>
+       <button type="button" name="cargarTabla" id="cargarTabla" onclick="crearTabla(5, {{json_encode(session('paqueteContieneLote', []))}})">Cargar Tabla</button>
     </div>
   </div>
 </body>

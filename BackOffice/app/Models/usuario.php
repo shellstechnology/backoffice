@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
-class Usuario extends Model
+class Usuarios extends Model
 {
-    protected $table = 'usuario';
+    protected $table = 'usuarios';
     use HasFactory;
 
     use SoftDeletes;
