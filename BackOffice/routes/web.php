@@ -64,7 +64,6 @@ Route::post('/producto/recuperar', [productoController::class, 'recuperar'])->na
 
 Route::get('/almacen/cargarDatos', [almacenController::class, 'cargarDatos'])->name('almacen.cargarDatos');
 Route::post('/almacen/realizarAccion', [almacenController::class, 'realizarAccion'])->name('almacen.realizarAccion');
-Route::post('/almacen/recuperar', [almacenController::class, 'recuperar'])->name('almacen.recuperar');
 
 Route::get('/lugarEntrega/cargarDatos', [LugarEntregaController::class, 'cargarDatos'])->name('lugarEntrega.cargarDatos');
 Route::post('/lugarEntrega/realizarAccion', [LugarEntregaController::class, 'realizarAccion'])->name('lugarEntrega.realizarAccion');

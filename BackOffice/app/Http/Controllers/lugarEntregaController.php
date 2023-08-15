@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Almacen;
-use App\Models\DireccionAlmacen;
-use App\Models\LugarEntrega;
+use App\Models\Almacenes;
+use App\Models\Lugares_Entrega;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
@@ -34,14 +33,10 @@ class lugarEntregaController extends Controller
     public function cargarDatos()
     {
         $infoLugarEntrega = [];
-        $datoAlmacen = Almacen::withTrashed()->get();
+        $almacenes = Almacenes::withTrashed()->get();
         $idAlmacen = [];
-        $direccionAlmacen = DireccionAlmacen::withoutTrashed()->get();
-        foreach ($datoAlmacen as $dato) {
+        foreach ($almacenes as $dato) {
             $infoLugarEntrega[] = $this->definirLugarEntrega($dato);
-        }
-        foreach ($direccionAlmacen as $datoDireccion) {
-            $idAlmacen[] = $datoDireccion['Id'];
         }
         Session::put('idAlmacenes', $idAlmacen);
         Session::put('lugaresEntrega', $infoLugarEntrega);
@@ -73,39 +68,36 @@ class lugarEntregaController extends Controller
     public function eliminar($lugarEntrega)
     {
         $id = $lugarEntrega['identificador'];
-        $lugarEntregaEliminable = LugarEntrega::withoutTrashed()->find($id);
+        $lugarEntregaEliminable = Lugares_Entrega::withoutTrashed()->find($id);
         if ($lugarEntregaEliminable) {
-            LugarEntrega::where('Id', $id)->delete();
-            Almacen::where('IdLugarDeEntrega',$id)->delete();
+          $lugarEntregaEliminable->delete();
+            Almacenes::where('id_lugar_entrega',$id)->delete();
         }
     }
 
     public function recuperar($lugarEntrega)
     {
         $id = $lugarEntrega['identificador'];
-        $lugarEntregaRestaurable = LugarEntrega::onlyTrashed()->find($id);
+        $lugarEntregaRestaurable = Lugares_Entrega::onlyTrashed()->find($id);
         if ($lugarEntregaRestaurable) {
-            LugarEntrega::where('Id', $id)->restore();
-            Almacen::where('IdLugarDerEntrega',$id)->restore();
+            $lugarEntregaRestaurable->restore();
+            Almacenes::where('id_lugar_entrega',$id)->restore();
         }
     }
     private function definirLugarEntrega($dato)
     {
-        $direccionAlmacen = DireccionAlmacen::withTrashed()->where('Id', $dato['IdDireccionAlmacen'])->first();
-        $lugarEntrega = LugarEntrega::withTrashed()->where('Id', $dato['IdLugarDeEntrega'])->first();
-        if ($lugarEntrega && $direccionAlmacen) {
-            return ($this->obtenerDatosLugaresEntrega($lugarEntrega, $direccionAlmacen));
+        $lugarEntrega = Lugares_Entrega::withTrashed()->where('Id', $dato['id_lugar_entrega'])->first();
+        if ($lugarEntrega) {
+            return ($this->obtenerDatosLugaresEntrega($lugarEntrega));
         }
     }
-    private function obtenerDatosLugaresEntrega($lugarEntrega, $direccionAlmacen)
+    private function obtenerDatosLugaresEntrega($lugarEntrega)
     {
         return ([
-            'Id Lugar' => $lugarEntrega['Id'],
-            'Direccion Lugar' => $lugarEntrega['Direccion'],
-            'Id Almacen' => $direccionAlmacen['Id'],
-            'Direccion Almacen' => $direccionAlmacen['Direccion'],
-            'Lat Lugar' => $lugarEntrega['Latitud'],
-            'Lng Lugar' => $lugarEntrega['Longitud'],
+            'Id Lugar' => $lugarEntrega['id'],
+            'Direccion Lugar' => $lugarEntrega['direccion'],
+            'Lat Lugar' => $lugarEntrega['latitud'],
+            'Lng Lugar' => $lugarEntrega['longitud'],
             'created_at' => $lugarEntrega['created_at'],
             'updated_at' => $lugarEntrega['updated_at'],
             'deleted_at' => $lugarEntrega['deleted_at'],

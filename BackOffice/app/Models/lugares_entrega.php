@@ -14,9 +14,4 @@ class Lugares_Entrega extends Model
     use ValidatesRequests;
     public $timestamps = true;
 
-    public function almacenes()
-    {
-        return $this->hasMany(Almacen::class, 'IdLugarDeEntrega');
-    }
-
 }

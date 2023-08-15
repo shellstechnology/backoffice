@@ -25,7 +25,6 @@ class almacenController extends Controller
     public function realizarAccion(Request $request)
     {
         $datosRequest = $request->all();
-
         if ($request->has('cbxAgregar')) {
             $this->agregar($datosRequest);
         }
@@ -49,7 +48,7 @@ class almacenController extends Controller
             $errores = $validador->getMessageBag();
             return response()->json(['error:' => $errores], 422);
         }
-        $this->crearDireccionAlmacen($datosRequest);
+        $this->crearLugarAlmacen($datosRequest);
     }
 
     public function modificar($datosRequest)
@@ -66,18 +65,18 @@ class almacenController extends Controller
     public function eliminar($datosRequest)
     {
         $id = $datosRequest['identificador'];
-        $almacen = DireccionAlmacen::withoutTrashed()->find($id);
+        $almacen = Lugares_Entrega::withoutTrashed()->find($id);
         if ($almacen) {
-            DireccionAlmacen::where('Id', $id)->delete();
+            $almacen->delete();
         }
     }
 
     public function recuperar($datosRequest)
     {
         $id = $datosRequest['identificador'];
-        $almacen = DireccionAlmacen::onlyTrashed()->find($id);
+        $almacen = Lugares_Entrega::onlyTrashed()->find($id);
         if ($almacen) {
-            DireccionAlmacen::where('Id', $id)->restore();
+           $almacen->restore();
         }
         return redirect()->route('backoffice.almacen');
     }
@@ -86,7 +85,7 @@ class almacenController extends Controller
     {
         $lugarAlmacen=Lugares_Entrega::withTrashed()->where('id',$almacen['id_lugar_entrega'])->first();
         return [
-            'Id Almacen' => $lugarAlmacen['id'],
+            'Id Almacen' => $almacen['id'],
             'Direccion Almacen' => $lugarAlmacen['direccion'],
             'Lat Almacen' => $lugarAlmacen['latitud'],
             'Lng Almacen' => $lugarAlmacen['longitud'],
@@ -112,22 +111,24 @@ class almacenController extends Controller
         ], $reglas);
     }
 
-    private function crearDireccionAlmacen($almacen)
+    private function crearLugarAlmacen($almacen)
     {
-        $direccionAlmacen = new DireccionAlmacen;
-        $direccionAlmacen->Direccion = $almacen['direccion'];
-        $direccionAlmacen->Latitud = $almacen['latitud'];
-        $direccionAlmacen->Longitud = $almacen['longitud'];
-        $direccionAlmacen->save();
+        $lugarAlmacen = new Lugares_Entrega;
+        $lugarAlmacen->direccion = $almacen['direccion'];
+        $lugarAlmacen->latitud = $almacen['latitud'];
+        $lugarAlmacen->longitud = $almacen['longitud'];
+        $lugarAlmacen->save();
+        $nuevaAlmacen=new Almacenes;
+        $nuevaAlmacen->id_lugar_entrega=$lugarAlmacen->id;
+        $nuevaAlmacen->save();
     }
 
-    private function modificarAlmacen($direccionAlmacen)
+    private function modificarAlmacen($lugarAlmacen)
     {
-        DireccionAlmacen::where('Id', $direccionAlmacen['identificador'])->update([
-            'Direccion' => $direccionAlmacen['direccion'],
-            'Latitud' => $direccionAlmacen['latitud'],
-            'Longitud' => $direccionAlmacen['longitud'],
+        Lugares_Entrega::where('id', $lugarAlmacen['identificador'])->update([
+            'direccion' => $lugarAlmacen['direccion'],
+            'latitud' => $lugarAlmacen['latitud'],
+            'longitud' => $lugarAlmacen['longitud'],
         ]);
-
     }
 }
