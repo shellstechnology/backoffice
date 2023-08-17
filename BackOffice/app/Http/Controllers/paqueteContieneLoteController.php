@@ -39,7 +39,7 @@ class paqueteContieneLoteController extends Controller
         $idPaquete = [];
         $idLote = [];
         foreach ($datosPaqueteContieneLote as $paqueteContieneLote) {
-            $infoPaqueteContieneLote[] = $this->definifPaquete($paqueteContieneLote);
+            $infoPaqueteContieneLote[] = $this->definirPaquete($paqueteContieneLote);
         }
         $lugarAlmacen = Lugares_Entrega::withoutTrashed()->get();
         foreach ($lugarAlmacen as $datoLugar) {
@@ -80,13 +80,12 @@ class paqueteContieneLoteController extends Controller
         if ($paqueteAntiguo) {
             $this->eliminarPaqueteContieneLote($paqueteAntiguo, $id);
         }
-
     }
 
     public function recuperar($datosRequest)
     {
         $id = $datosRequest['identificador'];
-        $paqueteContieneLote = Paquete_Contiene_Lote::withTrashed()->where('id_paquete', $id)->first();
+        $paqueteContieneLote = Paquete_Contiene_Lote::onlyTrashed()->where('id_paquete', $id)->first();
 
         if ($paqueteContieneLote) {
             Paquete_Contiene_Lote::onlyTrashed()->where('IdPaquete', $id)->restore();

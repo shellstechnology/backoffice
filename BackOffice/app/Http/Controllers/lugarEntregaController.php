@@ -122,12 +122,12 @@ class lugarEntregaController extends Controller
     private function crearLugarEntrega($lugar)
     {
 
-        $lugarEntrega = new LugarEntrega;
+        $lugarEntrega = new Lugares_Entrega;
         $lugarEntrega->Direccion = $lugar['direccion'];
         $lugarEntrega->Latitud = $lugar['latitud'];
         $lugarEntrega->Longitud = $lugar['longitud'];
         $lugarEntrega->save();
-        $almacen = new Almacen;
+        $almacen = new Almacenes;
         $almacen->IdDireccionAlmacen = $lugar['idAlmacen'];
         $almacen->IdLugarDeEntrega = $lugarEntrega->id;
         $almacen->save();
@@ -135,7 +135,7 @@ class lugarEntregaController extends Controller
 
     private function modificarLugarEntrega($lugarEntrega)
     {
-        LugarEntrega::where('Id', $lugarEntrega['identificador'])->update([
+        Lugares_Entrega::where('Id', $lugarEntrega['identificador'])->update([
             'Direccion' => $lugarEntrega['direccion'],
             'Latitud' => $lugarEntrega['latitud'],
             'Longitud' => $lugarEntrega['longitud'],
@@ -145,7 +145,7 @@ class lugarEntregaController extends Controller
 
     private function modificarAlmacen($lugarEntrega)
     {
-        Almacen::where('IdLugarDeEntrega', $lugarEntrega['identificador'])->update([
+        Almacenes::where('IdLugarDeEntrega', $lugarEntrega['identificador'])->update([
             'IdDireccionAlmacen' => $lugarEntrega['idAlmacen'],
         ]);
     }
