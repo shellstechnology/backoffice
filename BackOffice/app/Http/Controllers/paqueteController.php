@@ -8,20 +8,46 @@ use App\Models\Paquetes;
 use App\Models\Productos;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 class paqueteController extends Controller
 {
+    public function realizarAccion(Request $request)
+    {
+        $datosRequest = $request->all();
+        if ($request->has('cbxAgregar')) {
+            $this->agregar($datosRequest);
+        }
+        if ($request->has('cbxModificar')) {
+            $this->modificar($datosRequest);
+        }
+        if ($request->has('cbxEliminar')) {
+            $this->eliminar($datosRequest);
+        }
+        if ($request->has('cbxRecuperar')) {
+            $this->recuperar($datosRequest);
+        }
+        $this->cargarDatos();
+        return redirect()->route('backoffice.paquete');
+    }
+
     public function cargarDatos()
     {
-        $datoProducto = Paquetes::withTrashed()->get();
+        $datoPaquete = Paquetes::withTrashed()->get();
         $infoPaquete = [];
-        if ($datoProducto) {
-            foreach ($datoProducto as $dato) {
+        $datoLugarEntrega = Lugares_Entrega::withoutTrashed()->get();
+        $idLugaresEntrega = [];
+        if ($datoPaquete) {
+            foreach ($datoPaquete as $dato) {
                 $infoPaquete[] = $this->definirPaquete($dato);
             }
         }
-        return response()->json($infoPaquete);
+        $idLugaresEntrega = $this->definirLugaresEntrega($datoLugarEntrega);
+        $idLugaresEntrega[] = $this->definirLugaresEntrega($dato);
+        Session::put('lugaresEntrega', $idLugaresEntrega);
+        Session::put('paquete', $infoPaquete);
+        return redirect()->route('backoffice.paquete');
     }
 
     public function agregar($datosRequest)
@@ -48,9 +74,9 @@ class paqueteController extends Controller
         $id = $datosRequest['identificador'];
         $paquete = Paquetes::withoutTrashed()->where('id', $id)->first();
         if ($paquete) {
-            Caracteristicas::where('Id', $paquete['IdCaracteristica'])->delete();
-            Paquetes::where('Id', $id)->delete();
-    
+            Caracteristicas::where('id', $paquete['id_caracteristica_paquete'])->delete();
+            Paquetes::where('id', $id)->delete();
+
         }
     }
 
@@ -59,8 +85,8 @@ class paqueteController extends Controller
         $id = $datosRequest['identificador'];
         $paquete = Paquetes::onlyTrashed()->where('id', $id)->first();
         if ($paquete) {
-            Paquetes::where('Id', $id)->update();
-            Caracteristicas::where('Id', $paquete['IdCaracteristica'])->update();
+            Paquetes::where('id', $id)->update();
+            Caracteristicas::where('id', $paquete['id_caracteristica_paquete'])->update();
         }
     }
 
@@ -70,7 +96,7 @@ class paqueteController extends Controller
         $caracteristica = Caracteristicas::withTrashed()->where('id', $paquete['id_caracteristica_paquete'])->first();
         $producto = Productos::withTrashed()->where('id', $paquete['id_producto'])->first();
         if ($producto && $lugarEntrega && $caracteristica) {
-            return(
+            return (
                 [
                     'Id Paquete' => $paquete['id'],
                     'Fecha de Entrega' => $paquete['fecha_de_entrega'],
@@ -90,7 +116,16 @@ class paqueteController extends Controller
         }
     }
 
-    private function validarDatos($lugarEntrega)
+    private function definirLugaresEntrrega($datoLugarEntrega)
+    {
+        $datoLugares=[];
+        foreach($datoLugarEntrega as $dato){
+            $datoLugares[]=$dato['id'];
+        }
+        return $datoLugares;
+    }
+
+    private function validarDatos($paquete)
     {
         $reglas = [
             'Caracteristica' => 'required|string|max:100',
@@ -100,11 +135,11 @@ class paqueteController extends Controller
             'Peso' => 'required|numeric|min:1|max:999',
         ];
         return Validator::make([
-            'Caracteristica' => $lugarEntrega['caracteristica'],
-            'Nombre Remitente' => $lugarEntrega['nombreRemitente'],
-            'Nombre Destinatario' => $lugarEntrega['nombreDestiatario'],
-            'Volumen' => $lugarEntrega['volumen'],
-            'Peso' => $lugarEntrega['peso']
+            'Caracteristica' => $paquete['caracteristica'],
+            'Nombre Remitente' => $paquete['nombreRemitente'],
+            'Nombre Destinatario' => $paquete['nombreDestiatario'],
+            'Volumen' => $paquete['volumen'],
+            'Peso' => $paquete['peso']
         ], $reglas);
     }
 
@@ -117,22 +152,23 @@ class paqueteController extends Controller
         $mes = $paquete['mes'];
         $anio = $paquete['anio'];
         $fechaEntrega = sprintf('%04d-%02d-%02d', $anio, $mes, $dia);
-        $paquete = new Paquetes;
-        $paquete->fecha_de_entrega = $fechaEntrega;
-        $paquete->id_lugar_entrega = $paquete['idLugarEntrega'];
-        $paquete->id_caracteristica_paquete = $caracteristica->id;
-        $paquete->nombre_remitente = $paquete['nombreRemitente'];
-        $paquete->nombre_destinatario = $paquete['nombreDestinatario'];
-        $paquete->id_producto = $paquete['idProducto'];
-        $paquete->volumen_l = $paquete['volumen'];
-        $paquete->peso_kg = $paquete['peso'];
-        $paquete->save();
+        $nuevoPaquete = new Paquetes;
+        $nuevoPaquete->fecha_de_entrega = $fechaEntrega;
+        $nuevoPaquete->id_lugar_entrega = $paquete['idLugarEntrega'];
+        $nuevoPaquete->id_caracteristica_paquete = $caracteristica->id;
+        $nuevoPaquete->nombre_remitente = $paquete['nombreRemitente'];
+        $nuevoPaquete->nombre_destinatario = $paquete['nombreDestinatario'];
+        $nuevoPaquete->id_producto = $paquete['idProducto'];
+        $nuevoPaquete->volumen_l = $paquete['volumen'];
+        $nuevoPaquete->peso_kg = $paquete['peso'];
+        $nuevoPaquete->save();
     }
 
-    private function modificarPaquete($paquete){
+    private function modificarPaquete($paquete)
+    {
         $paqueteSeleccionado = Paquetes::where('id', $paquete['id'])->first();
-        Caracteristicas::where('d', $paquete['id_caracteristica_paquete'])->update([
-            'Descripcion' => $paquete[5]
+        Caracteristicas::where('id', $paqueteSeleccionado['id_caracteristica_paquete'])->update([
+            'Descripcion' => $paquete['descripcion']
         ]);
         $dia = $paquete['dia'];
         $mes = $paquete['mes'];

@@ -22,6 +22,7 @@
     </div>
     <div> 
     <div class="cajaDatos"> 
+
     <form action="{{route('paquete.realizarAccion')}}" method="POST">
        <input type="checkbox" id="cbxAgregar" name="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
        <input type="checkbox" id="cbxModificar" name="cbxModificar"onclick="comprobarCbxModificar()">Modificar </input>
@@ -65,7 +66,7 @@
           <label for="peso" >Peso(Kg)</label>
 </div>
 <input type="hidden" name="identificador" id="identificador">
-          <input type="hidden" name="idLugaresEntrega" id="idLugaresEntrega" value="{{ json_encode(session('idLugaresEntrega', [])) }}"></input>
+          <input type="hidden" name="idLugaresEntrega" id="idLugaresEntrega" value="{{ json_encode(session('lugaresEntrega', [])) }}"></input>
           <button type="submit" name="aceptar">Aceptar</button>
 </form>
       </div>
