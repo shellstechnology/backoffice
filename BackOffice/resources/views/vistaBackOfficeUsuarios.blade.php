@@ -28,6 +28,8 @@
        <input type="checkbox" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
        
        <div class="contenedorDatos">
+       <form action="{{route('usuario.realizarAccion')}}" method="POST">
+      @csrf
         <div class="campo">
           <input type="text" id="nombre" maxlength="20"></input>
           <label for="nombre" >Nombre de Usuario</label>
@@ -40,22 +42,16 @@
           <input type="text" id="mail" maxlength="40"></input>
           <label for="mail" >Correo electronico</label>
         </div>
-      <div class="campo">
-          <input type="number" id="telefono" maxlength="9" onkeydown="filtro(event)" oninput="limitarInput(this, 9)" onpaste="return false";></input>
-          <label for="telefono" >Numero de Telefono</label>
-        </div>
         <div class="campo">
           <select id="tipoUsuario"> <select>
           <label for="tipoUsuario" >Tipo de Usuario</label>
+</form>
        </div>
-        <button id="cargar"onclick="cargarSelectUsuario();
-                                cargarTabla('{{route('usuario.cargarDatos')}}'), 10">Cargar Tabla</button>
-    <button onclick="validarInputs('{{ route('usuario.agregar') }}',
-                                   '{{ route('usuario.modificar') }}',
-                                   '{{ route('usuario.eliminar')}}',
-                                   '{{route('usuario.cargarDatos')}}')">Aceptar</button>
-    <button onclick="recuperarDatos('{{route('usuario.recuperar')}}',
-                                    '{{route('usuario.cargarDatos')}}')">Reestablecer Dato</button>
+       <form action="{{route('usuario.cargarDatos')}}" method="GET">
+         @csrf
+         <button type="submit" name="cargar" id="cargar">Cargar Datos</button>
+       </form>
+       <button type="button" name="cargarTabla" id="cargarTabla" onclick="crearTabla(7, {{json_encode(session('usuarios', []))}})">Cargar Tabla</button>
       </div>
     </div>
   </div>

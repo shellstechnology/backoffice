@@ -55,11 +55,8 @@ Route::get('vistaBackOfficePaqueteContieneLote', function(){
     return view('vistaBackOfficePaqueteContieneLote');
 })-> name('lote.paqueteContieneLote');
 
-
 Route::get('/producto/cargarDatos', [productoController::class, 'cargarDatos'])->name('producto.cargarDatos');
-Route::post('/producto/agregar', [productoController::class, 'agregar'])->name('producto.agregar');
-Route::post('/producto/modificar', [productoController::class, 'modificar'])->name('producto.modificar');
-Route::delete('/producto/eliminar', [productoController::class, 'eliminar'])->name('producto.eliminar');
+Route::post('/producto/realizarAccion', [productoController::class, 'realizarAccion'])->name('producto.realizarAccion');
 Route::post('/producto/recuperar', [productoController::class, 'recuperar'])->name('producto.recuperar');
 
 Route::get('/almacen/cargarDatos', [almacenController::class, 'cargarDatos'])->name('almacen.cargarDatos');
@@ -83,7 +80,5 @@ Route::post('/paqueteContieneLote/recuperar', [paqueteContieneLoteController::cl
 
 
 Route::get('/usuario/cargarDatos', [usuarioController::class, 'cargarDatos'])->name('usuario.cargarDatos');
-Route::post('/usuario/agregar', [usuarioController::class, 'agregar'])->name('usuario.agregar');
-Route::post('/usuario/modificar', [usuarioController::class, 'modificar'])->name('usuario.modificar');
-Route::delete('/usuario/eliminar', [usuarioController::class, 'eliminar'])->name('usuario.eliminar');
+Route::post('/usuario/realizarAccion', [usuarioController::class, 'realizarAccion'])->name('usuario.realizarAccion');
 Route::post('/usuario/recuperar', [usuarioController::class, 'recuperar'])->name('usuario.recuperar');

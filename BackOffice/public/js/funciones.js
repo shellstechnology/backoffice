@@ -1,28 +1,41 @@
 var idTabla = 0;
-var tipoDeMoneda = ["USD", "EUR", "UYU"];
 var arrayUsuarios = ["Administrador", "Almacenero", "Chofer", "Cliente"];
 var arrayDia = [];
 var arrayMes = [];
 var arrayAnio = [];
 
 window.addEventListener("DOMContentLoaded", (event) => {
-    var botonCargar=document.getElementById('cargarTabla')
-    if(botonCargar!=null){
-        botonCargar.click()
-      var idAlmacenes=document.getElementById('idAlmacenes')
-      var idPaquetes=document.getElementById('idPaquetes')
-      var idLotes=document.getElementById('idLotes')
-    if(idAlmacenes!=null){
-        crearIdAlmacenes(idAlmacenes.value.replace('[','').replace(']','').split(','))
+    var respuesta = document.getElementById('respuesta');
+    if (respuesta.value != "[]") {
+        alert(respuesta.value);
+        respuesta.value=''
+
     }
-    if(idPaquetes!=null){
-        crearIdPaquetes(idPaquetes.value.replace('[','').replace(']','').split(','))
+
+        var botonCargar = document.getElementById('cargarTabla')
+        if (botonCargar != null) {
+            botonCargar.click()
+            var idAlmacenes = document.getElementById('idAlmacenes')
+            var idPaquetes = document.getElementById('idPaquetes')
+            var idLotes = document.getElementById('idLotes')
+            var moneda = document.getElementById('moneda')
+            if (idAlmacenes != null) {
+                crearIdAlmacenes(idAlmacenes.value.replace('[', '').replace(']', '').split(','))
+            }
+            if (idPaquetes != null) {
+                crearIdPaquetes(idPaquetes.value.replace('[', '').replace(']', '').split(','))
+            }
+            if (idLotes != null) {
+                crearIdLotes(idLotes.value.replace('[', '').replace(']', '').split(','))
+            }
+            if (moneda != null) {
+                console.log(moneda.value);
+                crearTipoMoneda(moneda.value.replace('[', '').replace(']', '').split(','))
+            }
+        }
     }
-    if(idLotes!=null){
-        crearIdLotes(idLotes.value.replace('[','').replace(']','').split(','))
-    }
-}
-  });
+
+);
 
 
 function crearIdAlmacenes(infoAlmacenes) {
@@ -53,6 +66,16 @@ function crearIdLotes(infoLote) {
         lote.value = datoLote;
         lote.textContent = datoLote;
         inputIdLote.appendChild(lote);
+    });
+}
+function crearTipoMoneda(tipoMoneda) {
+    var inputTipoMoneda = document.getElementById('tipoMoneda');
+    tipoMoneda.forEach(function (datoMoneda) {
+        datoMoneda = datoMoneda.replace('"', '').replace('"', '')
+        var moneda = document.createElement('option');
+        moneda.value = datoMoneda;
+        moneda.textContent = datoMoneda;
+        inputTipoMoneda.appendChild(moneda);
     });
 }
 
@@ -112,7 +135,7 @@ function crearPaquetes(infoPaquete) {
     });
 }
 function crearLotes() {
- 
+
 }
 
 
@@ -184,19 +207,6 @@ function crearIdLugarEntrega(infoLugar) {
     });
 }
 
-
-
-function crearTipoMoneda(tipoDeMoneda) {
-    var inputTipoMoneda = document.getElementById('tipoMoneda');
-    if (inputTipoMoneda) {
-        tipoDeMoneda.forEach(function (moneda) {
-            var divisa = document.createElement('option');
-            divisa.value = moneda;
-            divisa.textContent = moneda;
-            inputTipoMoneda.appendChild(divisa);
-        });
-    }
-}
 function cargarSelectUsuario() {
     var inputUsuarios = document.getElementById('tipoUsuario');
     if (inputUsuarios) {
@@ -313,14 +323,14 @@ function comprobarCbxModificar() {
     if (cbxModificar.checked) {
         cbxAgregar.checked = false
         cbxEliminar.checked = false
-        cbxRecuperar.checked=false
+        cbxRecuperar.checked = false
     }
 }
 
 function comprobarCbxEliminar() {
     if (cbxEliminar.checked) {
         cbxAgregar.checked = false;
-        cbxRecuperar.checked=false
+        cbxRecuperar.checked = false
         var checkbox = document.getElementById('cbxModificar');
         if (checkbox)
             cbxModificar.checked = false
@@ -339,14 +349,14 @@ function comprobarCbxRecuperar() {
 
 function filtro(event) {
     var texto = event.key;
-    if ([',', 'e','E'].includes(texto))
+    if ([',', 'e', 'E'].includes(texto))
         event.preventDefault()
 }
 function limitarInput(input, maxLength) {
     if (input.value.length > maxLength) {
-      input.value = input.value.slice(0, maxLength);
+        input.value = input.value.slice(0, maxLength);
     }
-  }
+}
 /****************************************************/
 
 function cargarInputsAlmacen(datosFila) {
@@ -401,6 +411,5 @@ function cargarInputsUsuarios(datosFila) {
     document.getElementById('contraseña').value = datosFila[2];
     document.getElementById('tipoUsuario').value = datosFila[3];
     document.getElementById('mail').value = datosFila[5];
-    document.getElementById('telefono').value = datosFila[4];
 }
 
