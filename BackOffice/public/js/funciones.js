@@ -4,21 +4,18 @@ var arrayDia = [];
 var arrayMes = [];
 var arrayAnio = [];
 
-window.addEventListener("DOMContentLoaded", (event) => {
-    var respuesta = document.getElementById('respuesta');
-    if (respuesta.value != "[]") {
-        alert(respuesta.value);
-        respuesta.value=''
 
-    }
+window.addEventListener("DOMContentLoaded", (event) => {
 
         var botonCargar = document.getElementById('cargarTabla')
         if (botonCargar != null) {
             botonCargar.click()
+            var idLugaresEntrega = document.getElementById('idLugaresEntrega')
             var idAlmacenes = document.getElementById('idAlmacenes')
             var idPaquetes = document.getElementById('idPaquetes')
             var idLotes = document.getElementById('idLotes')
             var moneda = document.getElementById('moneda')
+            var dia = document.getElementById('dia');
             if (idAlmacenes != null) {
                 crearIdAlmacenes(idAlmacenes.value.replace('[', '').replace(']', '').split(','))
             }
@@ -31,6 +28,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
             if (moneda != null) {
                 console.log(moneda.value);
                 crearTipoMoneda(moneda.value.replace('[', '').replace(']', '').split(','))
+            }
+            if(dia!=null){
+                crearFechasPaquete()
             }
         }
     }
@@ -143,24 +143,24 @@ function crearFechasPaquete() {
     var inputDia = document.getElementById('dia');
     var inputMes = document.getElementById('mes');
     var inputAnio = document.getElementById('anio');
-    arrayDia.forEach(function (dia) {
+    for(var dia=1;dia<=31;dia++){
         var day = document.createElement('option');
         day.value = dia;
         day.textContent = dia;
         inputDia.appendChild(day);
-    });
-    arrayMes.forEach(function (mes) {
+    }
+    for(var mes=1;mes<=12;mes++){
         var month = document.createElement('option');
         month.value = mes;
         month.textContent = mes;
         inputMes.appendChild(month);
-    });
-    arrayAnio.forEach(function (anio) {
+    }
+    for(var anio=1;anio<=2023;anio++){
         var year = document.createElement('option');
         year.value = anio;
         year.textContent = anio;
         inputAnio.appendChild(year);
-    });
+    }
 }
 function cargarIdProducto(ruta) {
     console.log('a')

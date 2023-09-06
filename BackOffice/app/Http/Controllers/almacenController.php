@@ -76,14 +76,14 @@ class almacenController extends Controller
         $id = $datosRequest['identificador'];
         $almacen = Lugares_Entrega::onlyTrashed()->find($id);
         if ($almacen) {
-           $almacen->restore();
+            $almacen->restore();
         }
         return redirect()->route('backoffice.almacen');
     }
 
     private function obtenerDatosAlmacenes($almacen)
     {
-        $lugarAlmacen=Lugares_Entrega::withTrashed()->where('id',$almacen['id_lugar_entrega'])->first();
+        $lugarAlmacen = Lugares_Entrega::withTrashed()->where('id', $almacen['id_lugar_entrega'])->first();
         return [
             'Id Almacen' => $almacen['id'],
             'Direccion Almacen' => $lugarAlmacen['direccion'],
@@ -118,8 +118,8 @@ class almacenController extends Controller
         $lugarAlmacen->latitud = $almacen['latitud'];
         $lugarAlmacen->longitud = $almacen['longitud'];
         $lugarAlmacen->save();
-        $nuevaAlmacen=new Almacenes;
-        $nuevaAlmacen->id_lugar_entrega=$lugarAlmacen->id;
+        $nuevaAlmacen = new Almacenes;
+        $nuevaAlmacen->id_lugar_entrega = $lugarAlmacen->id;
         $nuevaAlmacen->save();
     }
 

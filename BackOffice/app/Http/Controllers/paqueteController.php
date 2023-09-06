@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Caracteristicas;
 use App\Models\Lugares_Entrega;
 use App\Models\Paquetes;
-use App\Models\Productos;
+use App\Models\Producto;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
@@ -44,7 +44,6 @@ class paqueteController extends Controller
             }
         }
         $idLugaresEntrega = $this->definirLugaresEntrega($datoLugarEntrega);
-        $idLugaresEntrega[] = $this->definirLugaresEntrega($dato);
         Session::put('lugaresEntrega', $idLugaresEntrega);
         Session::put('paquete', $infoPaquete);
         return redirect()->route('backoffice.paquete');
@@ -94,7 +93,7 @@ class paqueteController extends Controller
     {
         $lugarEntrega = Lugares_Entrega::withTrashed()->where('id', $paquete['id_lugar_entrega'])->first();
         $caracteristica = Caracteristicas::withTrashed()->where('id', $paquete['id_caracteristica_paquete'])->first();
-        $producto = Productos::withTrashed()->where('id', $paquete['id_producto'])->first();
+        $producto = Producto::withTrashed()->where('id', $paquete['id_producto'])->first();
         if ($producto && $lugarEntrega && $caracteristica) {
             return (
                 [
@@ -102,7 +101,7 @@ class paqueteController extends Controller
                     'Fecha de Entrega' => $paquete['fecha_de_entrega'],
                     'Id Lugar Entrega' => $lugarEntrega['id'],
                     'Direccion' => $lugarEntrega['direccion'],
-                    'Caracteristicas' => $caracteristica['descripcion'],
+                    'Caracteristicas' => $caracteristica['descripcion_caracteristica'],
                     'Nombre del Remitente' => $paquete['nombre_remitente'],
                     'Nombre del Destinatario' => $paquete['nombre_destinatario'],
                     'Id del Producto' => $producto['id'],
@@ -116,7 +115,7 @@ class paqueteController extends Controller
         }
     }
 
-    private function definirLugaresEntrrega($datoLugarEntrega)
+    private function definirLugaresEntrega($datoLugarEntrega)
     {
         $datoLugares=[];
         foreach($datoLugarEntrega as $dato){
@@ -135,11 +134,11 @@ class paqueteController extends Controller
             'Peso' => 'required|numeric|min:1|max:999',
         ];
         return Validator::make([
-            'Caracteristica' => $paquete['caracteristica'],
-            'Nombre Remitente' => $paquete['nombreRemitente'],
-            'Nombre Destinatario' => $paquete['nombreDestiatario'],
-            'Volumen' => $paquete['volumen'],
-            'Peso' => $paquete['peso']
+            'Caracteristica' => $paquete['id_caracteristica_paquete'],
+            'Nombre Remitente' => $paquete['nombre_remitente'],
+            'Nombre Destinatario' => $paquete['nombre_destiatario'],
+            'Volumen' => $paquete['volumen_l'],
+            'Peso' => $paquete['peso_kg']
         ], $reglas);
     }
 

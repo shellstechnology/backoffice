@@ -24,6 +24,7 @@
     <div class="cajaDatos"> 
 
     <form action="{{route('paquete.realizarAccion')}}" method="POST">
+      @csrf
        <input type="checkbox" id="cbxAgregar" name="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
        <input type="checkbox" id="cbxModificar" name="cbxModificar"onclick="comprobarCbxModificar()">Modificar </input>
        <input type="checkbox" id="cbxEliminar" name="cbxEliminar"onclick="comprobarCbxEliminar()">Eliminar </input>
@@ -58,11 +59,13 @@
           <label for="idProducto" >Id Del Producto</label>
       </div>
       <div class="campo">
-          <input type="number" id="volumen" min=0 max=999  onkeydown="filtro(event)" oninput="limitarInput(this, 3)" onpaste="return false"></input>
+          <input type="text" id="volumen" name="volumen" onkeydown="filtro(event)" 
+                pattern="[0-9]*[.,]?[0-9]+" maxlength="9" required>
           <label for="volumen" >Volumen(L)</label>
       </div>
       <div class="campo">
-          <input type="number" id="peso" min=0 max=999  onkeydown="filtro(event)" oninput="limitarInput(this, 3)" onpaste="return false"></input>
+      <input type="text" id="peso" name="peso" onkeydown="filtro(event)" 
+                pattern="[0-9]*[.,]?[0-9]+" maxlength="9" required>
           <label for="peso" >Peso(Kg)</label>
 </div>
 <input type="hidden" name="identificador" id="identificador">
