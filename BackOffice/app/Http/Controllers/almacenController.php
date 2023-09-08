@@ -21,6 +21,7 @@ class almacenController extends Controller
         }
         Session::put('almacenes', $datosAlmacenes);
         return redirect()->route('backoffice.almacen');
+
     }
     public function realizarAccion(Request $request)
     {
@@ -65,7 +66,7 @@ class almacenController extends Controller
     public function eliminar($datosRequest)
     {
         $id = $datosRequest['identificador'];
-        $almacen = Lugares_Entrega::withoutTrashed()->find($id);
+        $almacen = Almacenes::withoutTrashed()->find($id);
         if ($almacen) {
             $almacen->delete();
         }
@@ -74,11 +75,10 @@ class almacenController extends Controller
     public function recuperar($datosRequest)
     {
         $id = $datosRequest['identificador'];
-        $almacen = Lugares_Entrega::onlyTrashed()->find($id);
+        $almacen = Almacenes::onlyTrashed()->find($id);
         if ($almacen) {
             $almacen->restore();
         }
-        return redirect()->route('backoffice.almacen');
     }
 
     private function obtenerDatosAlmacenes($almacen)
@@ -89,9 +89,9 @@ class almacenController extends Controller
             'Direccion Almacen' => $lugarAlmacen['direccion'],
             'Lat Almacen' => $lugarAlmacen['latitud'],
             'Lng Almacen' => $lugarAlmacen['longitud'],
-            'created_at' => $lugarAlmacen['created_at'],
-            'updated_at' => $lugarAlmacen['updated_at'],
-            'deleted_at' => $lugarAlmacen['deleted_at'],
+            'created_at' => $almacen['created_at'],
+            'updated_at' => $almacen['updated_at'],
+            'deleted_at' => $almacen['deleted_at'],
         ];
 
     }
@@ -125,7 +125,8 @@ class almacenController extends Controller
 
     private function modificarAlmacen($lugarAlmacen)
     {
-        Lugares_Entrega::where('id', $lugarAlmacen['identificador'])->update([
+        $almacen=Almacenes::where('id', $lugarAlmacen['identificador'])->first();;
+        Lugares_Entrega::where('id', $almacen['id_lugar_entrega'])->update([
             'direccion' => $lugarAlmacen['direccion'],
             'latitud' => $lugarAlmacen['latitud'],
             'longitud' => $lugarAlmacen['longitud'],

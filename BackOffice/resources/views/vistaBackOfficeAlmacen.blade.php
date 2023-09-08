@@ -12,9 +12,10 @@
   <body>
      <div class="barraDeNavegacion">
        <div class="item" onclick="redireccionar('{{route('backoffice')}}')"> Menu Principal</div>
-       <div class="item" onclick="redireccionar('{{route('backoffice.paquete')}}')"> Paquetes</div>
-       <div class="item" onclick="redireccionar('{{route('backoffice.producto')}}')"> Productos</div>
-       <div class="item" onclick="redireccionar('{{route('backoffice.lote')}}')"> Lotes</div>
+       <div class="itemSeleccionado" onclick="redireccionar('{{route('backoffice.almacen')}}')">Almacenes</div>
+    <div class="item" onclick="redireccionar('{{route('backoffice.paquete')}}')"> Paquetes</div>
+    <div class="item" onclick="redireccionar('{{route('backoffice.producto')}}')"> Productos</div>
+    <div class="item" onclick="redireccionar('{{route('backoffice.lote')}}')"> Lotes</div>
      </div>
      <div class="container">
        <div class="cuerpo">

@@ -38,6 +38,16 @@ body {
     text-align: center;
 }
 
+.itemSeleccionado{
+    flex:1;
+    padding-top: 15px;
+    margin-left: 3px;
+    margin-right: 3px;
+    background-color: var(--colorFuerte);
+    border: 2px black solid;
+    text-align: center;
+}
+
 .container{
     margin-top: 20px;
     display: flex;

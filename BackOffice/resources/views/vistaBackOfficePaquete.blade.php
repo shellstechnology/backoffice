@@ -13,8 +13,9 @@
 <div class="barraDeNavegacion">
       <div class="item" onclick="redireccionar('{{route('backoffice')}}')"> Menu Principal</div>
       <div class="item" onclick="redireccionar('{{route('backoffice.almacen')}}')">Almacenes</div>
-      <div class="item" onclick="redireccionar('{{route('backoffice.producto')}}')"> Productos</div>
-      <div class="item" onclick="redireccionar('{{route('backoffice.lote')}}')"> Lotes</div>
+    <div class="itemSeleccionado" onclick="redireccionar('{{route('backoffice.paquete')}}')"> Paquetes</div>
+    <div class="item" onclick="redireccionar('{{route('backoffice.producto')}}')"> Productos</div>
+    <div class="item" onclick="redireccionar('{{route('backoffice.lote')}}')"> Lotes</div>
    </div>
   <div class="container">
     <div class="cuerpo">
@@ -30,32 +31,40 @@
        <input type="checkbox" id="cbxEliminar" name="cbxEliminar"onclick="comprobarCbxEliminar()">Eliminar </input>
        <input type="checkbox" name="cbxRecuperar" id="cbxRecuperar" onclick="comprobarCbxRecuperar()">Recuperar </input>
        <div class="contenedorDatos">
+        <duv class="campo">
+          <input type="text" name="nombrePaquete" id="nombrePaquete"></input>
+          <label for="nombrePaquete">Nombre del Paquete</label>
+        </div>
          <div class="campo">
-         <select id="anio"> <select>
+         <select name="anio" id="anio"> </select>
           <label for="anio" >Año</label>
-          <select id="mes"> <select>
+          <select name="mes" id="mes"> </select>
           <label for="mes" >Mes</label>
-          <select id="dia"> <select>
+          <select name="dia" id="dia"> </select>
           <label for="dia" >Dia</label>
         </div>
         <div class="campo">
-        <select id="idLugarEntrega"> <select>
+        <select name="idLugarEntrega" id="idLugarEntrega"> <select>
           <label for="idLugarEntrega" >Lugar de Entrega</label>
         </div>
+        <div class="campo">
+          <select name="estado" id="estado"></select>
+          <label for="estado" >Estado</label>
+      </div>
       <div class="campo">
-          <input type="text" id="caracteristica" maxlength="100"></input>
+          <select name="caracteristica" id="caracteristica"></select>
           <label for="caracteristica" >Caracteristica</label>
       </div>
       <div class="campo">
-          <input type="text" id="nombreRemitente" maxlength="20"></input>
+          <input type="text" name="nombreRemitente" id="nombreRemitente" maxlength="50"></input>
           <label for="nombreRemitente" >Nombre Remitente</label>
       </div>
       <div class="campo">
-          <input type="text" id="nombreDestinatario" maxlength="20"></input>
+          <input type="text" name="nombreDestinatario" id="nombreDestinatario" maxlength="50"></input>
           <label for="nombreDestinatario" >Nombre Destinatario</label>
       </div>
       <div class="campo">
-      <select id="idProducto"> <select>
+      <select name="idProducto" id="idProducto"> </select>
           <label for="idProducto" >Id Del Producto</label>
       </div>
       <div class="campo">
@@ -68,16 +77,20 @@
                 pattern="[0-9]*[.,]?[0-9]+" maxlength="9" required>
           <label for="peso" >Peso(Kg)</label>
 </div>
-<input type="hidden" name="identificador" id="identificador">
-          <input type="hidden" name="idLugaresEntrega" id="idLugaresEntrega" value="{{ json_encode(session('lugaresEntrega', [])) }}"></input>
+<input type="hidden" name="identificador" id="identificador"></input>
+          <input type="hidden" name="idLugaresEntrega" id="idLugaresEntrega" value="{{ json_encode(session('idLugaresEntrega', [])) }}"></input>
+          <input type="hidden" name="idPaquete" id="idPaquete" value="{{ json_encode(session('paquete', [])) }}"></input>
+          <input type="hidden" name="idProductos" id="idProductos" value="{{ json_encode(session('idProductos', [])) }}"></input>
+          <input type="hidden" name="estadoPaquete" id="estadoPaquete" value="{{ json_encode(session('estadoPaquete', [])) }}"></input>
+          <input type="hidden" name="descripcionCaracteristica" id="descripcionCaracteristica" value="{{ json_encode(session('descripcionCaracteristica', [])) }}"></input>
           <button type="submit" name="aceptar">Aceptar</button>
 </form>
-      </div>
-      <form action="{{route('paquete.cargarDatos')}}" method="GET">
+<form action="{{route('paquete.cargarDatos')}}" method="GET">
          @csrf
          <button type="submit" name="cargar" id="cargar">Cargar Datos</button>
        </form>
        <button type="button" name="cargarTabla" id="cargarTabla" onclick="crearTabla(5, {{json_encode(session('paquete', []))}})">Cargar Tabla</button>
+      </div>
       </div>
     </div>
   </div>

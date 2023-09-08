@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\moneda;
+use App\Models\Moneda;
 use App\Models\Producto;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -13,7 +13,6 @@ class productoController extends Controller
 {
     public function realizarAccion(Request $request)
     {
-
         $datosRequest = $request->all();
         if ($request->has('cbxAgregar')) {
             $this->agregar($datosRequest);
@@ -27,7 +26,8 @@ class productoController extends Controller
         if ($request->has('cbxRecuperar')) {
             $this->recuperar($datosRequest);
         }
-             return redirect()->route('backoffice.producto');
+        $this->cargarDatos();
+        return redirect()->route('backoffice.producto');
     }
     public function cargarDatos()
     {
@@ -46,21 +46,12 @@ class productoController extends Controller
     }
 
     public function agregar($datosRequest)
-    { {
-            try {
-                $validador = $this->validarDatos($datosRequest);
-                dd('a');
-                if ($validador->fails()) {
-                    $errores = $validador->getMessageBag();
-                    Session::put('respuesta', ('Error al ingresar los datos,' + $errores));
-                    return redirect()->route('backoffice.producto');
-                }
-
-                $this->crearProducto($datosRequest);
-            }catch(\Exception $e){
-                Session::put('respuesta', ('Se a producido un error inesperado:'));
-            }
+    {
+        $validador = $this->validarDatos($datosRequest);
+        if ($validador->fails()) {
+            $errores = $validador->getMessageBag();
         }
+        $this->crearProducto($datosRequest);
     }
 
     public function modificar($datosRequest)
@@ -68,7 +59,6 @@ class productoController extends Controller
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
             $errores = $validador->getMessageBag();
-            Session::put('respuesta', ('Error al modificar los datos,' + $errores));
             return redirect()->route('backoffice.producto');
         }
         $this->modificarProducto($datosRequest);
@@ -76,8 +66,7 @@ class productoController extends Controller
 
     public function eliminar($datosRequest)
     {
-        $id = $datosRequest->get('identificador');
-        $producto = Producto::withoutTrashed()->where('id', $id)->first();
+        $producto = Producto::withoutTrashed()->where('id', $datosRequest['identificador'])->first();
         if ($producto) {
             $producto->delete();
         }
@@ -85,8 +74,7 @@ class productoController extends Controller
 
     public function recuperar($datosRequest)
     {
-        $id = $datosRequest->get('identificador');
-        $producto = Producto::onlyTrashed()->where('id', $id)->first();
+        $producto = Producto::onlyTrashed()->where('id', $datosRequest['identificador'])->first();
         if ($producto) {
             $producto->restore();
         }
@@ -94,12 +82,16 @@ class productoController extends Controller
 
     private function definirProducto($producto)
     {
-        $moneda = moneda::withTrashed()->where('id', 'id_moneda')->first();
+        $moneda = Moneda::withTrashed()->where('id', $producto['id_moneda'])->first();
         return ([
+            'Id' => $producto['id'],
             'Nombre' => $producto['nombre'],
             'Stock' => $producto['stock'],
             'Precio' => $producto['precio'],
-            'Moneda' => $moneda['moneda']
+            'Moneda' => $moneda['moneda'],
+            'Fecha de Creacion' => $producto['created_at'],
+            'Ultima Actualizacion' => $producto['updated_at'],
+            'Fecha de Borrado' => $producto['deleted_at']
         ]);
 
     }
@@ -121,42 +113,43 @@ class productoController extends Controller
         $reglas = [
             'Nombre' => 'required|string|max:20',
             'Precio' => 'required|integer|min:1|max:9999999',
-            'TipoMoneda' => 'required|string|max:20',
+            'Moneda' => 'required|string|max:20',
             'Stock' => 'required|integer|min:0|max:9999999',
         ];
         return Validator::make([
             'Nombre' => $producto['nombre'],
             'Precio' => $producto['precio'],
-            'TipoMoneda' => $producto['tipoMoneda'],
+            'Moneda' => $producto['tipoMoneda'],
             'Stock' => $producto['stock'],
         ], $reglas);
     }
 
     private function crearProducto($producto)
-    { {
-            try {
-                $nuevoProducto = new Producto;
-                $nuevoProducto->nombre = $producto['nombre'];
-                $nuevoProducto->precio = $producto['precio'];
-                $nuevoProducto->tipoMoneda = $producto['tipoMoneda'];
-                $nuevoProducto->stock = $producto['stock'];
-                $nuevoProducto->save();
-                Session::put('respuesta', 'Producto creado correctamente');
-            } catch (\Exception $e) {
-                Session::put('respuesta', ('Error al agregar el producto,' + $e));
+    {
+        $moneda = $this->obtenerMoneda($producto['tipoMoneda']);
+        $nuevoProducto = new Producto;
+        $nuevoProducto->nombre = $producto['nombre'];
+        $nuevoProducto->precio = $producto['precio'];
+        $nuevoProducto->id_moneda = $moneda;
+        $nuevoProducto->stock = $producto['stock'];
+        $nuevoProducto->save();
+    }
 
-            }
-
-        }
+    private function obtenerMoneda($producto)
+    {
+        $datosMoneda = Moneda::withTrashed()->where('moneda', $producto)->first();
+        $moneda = $datosMoneda['id'];
+        return $moneda;
     }
 
     private function modificarProducto($producto)
     {
+        $moneda = $this->obtenerMoneda($producto['tipoMoneda']);
         Producto::where('id', $producto['identificador'])->update([
-            'Nombre' => $producto['identificador'],
-            'Precio' => $producto['precio'],
-            'TipoMoneda' => $producto['tipoMoneda'],
-            'Stock' => $producto['stock'],
+            'nombre' => $producto['nombre'],
+            'precio' => $producto['precio'],
+            'id_moneda' => $moneda,
+            'stock' => $producto['stock'],
         ]);
     }
 }

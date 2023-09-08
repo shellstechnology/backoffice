@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Almacenes;
 use App\Models\Lugares_Entrega;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -33,12 +32,11 @@ class lugarEntregaController extends Controller
     public function cargarDatos()
     {
         $infoLugarEntrega = [];
-        $almacenes = Almacenes::withTrashed()->get();
-        $idAlmacen = [];
-        foreach ($almacenes as $dato) {
-            $infoLugarEntrega[] = $this->definirLugarEntrega($dato);
+        $listaLugares=Lugares_Entrega::withTrashed()->get();
+        foreach ($listaLugares as $dato) {
+            $infoLugarEntrega[] = $this->obtenerDatosLugaresEntrega($dato);
         }
-        Session::put('idAlmacenes', $idAlmacen);
+        Session::put('idAlmacenes', $listaLugares);
         Session::put('lugaresEntrega', $infoLugarEntrega);
         return redirect()->route('almacen.lugarEntrega');
     }
@@ -71,7 +69,6 @@ class lugarEntregaController extends Controller
         $lugarEntregaEliminable = Lugares_Entrega::withoutTrashed()->find($id);
         if ($lugarEntregaEliminable) {
           $lugarEntregaEliminable->delete();
-            Almacenes::where('id_lugar_entrega',$id)->delete();
         }
     }
 
@@ -81,14 +78,6 @@ class lugarEntregaController extends Controller
         $lugarEntregaRestaurable = Lugares_Entrega::onlyTrashed()->find($id);
         if ($lugarEntregaRestaurable) {
             $lugarEntregaRestaurable->restore();
-            Almacenes::where('id_lugar_entrega',$id)->restore();
-        }
-    }
-    private function definirLugarEntrega($dato)
-    {
-        $lugarEntrega = Lugares_Entrega::withTrashed()->where('Id', $dato['id_lugar_entrega'])->first();
-        if ($lugarEntrega) {
-            return ($this->obtenerDatosLugaresEntrega($lugarEntrega));
         }
     }
     private function obtenerDatosLugaresEntrega($lugarEntrega)
@@ -127,10 +116,6 @@ class lugarEntregaController extends Controller
         $lugarEntrega->Latitud = $lugar['latitud'];
         $lugarEntrega->Longitud = $lugar['longitud'];
         $lugarEntrega->save();
-        $almacen = new Almacenes;
-        $almacen->IdDireccionAlmacen = $lugar['idAlmacen'];
-        $almacen->IdLugarDeEntrega = $lugarEntrega->id;
-        $almacen->save();
     }
 
     private function modificarLugarEntrega($lugarEntrega)
@@ -140,13 +125,6 @@ class lugarEntregaController extends Controller
             'Latitud' => $lugarEntrega['latitud'],
             'Longitud' => $lugarEntrega['longitud'],
         ]);
-        $this->modificarAlmacen($lugarEntrega);
     }
 
-    private function modificarAlmacen($lugarEntrega)
-    {
-        Almacenes::where('IdLugarDeEntrega', $lugarEntrega['identificador'])->update([
-            'IdDireccionAlmacen' => $lugarEntrega['idAlmacen'],
-        ]);
-    }
 }

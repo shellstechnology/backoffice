@@ -12,9 +12,10 @@
   <body>
   <div class="barraDeNavegacion">
        <div class="item" onclick="redireccionar('{{route('backoffice')}}')"> Menu Principal</div>
-       <div class="item" onclick="redireccionar('{{route('backoffice.paquete')}}')"> Paquetes</div>
-       <div class="item" onclick="redireccionar('{{route('backoffice.producto')}}')"> Productos</div>
-        <div class="item" onclick="redireccionar('{{route('backoffice.lote')}}')"> Lotes</div>
+       <div class="itemSeleccionado" onclick="redireccionar('{{route('backoffice.almacen')}}')">Almacenes</div>
+    <div class="item" onclick="redireccionar('{{route('backoffice.paquete')}}')"> Paquetes</div>
+    <div class="item" onclick="redireccionar('{{route('backoffice.producto')}}')"> Productos</div>
+    <div class="item" onclick="redireccionar('{{route('backoffice.lote')}}')"> Lotes</div>
     </div>
     <div class="container">
      <div class="cuerpo">
@@ -30,10 +31,6 @@
             <input type="checkbox" name="cbxEliminar" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
             <input type="checkbox" name="cbxRecuperar" id="cbxRecuperar" onclick="comprobarCbxRecuperar()">Recuperar </input>
         <div class="contenedorDatos">
-        <div class="campo">
-         <select id="idAlmacen" name="idAlmacen"></select>
-           <label for="idAlmacen" >Id del Almacen</label>
-         </div>
           <div class="campo">
             <input type="text" id="direccion" name="direccion" maxlength="25"></input>
            <label for="direccion" >Direccion</label>

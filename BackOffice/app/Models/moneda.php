@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
-class moneda extends Model
+class Moneda extends Model
 {
     protected $table = 'monedas';
     use HasFactory;

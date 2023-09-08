@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Almacenes;
 use App\Models\Lotes;
-use App\Models\Lugares_Entrega;
 use App\Models\Paquetes;
 use App\Models\Paquete_Contiene_Lote;
 use Illuminate\Http\Request;
@@ -41,7 +40,7 @@ class paqueteContieneLoteController extends Controller
         foreach ($datosPaqueteContieneLote as $paqueteContieneLote) {
             $infoPaqueteContieneLote[] = $this->definirPaquete($paqueteContieneLote);
         }
-        $lugarAlmacen = Lugares_Entrega::withoutTrashed()->get();
+        $lugarAlmacen = Almacenes::withoutTrashed()->get();
         foreach ($lugarAlmacen as $datoLugar) {
             $idAlmacen[] = $datoLugar['id'];
         }
@@ -64,7 +63,7 @@ class paqueteContieneLoteController extends Controller
     {
         $paqueteExistente = Paquete_Contiene_Lote::where('id_paquete', $datosRequest['idPaquete'])->first();
         if (!$paqueteExistente) {
-            $this->crearPaquete($datosRequest);
+            $this->crearPaqueteContieneLote($datosRequest);
         }
     }
     public function modificar($datosRequest)
@@ -95,15 +94,13 @@ class paqueteContieneLoteController extends Controller
 
     private function definirPaquete($paqueteContieneLote)
     {
-        $datosLote = Paquete_Contiene_Lote::withTrashed()->where('id_lote', $paqueteContieneLote['idLote'])->get();
-        $datosAlmacen = Almacenes::withTrashed()->where('Id', $paqueteContieneLote['idAlmacen'])->first();
-        $datosPaquete = Paquetes::withTrashed()->where('Id', $paqueteContieneLote['idPaquete'])->first();
+        $datosPaquete = Paquetes::withTrashed()->where('id', $paqueteContieneLote['id_paquete'])->first();
         $infoPaquete = [
-            'Id Lote' => $datosLote['id'],
             'Id Paquete' => $datosPaquete['id'],
+            'Lote' => $paqueteContieneLote['id_lote'],
             'Volumen(L)' => $datosPaquete['volumen_l'],
             'Peso(Kg)' => $datosPaquete['peso_kg'],
-            'Almacen' => $datosAlmacen['id'],
+            'Almacen' => $paqueteContieneLote['id_almacen'],
             'created_at' => $paqueteContieneLote['created_at'],
             'updated_at' => $paqueteContieneLote['updated_at'],
             'deleted_at' => $paqueteContieneLote['deleted_at']
@@ -112,21 +109,21 @@ class paqueteContieneLoteController extends Controller
         return $infoPaquete;
     }
 
-    private function crearPaquete($paquete)
+    private function crearPaqueteContieneLote($paquete)
     {
         $paqueteContieneLote = new Paquete_Contiene_Lote;
-        $paqueteContieneLote->idLote = $paquete['idLote'];
-        $paqueteContieneLote->idPaquete = $paquete['idPaquete'];
-        $paqueteContieneLote->idAlmacen = $paquete['idAlmacen'];
+        $paqueteContieneLote->idPaquete = $paquete['id_paquete'];
+        $paqueteContieneLote->idLote = $paquete['id_lote'];
+        $paqueteContieneLote->idAlmacen = $paquete['id_almacen'];
         $paqueteContieneLote->save();
-        $this->crearLote($paquete);
+        $this->actualizarLote($paquete);
     }
 
 
-    private function crearLote($paquete)
+    private function actualizarLote($paquete)
     {
-        $valores = Paquetes::withTrashed()->where('id', $paquete['idPaquete'])->first();
-        $lote = Lotes::withTrashed()->where('id', $paquete['idLote'])->first();
+        $valores = Paquetes::withTrashed()->where('id', $paquete['id_paquete'])->first();
+        $lote = Lotes::withTrashed()->where('id', $paquete['id_lote'])->first();
         $peso = $valores['peso_kg'] + $lote['peso_kg'];
         $volumen = $valores['volumen_l'] + $lote['volumen_l'];
         $lote->update([
