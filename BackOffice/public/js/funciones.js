@@ -199,9 +199,7 @@ function crearPaquetes(infoPaquete) {
         inputIdPaquete.appendChild(paquete);
     });
 }
-function crearLotes() {
 
-}
 
 
 function crearFechasPaquete() {
@@ -430,7 +428,7 @@ function cargarInputsUsuarios(datosFila) {
     identificador = datosFila[0];
     document.getElementById('nombre').value = datosFila[1];
     document.getElementById('contraseña').value = datosFila[2];
-    document.getElementById('tipoUsuario').value = datosFila[3];
-    document.getElementById('mail').value = datosFila[5];
+    // document.getElementById('tipoUsuario').value = datosFila[3];
+    document.getElementById('mail').value = datosFila[3];
 }
 

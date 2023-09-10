@@ -30,7 +30,7 @@ class usuarioController extends Controller
             $this->recuperar($datosRequest);
         }
         $this->cargarDatos();
-        return redirect()->route('backoffice.producto');
+        return redirect()->route('backoffice.usuarios');
     }
     public function cargarDatos()
     {
@@ -42,7 +42,7 @@ class usuarioController extends Controller
             }
         }
         Session::put('usuarios', $infoUsuario);
-
+        return redirect()->route('backoffice.usuarios');
 
     }
 
@@ -92,30 +92,34 @@ class usuarioController extends Controller
     {
         $mail = $this->obtenerMails($usuario);
         $telefono = $this->obtenerTelefonos($usuario);
-        // return ([
-        //     'Id Usuario' => $usuario('id'),
-        //     'Nombre de Usuario' => $usuario('nombre'),
-        //     'Contraseña' => $usuario('contrasenia'),
-        //     'Mail' => $mail,
-        //     'Telefono/s' => $telefono
-        // ]);
+        $tipoUsuario=$this->obtenerTipoUsuario($usuario)
+        return ([
+            'Id Usuario' => $usuario['id'],
+            'Nombre de Usuario' => $usuario['nombre_de_usuario'],
+            'Contraseña' => $usuario['contrasenia'],
+            'Mail' => $mail,
+            'Telefono/s' => $telefono
+        ]);
     }
 
     private function obtenerMails($usuario)
     {
-        $mail = Mail_Usuarios::withTrashed()->find($usuario['id']);
-        return $mail;
+        $mail = Mail_Usuarios::withTrashed()->where('id_usuarios',$usuario['id'])->first();
+        return $mail['mail'];
     }
 
     private function obtenerTelefonos($usuario)
     {
         $listaTelefonos = [];
-        $telefonos = Telefonos_Usuarios::withTrashed()->find($usuario['id']);
-        dd($telefonos);
+        $telefonos = Telefonos_Usuarios::withTrashed()->where('id_usuarios',$usuario['id'])->get();
         foreach ($telefonos as $telefono) {
             $listaTelefonos[] = $telefono['telefono'];
         }
         return implode('/', $listaTelefonos);
+    }
+
+    private function obtenerTipoUsuario($usuario){
+        $administrador=Administrador::withTrashed->where('id_usuario',$usuario['id'])->first();
     }
 
     private function validarDatos($usuario)
