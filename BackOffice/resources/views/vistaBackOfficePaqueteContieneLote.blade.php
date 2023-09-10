@@ -26,22 +26,22 @@
     <div class="cajaDatos"> 
     <form action="{{route('paqueteContieneLote.realizarAccion')}}" method="POST">
         @csrf
-       <input type="checkbox" id="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
-       <input type="checkbox" id="cbxModificar" onclick="comprobarCbxModificar()">Modificar </input>
-       <input type="checkbox" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
+       <input type="checkbox" name="cbxAgregar" id="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
+       <input type="checkbox" name="cbxModificar" id="cbxModificar" onclick="comprobarCbxModificar()">Modificar </input>
+       <input type="checkbox" name="cbxEliminar" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
        <input type="checkbox" name="cbxRecuperar" id="cbxRecuperar" onclick="comprobarCbxRecuperar()">Recuperar </input>
        
        <div class="contenedorDatos">
        <div class="campo">
-        <select id="idPaquete"> <select>
+        <select name="idPaquete" id="idPaquete"> <select>
           <label for="idPaquete" >Id del Paquete</label>
         </div>
        <div class="campo">
-        <select id="idLote"> <select>
+        <select name="idLote" id="idLote"> <select>
           <label for="idLote" >Id del Lote</label>
         </div>
         <div class="campo">
-        <select id="idAlmacen"> <select>
+        <select name="idAlmacen" id="idAlmacen"> <select>
           <label for="idAlmacen" >Id del Almacen</label>
           </div>
           <div class="contenedorDatos">

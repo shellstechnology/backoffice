@@ -9,7 +9,8 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class Mail_Usuarios extends Model
 {
-    protected $table = 'mail_Usuarios';
+    protected $table = 'mail_usuarios';
+    protected $primaryKey = 'id_usuarios';
     use HasFactory;
     use SoftDeletes;
     use ValidatesRequests;

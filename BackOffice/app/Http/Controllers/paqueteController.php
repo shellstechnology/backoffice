@@ -88,7 +88,6 @@ class paqueteController extends Controller
         $id = $datosRequest['identificador'];
         $paquete = Paquetes::withoutTrashed()->where('id', $id)->first();
         if ($paquete) {
-            Caracteristicas::where('id', $paquete['id_caracteristica_paquete'])->delete();
             Paquetes::where('id', $id)->delete();
 
         }
@@ -99,8 +98,7 @@ class paqueteController extends Controller
         $id = $datosRequest['identificador'];
         $paquete = Paquetes::onlyTrashed()->where('id', $id)->first();
         if ($paquete) {
-            Paquetes::where('id', $id)->update();
-            Caracteristicas::where('id', $paquete['id_caracteristica_paquete'])->update();
+            Paquetes::where('id', $id)->restore();
         }
     }
 
@@ -163,6 +161,7 @@ class paqueteController extends Controller
     private function crearPaquete($paquete)
     {
         $caracteristica = $this->obtenerIdCaracteristica($paquete);
+        $estado=$this->obtenerIdEstado($paquete);
         $dia = $paquete['dia'];
         $mes = $paquete['mes'];
         $anio = $paquete['anio'];
@@ -171,6 +170,7 @@ class paqueteController extends Controller
         $nuevoPaquete->fecha_de_entrega = $fechaEntrega;
         $nuevoPaquete->id_lugar_entrega = $paquete['idLugarEntrega'];
         $nuevoPaquete->nombre = $paquete['nombrePaquete'];
+        $nuevoPaquete->id_estado_p=$estado;
         $nuevoPaquete->id_caracteristica_paquete = $caracteristica;
         $nuevoPaquete->nombre_remitente = $paquete['nombreRemitente'];
         $nuevoPaquete->nombre_destinatario = $paquete['nombreDestinatario'];
@@ -183,6 +183,7 @@ class paqueteController extends Controller
     private function modificarPaquete($paquete)
     {
         $caracteristica = $this->obtenerIdCaracteristica($paquete);
+        $estado=$this->obtenerIdEstado($paquete);
         $dia = $paquete['dia'];
         $mes = $paquete['mes'];
         $anio = $paquete['anio'];
@@ -190,7 +191,9 @@ class paqueteController extends Controller
         Paquetes::where('id', $paquete['identificador'])->update([
             'fecha_de_entrega' => $fechaEntrega,
             'nombre_remitente' => $paquete['nombreRemitente'],
+            'id_lugar_entrega'=>$paquete['idLugarEntrega'],
             'nombre_destinatario' => $paquete['nombreDestinatario'],
+            'id_estado_p'=>$estado,
             'id_caracteristica_paquete' => $caracteristica,
             'id_producto' => $paquete['idProducto'],
             'volumen_l' => $paquete['volumen'],
@@ -202,5 +205,10 @@ class paqueteController extends Controller
     {
         $caracteristica = Caracteristicas::withoutTrashed()->where('descripcion_caracteristica', $paquete['caracteristica'])->first();
         return $caracteristica['id'];
+    }
+
+    private function obtenerIdEstado($paquete){
+        $estado = Estados_p::withTrashed()->where('descripcion_estado_p',$paquete['estado'])->first();
+        return $estado['id'];
     }
 }

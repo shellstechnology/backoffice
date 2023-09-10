@@ -15,9 +15,10 @@ window.addEventListener("DOMContentLoaded", (event) => {
             var idAlmacenes = document.getElementById('idAlmacenes')
             var idPaquetes = document.getElementById('idPaquetes')
             var idProducto=document.getElementById('idProductos')
+            var estado=document.getElementById('estadoPaquete')
+            var usuario=document.getElementById('tipoUsuario')
             var idLotes = document.getElementById('idLotes')
             var moneda = document.getElementById('moneda')
-            var estado=document.getElementById('estadoPaquete')
             var dia = document.getElementById('dia');
             
             if(descripcionCaracteristica!=null){
@@ -31,6 +32,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
             }
             if (idPaquetes != null) {
                 crearIdPaquetes(idPaquetes.value.replace('[', '').replace(']', '').split(','))
+            }
+            if(usuario!=null){
+                crearTipoUsuario();
             }
             if (idLotes != null) {
                 crearIdLotes(idLotes.value.replace('[', '').replace(']', '').split(','))
@@ -223,7 +227,7 @@ function crearFechasPaquete() {
         inputAnio.appendChild(year);
     }
 }
-function cargarSelectUsuario() {
+function crearTipoUsuario() {
     var inputUsuarios = document.getElementById('tipoUsuario');
     if (inputUsuarios) {
         arrayUsuarios.forEach(function (datoUsuario) {
@@ -417,7 +421,7 @@ function cargarInputsLote(datosFila) {
     document.getElementById('identificarId').value = datosFila[0];
 }
 function cargarInputsPaqueteContieneLote(datosFila) {
-    identificador = datosFila[0];
+    document.getElementById('identificador').value = datosFila[0];
     document.getElementById('idPaquete').value = datosFila[0];
     document.getElementById('idLote').value = datosFila[1];
     document.getElementById('idAlmacen').value = datosFila[4];

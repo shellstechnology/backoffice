@@ -10,6 +10,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 class Telefonos_Usuarios extends Model
 {
     protected $table = 'telefonos_usuarios';
+    protected $primaryKey = 'id_usuarios';
     use HasFactory;
     use SoftDeletes;
     use ValidatesRequests;

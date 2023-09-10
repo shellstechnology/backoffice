@@ -38,11 +38,11 @@ class usuarioController extends Controller
         $infoUsuario = [];
         if ($datoUsuario) {
             foreach ($datoUsuario as $dato) {
-                $infoUsuario[] = $this->definirUsuario($dato);
+                $infoUsuario[] = $this->definirUsuarios($dato);
             }
         }
         Session::put('usuarios', $infoUsuario);
-        return redirect()->route('backoffice.usuario');
+
 
     }
 
@@ -92,33 +92,30 @@ class usuarioController extends Controller
     {
         $mail = $this->obtenerMails($usuario);
         $telefono = $this->obtenerTelefonos($usuario);
-        return ([
-            'Id Usuario' => $usuario('id'),
-            'Nombre de Usuario' => $usuario('nombre'),
-            'Contraseña' => $usuario('contrasenia'),
-            'Mail/s' => $mail,
-            'Telefono/s' => $telefono
-        ]);
+        // return ([
+        //     'Id Usuario' => $usuario('id'),
+        //     'Nombre de Usuario' => $usuario('nombre'),
+        //     'Contraseña' => $usuario('contrasenia'),
+        //     'Mail' => $mail,
+        //     'Telefono/s' => $telefono
+        // ]);
     }
 
     private function obtenerMails($usuario)
     {
-        $listaMails = [];
-        $mails = Mail_Usuarios::withTrashed()->where('id_usuario', $usuario('id'))->get();
-        foreach ($mails as $mail) {
-            $listaMails[] = $mail + '/';
-        }
-        return $listaMails;
+        $mail = Mail_Usuarios::withTrashed()->find($usuario['id']);
+        return $mail;
     }
 
     private function obtenerTelefonos($usuario)
     {
         $listaTelefonos = [];
-        $telefonos = Telefonos_Usuarios::withTrashed()->where('id_usuario', $usuario('id'))->get();
+        $telefonos = Telefonos_Usuarios::withTrashed()->find($usuario['id']);
+        dd($telefonos);
         foreach ($telefonos as $telefono) {
-            $listaTelefonos[] = $telefono + '/';
+            $listaTelefonos[] = $telefono['telefono'];
         }
-        return $listaTelefonos;
+        return implode('/', $listaTelefonos);
     }
 
     private function validarDatos($usuario)
