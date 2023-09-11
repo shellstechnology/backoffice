@@ -7,60 +7,60 @@ var arrayAnio = [];
 
 window.addEventListener("DOMContentLoaded", (event) => {
 
-        var botonCargar = document.getElementById('cargarTabla')
-        if (botonCargar != null) {
-            botonCargar.click()
-            var descripcionCaracteristica = document.getElementById('descripcionCaracteristica')
-            var idLugaresEntrega = document.getElementById('idLugaresEntrega')
-            var idAlmacenes = document.getElementById('idAlmacenes')
-            var idPaquetes = document.getElementById('idPaquetes')
-            var idProducto=document.getElementById('idProductos')
-            var estado=document.getElementById('estadoPaquete')
-            var usuario=document.getElementById('tipoUsuario')
-            var idLotes = document.getElementById('idLotes')
-            var moneda = document.getElementById('moneda')
-            var dia = document.getElementById('dia');
-            
-            if(descripcionCaracteristica!=null){
-                crearCaracteristica(descripcionCaracteristica.value.replace('[', '').replace(']', '').split(','));
-            }
-            if (idAlmacenes != null) {
-                crearIdAlmacenes(idAlmacenes.value.replace('[', '').replace(']', '').split(','))
-            }
-            if (idLugaresEntrega != null) {
-                crearIdLugarEntrega(idLugaresEntrega.value.replace('[', '').replace(']', '').split(','))
-            }
-            if (idPaquetes != null) {
-                crearIdPaquetes(idPaquetes.value.replace('[', '').replace(']', '').split(','))
-            }
-            if(usuario!=null){
-                crearTipoUsuario();
-            }
-            if (idLotes != null) {
-                crearIdLotes(idLotes.value.replace('[', '').replace(']', '').split(','))
-            }
-            if (idProducto!=null){
-                crearIdProducto(idProducto.value.replace('[', '').replace(']', '').split(','))
-            }
-            if (moneda != null) {
-                console.log(moneda.value);
-                crearTipoMoneda(moneda.value.replace('[', '').replace(']', '').split(','))
-            }
-            if(estado!=null){
-                crearEstado(estado.value.replace('[', '').replace(']', '').split(','));
-            }
-            if(dia!=null){
-                crearFechasPaquete()
-            }
+    var botonCargar = document.getElementById('cargarTabla')
+    if (botonCargar != null) {
+        botonCargar.click()
+        var descripcionCaracteristica = document.getElementById('descripcionCaracteristica')
+        var idLugaresEntrega = document.getElementById('idLugaresEntrega')
+        var idAlmacenes = document.getElementById('idAlmacenes')
+        var idPaquetes = document.getElementById('idPaquetes')
+        var idProducto = document.getElementById('idProductos')
+        var estado = document.getElementById('estadoPaquete')
+        var usuario = document.getElementById('tipoUsuario')
+        var idLotes = document.getElementById('idLotes')
+        var moneda = document.getElementById('moneda')
+        var dia = document.getElementById('dia');
+
+        if (descripcionCaracteristica != null) {
+            crearCaracteristica(descripcionCaracteristica.value.replace('[', '').replace(']', '').split(','));
+        }
+        if (idAlmacenes != null) {
+            crearIdAlmacenes(idAlmacenes.value.replace('[', '').replace(']', '').split(','))
+        }
+        if (idLugaresEntrega != null) {
+            crearIdLugarEntrega(idLugaresEntrega.value.replace('[', '').replace(']', '').split(','))
+        }
+        if (idPaquetes != null) {
+            crearIdPaquetes(idPaquetes.value.replace('[', '').replace(']', '').split(','))
+        }
+        if (usuario != null) {
+            crearTipoUsuario();
+        }
+        if (idLotes != null) {
+            crearIdLotes(idLotes.value.replace('[', '').replace(']', '').split(','))
+        }
+        if (idProducto != null) {
+            crearIdProducto(idProducto.value.replace('[', '').replace(']', '').split(','))
+        }
+        if (moneda != null) {
+            console.log(moneda.value);
+            crearTipoMoneda(moneda.value.replace('[', '').replace(']', '').split(','))
+        }
+        if (estado != null) {
+            crearEstado(estado.value.replace('[', '').replace(']', '').split(','));
+        }
+        if (dia != null) {
+            crearFechasPaquete()
         }
     }
+}
 );
 
 
 function crearCaracteristica(infoCaracteristica) {
     var inputCaracteristica = document.getElementById('caracteristica');
     infoCaracteristica.forEach(function (datoCaracteristica) {
-        datoCaracteristica=datoCaracteristica.replace('"', '').replace('"', '')
+        datoCaracteristica = datoCaracteristica.replace('"', '').replace('"', '')
         console.log(datoCaracteristica)
         var caracteristica = document.createElement('option');
         caracteristica.value = datoCaracteristica;
@@ -206,19 +206,19 @@ function crearFechasPaquete() {
     var inputDia = document.getElementById('dia');
     var inputMes = document.getElementById('mes');
     var inputAnio = document.getElementById('anio');
-    for(var dia=1;dia<=31;dia++){
+    for (var dia = 1; dia <= 31; dia++) {
         var day = document.createElement('option');
         day.value = dia;
         day.textContent = dia;
         inputDia.appendChild(day);
     }
-    for(var mes=1;mes<=12;mes++){
+    for (var mes = 1; mes <= 12; mes++) {
         var month = document.createElement('option');
         month.value = mes;
         month.textContent = mes;
         inputMes.appendChild(month);
     }
-    for(var anio=1;anio<=2023;anio++){
+    for (var anio = 1; anio <= 2023; anio++) {
         var year = document.createElement('option');
         year.value = anio;
         year.textContent = anio;
@@ -392,7 +392,7 @@ function cargarInputsLugarEntrega(datosFila) {
     document.getElementById('longitud').value = datosFila[3];
 }
 function cargarInputsPaquete(datosFila) {
-    document.getElementById('identificador').value =datosFila[0];
+    document.getElementById('identificador').value = datosFila[0];
     document.getElementById('nombrePaquete').value = datosFila[1];
     var arrayFecha = datosFila[2].split('-');
     document.getElementById('anio').value = parseInt(arrayFecha[0], 10);
@@ -428,7 +428,32 @@ function cargarInputsUsuarios(datosFila) {
     identificador = datosFila[0];
     document.getElementById('nombre').value = datosFila[1];
     document.getElementById('contraseña').value = datosFila[2];
-    // document.getElementById('tipoUsuario').value = datosFila[3];
     document.getElementById('mail').value = datosFila[3];
+    document.getElementById('tipoUsuario').value = obtenerTipoUsuario(datosFila[5]);
 }
+
+function obtenerTipoUsuario(datosFila) {
+    datosFila = datosFila.split('/')
+    datosFila.forEach(function (palabra) {
+        palabra = palabra.trim();
+        switch (palabra) {
+            case "Administrador":
+                document.getElementById("usuarioAdministrador").checked = true;
+                break;
+            case "Almacenero":
+                document.getElementById("usuarioAlmacenero").checked = true;
+                break;
+            case "Chofer":
+                document.getElementById("usuarioChofer").checked = true;
+                break;
+            case "Cliente":
+                document.getElementById("usuarioCliente").checked = true;
+                break;
+        }
+    });
+}
+
+
+
+
 

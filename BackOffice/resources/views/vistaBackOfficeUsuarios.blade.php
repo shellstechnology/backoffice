@@ -23,28 +23,36 @@
     </div>
     <div> 
     <div class="cajaDatos"> 
-       <input type="checkbox" id="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
-       <input type="checkbox" id="cbxModificar" onclick="comprobarCbxModificar()">Modificar </input>
-       <input type="checkbox" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
+       <input type="checkbox" name="cbxAgregar" id="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
+       <input type="checkbox" name="cbxModificar" id="cbxModificar" onclick="comprobarCbxModificar()">Modificar </input>
+       <input type="checkbox" name="cbxEliminar" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
+       <input type="checkbox" name="cbxRecuperar" id="cbxRecuperar" onclick="comprobarCbxRecuperar()">Recuperar </input>
        
        <div class="contenedorDatos">
        <form action="{{route('usuario.realizarAccion')}}" method="POST">
       @csrf
         <div class="campo">
-          <input type="text" id="nombre" maxlength="20"></input>
+          <input type="text" name="nombre" id="nombre" maxlength="20"></input>
           <label for="nombre" >Nombre de Usuario</label>
         </div>
         <div class="campo">
-          <input type="text" id="contraseña" maxlength="20"></input>
+          <input type="text" name="contraseña" id="contraseña" maxlength="20"></input>
           <label for="contraseña" >Contraseña</label>
         </div>
         <div class="campo">
-          <input type="text" id="mail" maxlength="40"></input>
+          <input type="text" name="mail" id="mail" maxlength="40"></input>
           <label for="mail" >Correo electronico</label>
         </div>
         <div class="campo">
-          <select id="tipoUsuario"> <select>
-          <label for="tipoUsuario" >Tipo de Usuario</label>
+          <input type="checkbox" name="usuarioAdministrador" id="usuarioAdministrador">Administrador</input>
+          <input type="checkbox" name="usuarioAlmacenero" id="usuarioAlmacenero">Almacenero</input>
+          <input type="checkbox" name="usuarioChofer" id="usuarioChofer">Chofer</input>
+          <input type="checkbox" name="usuarioCliente" id="usuarioCliente">Cliente</input>
+        </div>
+        <div class="campo">
+          <button type="submit">Aceptar</button>
+        </div>
+
 </form>
        </div>
        <form action="{{route('usuario.cargarDatos')}}" method="GET">

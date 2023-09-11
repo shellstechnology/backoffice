@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Administradores;
+use App\Models\Almaceneros;
+use App\Models\Choferes;
+use App\Models\Clientes;
 use App\Models\Telefonos_Usuarios;
 use App\Models\Usuarios;
 use App\Models\Mail_Usuarios;
@@ -30,7 +34,6 @@ class usuarioController extends Controller
             $this->recuperar($datosRequest);
         }
         $this->cargarDatos();
-        return redirect()->route('backoffice.usuarios');
     }
     public function cargarDatos()
     {
@@ -53,6 +56,7 @@ class usuarioController extends Controller
             $errores = $validador->getMessageBag();
             return response()->json(['error:' => $errores], 422);
         }
+        dd('no escullpi estos musculos para pelear');
         $this->crearUsuario($datosRequest);
 
     }
@@ -92,13 +96,14 @@ class usuarioController extends Controller
     {
         $mail = $this->obtenerMails($usuario);
         $telefono = $this->obtenerTelefonos($usuario);
-        $tipoUsuario=$this->obtenerTipoUsuario($usuario)
+        $tipoUsuario=$this->obtenerTipoUsuario($usuario);
         return ([
             'Id Usuario' => $usuario['id'],
             'Nombre de Usuario' => $usuario['nombre_de_usuario'],
             'Contraseña' => $usuario['contrasenia'],
             'Mail' => $mail,
-            'Telefono/s' => $telefono
+            'Telefono/s' => $telefono,
+            'Tipo de Usuario'=>$tipoUsuario
         ]);
     }
 
@@ -119,45 +124,81 @@ class usuarioController extends Controller
     }
 
     private function obtenerTipoUsuario($usuario){
-        $administrador=Administrador::withTrashed->where('id_usuario',$usuario['id'])->first();
+        $tiposUsuario=[];
+        $administrador=Administradores::withoutTrashed()->where('id_usuarios',$usuario['id'])->get();
+        $almacenero=Almaceneros::withoutTrashed()->where('id_usuarios',$usuario['id'])->get();
+        $chofer=Choferes::withoutTrashed()->where('id_usuarios',$usuario['id'])->get();
+        $cliente=Clientes::withoutTrashed()->where('id_usuarios',$usuario['id'])->get();
+        if($administrador!=null){
+            $tiposUsuario[]='Administrador';
+        }
+        if($almacenero!=null){
+            $tiposUsuario[]='Almacenero';
+        }
+        if($chofer!=null){
+            $tiposUsuario[]='Chofer';
+        }
+        if($cliente!=null){
+            $tiposUsuario[]='Cliente';
+        }
+        return implode('/',$tiposUsuario);
     }
 
     private function validarDatos($usuario)
     {
         $reglas = [
-            'NombreUsuario' => 'required|string|max:20',
-            'Contraseña' => 'required|string|max:20',
-            'TipoUsuario' => 'required|string|max:20',
-            'Mail' => 'required|mail|max:40',
+            'NombreUsuario' => 'required|string|max:40',
+            'Contraseña' => 'required|string|max:40',
+            'Mail' => 'required|email|max:40',
         ];
         return Validator::make([
             'NombreUsuario' => $usuario['nombre'],
             'Contraseña' => $usuario['contraseña'],
-            'TipoUsuario' => $usuario['tipoUsuario'],
             'Mail' => $usuario['mail']
         ], $reglas);
     }
 
     private function crearUsuario($datosUsuario)
     {
+        dd('marcelo');
         $usuario = new Usuarios;
-        $usuario->NombreDeUsuario = $datosUsuario['nombre'];
-        $usuario->Contraseña = $datosUsuario['contraseña'];
-        $usuario->TipoDeUsuario = $datosUsuario['tipoUsuario'];
+        $usuario->nombre_de_usuario = $datosUsuario['nombre'];
+        $usuario->contrasenia = $datosUsuario['contraseña'];
         $usuario->save();
         $idUsuario = $usuario->getKey();
         $this->crearMailUsuario($datosUsuario, $idUsuario);
+        $this->establecerTipoUsuario($datosUsuario,$idUsuario);
         if ($datosUsuario[4] == 'Administrador') {
             DB::statement("GRANT ALL PRIVILEGES ON backofficebd.* TO '{$datosUsuario['nombre']}'@'localhost' IDENTIFIED BY '{$datosUsuario['contraseña']}'");
-
         }
     }
     private function crearMailUsuario($usuario, $idUsuario)
     {
         $mailUsuario = new Mail_Usuarios;
-        $mailUsuario->IdUsuario = $idUsuario;
-        $mailUsuario->Mail = $usuario['mail'];
+        $mailUsuario->id_usuarios = $idUsuario;
+        $mailUsuario->mail = $usuario['mail'];
         $mailUsuario->save();
+    }
+
+    private function establecerTipoUsuario($datoUsuario,$idUsuario){
+        if($datoUsuario['administrador']){
+         $administrador=new Administradores;
+         $administrador->id_usuario=$idUsuario;
+        }
+        if($datoUsuario['almacenero']){
+            $this->crearTipoUsuario($idUsuario);
+            $almacenero=new Almaceneros;
+            $almacenero->id_usuario=$idUsuario;
+        }
+        if($datoUsuario['choferes']){
+            $choferes=new Choferes;
+            $choferes->id_usuario=$idUsuario;
+        }
+        if($datoUsuario['cliente']){
+            $cliente=new Clientes;
+            $cliente->id_usuario=$idUsuario;
+        }
+
     }
 
     private function modificarUsuario($datosUsuario)
