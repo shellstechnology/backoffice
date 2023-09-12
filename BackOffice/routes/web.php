@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Models\Telefonos_Usuarios;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\almacenController;
 use App\Http\Controllers\lugarEntregaController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\productoController;
 use App\Http\Controllers\paqueteContieneLoteController;
 use App\Http\Controllers\loteController;
 use App\Http\Controllers\usuarioController;
+use App\Http\Controllers\telefonosUsuarioController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -30,6 +32,10 @@ Route::get('vistaBackOffice', function(){
 Route::get('vistaBackOfficeUsuarios', function(){
     return view('vistaBackOfficeUsuarios');
 })-> name('backoffice.usuarios');
+
+Route::get('vistaBackOfficeTelefonosUsuario', function(){
+    return view('vistaBackOfficeTelefonosUsuario');
+})-> name('usuarios.telefonosUsuario');
 
 Route::get('vistaBackOfficeAlmacen', function(){
     return view('vistaBackOfficeAlmacen');
@@ -82,3 +88,7 @@ Route::post('/paqueteContieneLote/recuperar', [paqueteContieneLoteController::cl
 Route::get('/usuario/cargarDatos', [usuarioController::class, 'cargarDatos'])->name('usuario.cargarDatos');
 Route::post('/usuario/realizarAccion', [usuarioController::class, 'realizarAccion'])->name('usuario.realizarAccion');
 Route::post('/usuario/recuperar', [usuarioController::class, 'recuperar'])->name('usuario.recuperar');
+
+Route::get('/TelefonosUsuario/cargarDatos', [telefonosUsuarioController::class, 'cargarDatos'])->name('telefonosUsuario.cargarDatos');
+Route::post('/TelefonosUsuario/realizarAccion', [telefonosUsuarioController::class, 'realizarAccion'])->name('telefonosUsuario.realizarAccion');
+Route::post('/TelefonosUsuario/recuperar', [telefonosUsuarioController::class, 'recuperar'])->name('telefonosUsuario.recuperar');

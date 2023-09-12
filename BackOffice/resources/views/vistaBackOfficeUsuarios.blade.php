@@ -22,15 +22,15 @@
     <div id="contenedorTabla"></div>
     </div>
     <div> 
+    <button onclick="redireccionar('{{route('usuarios.telefonosUsuario')}}')">Telefonos-></button>
     <div class="cajaDatos"> 
-       <input type="checkbox" name="cbxAgregar" id="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
-       <input type="checkbox" name="cbxModificar" id="cbxModificar" onclick="comprobarCbxModificar()">Modificar </input>
-       <input type="checkbox" name="cbxEliminar" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
-       <input type="checkbox" name="cbxRecuperar" id="cbxRecuperar" onclick="comprobarCbxRecuperar()">Recuperar </input>
-       
        <div class="contenedorDatos">
        <form action="{{route('usuario.realizarAccion')}}" method="POST">
       @csrf
+      <input type="checkbox" name="cbxAgregar" id="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
+       <input type="checkbox" name="cbxModificar" id="cbxModificar" onclick="comprobarCbxModificar()">Modificar </input>
+       <input type="checkbox" name="cbxEliminar" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
+       <input type="checkbox" name="cbxRecuperar" id="cbxRecuperar" onclick="comprobarCbxRecuperar()">Recuperar </input>
         <div class="campo">
           <input type="text" name="nombre" id="nombre" maxlength="20"></input>
           <label for="nombre" >Nombre de Usuario</label>
@@ -50,6 +50,7 @@
           <input type="checkbox" name="usuarioCliente" id="usuarioCliente">Cliente</input>
         </div>
         <div class="campo">
+          <input type="hidden" name="identificador" id="identificador"></input>
           <button type="submit">Aceptar</button>
         </div>
 

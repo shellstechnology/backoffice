@@ -17,6 +17,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
         var idProducto = document.getElementById('idProductos')
         var estado = document.getElementById('estadoPaquete')
         var usuario = document.getElementById('tipoUsuario')
+        var idUsuario=document.getElementById('idUsuarios');
         var idLotes = document.getElementById('idLotes')
         var moneda = document.getElementById('moneda')
         var dia = document.getElementById('dia');
@@ -35,6 +36,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
         }
         if (usuario != null) {
             crearTipoUsuario();
+        }
+        if (idUsuario != null) {
+            crearIdUsuario(idUsuario.value.replace('[', '').replace(']', '').split(','))
         }
         if (idLotes != null) {
             crearIdLotes(idLotes.value.replace('[', '').replace(']', '').split(','))
@@ -109,7 +113,19 @@ function crearIdProducto(infoProducto) {
         producto.textContent = datoProducto;
         inputIdProducto.appendChild(producto);
     });
+}   
+
+function crearIdUsuario(infoUsuario) {
+    var inputIdUsuario = document.getElementById('datoUsuario');
+    infoUsuario.forEach(function (datoUsuario) {
+        console.log(datoUsuario)
+        var usuario = document.createElement('option');
+        usuario.value = datoUsuario;
+        usuario.textContent = datoUsuario;
+        inputIdUsuario.appendChild(usuario);
+    });
 }
+
 
 function crearIdLotes(infoLote) {
     var inputIdLote = document.getElementById('idLote');
@@ -319,6 +335,8 @@ function imprimirDatos(fila) {
         case 'vistaBackOfficeUsuarios':
             cargarInputsUsuarios(datosFila);
             break;
+        case 'vistaBackOfficeTelefonosUsuario':
+            cargarInputsTelefonosUsuario(datosFila)
     }
 }
 
@@ -425,15 +443,27 @@ function cargarInputsPaqueteContieneLote(datosFila) {
     document.getElementById('idAlmacen').value = datosFila[4];
 }
 function cargarInputsUsuarios(datosFila) {
-    identificador = datosFila[0];
+    document.getElementById('identificador').value = datosFila[0];
     document.getElementById('nombre').value = datosFila[1];
     document.getElementById('contraseña').value = datosFila[2];
     document.getElementById('mail').value = datosFila[3];
-    document.getElementById('tipoUsuario').value = obtenerTipoUsuario(datosFila[5]);
+     obtenerTipoUsuario(datosFila[5]);
+}
+
+function cargarInputsTelefonosUsuario(datosFila) {
+    document.getElementById('identificadorId').value = datosFila[0];
+    document.getElementById('identificadorTelefono').value = datosFila[2];
+    document.getElementById('datoUsuario').value = datosFila[0];
+    document.getElementById('telefono').value = datosFila[2];
 }
 
 function obtenerTipoUsuario(datosFila) {
+    document.getElementById("usuarioAdministrador").checked = false;
+    document.getElementById("usuarioAlmacenero").checked = false;
+    document.getElementById("usuarioChofer").checked = false;
+    document.getElementById("usuarioCliente").checked = false;
     datosFila = datosFila.split('/')
+    console.log(datosFila)
     datosFila.forEach(function (palabra) {
         palabra = palabra.trim();
         switch (palabra) {

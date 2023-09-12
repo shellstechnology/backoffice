@@ -9,8 +9,10 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class Administradores extends Model
 {
-    
+
     protected $table = 'administradores';
+    protected $primaryKey = 'id_usuarios';
+    protected $fillable =['id_usuarios'];
     use HasFactory;
     use SoftDeletes;
     use ValidatesRequests;

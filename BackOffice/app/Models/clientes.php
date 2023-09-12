@@ -10,6 +10,9 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 class Clientes extends Model
 {
     protected $table = 'clientes';
+    protected $primaryKey = 'id_usuarios';
+    
+    protected $fillable =['id_usuarios'];
     use HasFactory;
     use SoftDeletes;
     use ValidatesRequests;
