@@ -10,9 +10,11 @@
      <meta name="csrf-token" content="{{ csrf_token() }}">
   </head>
   <body>
+    @include('header')
      <div class="barraDeNavegacion">
        <div class="item" onclick="redireccionar('{{route('backoffice')}}')"> Menu Principal</div>
        <div class="itemSeleccionado" onclick="redireccionar('{{route('backoffice.almacen')}}')">Almacenes</div>
+       <div class="item" onclick="redireccionar('{{route('backoffice.camiones')}}')"> Camiones</div>
     <div class="item" onclick="redireccionar('{{route('backoffice.paquete')}}')"> Paquetes</div>
     <div class="item" onclick="redireccionar('{{route('backoffice.producto')}}')"> Productos</div>
     <div class="item" onclick="redireccionar('{{route('backoffice.lote')}}')"> Lotes</div>
@@ -53,19 +55,6 @@
        </div>
      </div>
    </div>
-
-   @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
-
-@if(session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-@endif
-
-
   </body>
+  @include('footer')
 </html>

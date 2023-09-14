@@ -111,12 +111,14 @@ class productoController extends Controller
     private function validarDatos($producto)
     {
         $reglas = [
+            'Identificador'=>'required|integer',
             'Nombre' => 'required|string|max:20',
             'Precio' => 'required|integer|min:1|max:9999999',
             'Moneda' => 'required|string|max:20',
             'Stock' => 'required|integer|min:0|max:9999999',
         ];
         return Validator::make([
+            'Identificador'=>$producto['identificador'],
             'Nombre' => $producto['nombre'],
             'Precio' => $producto['precio'],
             'Moneda' => $producto['tipoMoneda'],

@@ -48,7 +48,7 @@ class usuarioController extends Controller
             }
         }
 
-        Session::put('usuarios', $infoUsuario);
+        Session::put('usuarios', json_encode($infoUsuario));
         return redirect()->route('backoffice.usuarios');
 
     }

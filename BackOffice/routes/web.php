@@ -11,6 +11,7 @@ use App\Http\Controllers\paqueteContieneLoteController;
 use App\Http\Controllers\loteController;
 use App\Http\Controllers\usuarioController;
 use App\Http\Controllers\telefonosUsuarioController;
+use App\Http\Controllers\camionesController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -36,6 +37,10 @@ Route::get('vistaBackOfficeUsuarios', function(){
 Route::get('vistaBackOfficeTelefonosUsuario', function(){
     return view('vistaBackOfficeTelefonosUsuario');
 })-> name('usuarios.telefonosUsuario');
+
+Route::get('vistaBackOfficeCamiones', function(){
+    return view('vistaBackOfficeCamiones');
+})-> name('backoffice.camiones');
 
 Route::get('vistaBackOfficeAlmacen', function(){
     return view('vistaBackOfficeAlmacen');
@@ -92,3 +97,7 @@ Route::post('/usuario/recuperar', [usuarioController::class, 'recuperar'])->name
 Route::get('/TelefonosUsuario/cargarDatos', [telefonosUsuarioController::class, 'cargarDatos'])->name('telefonosUsuario.cargarDatos');
 Route::post('/TelefonosUsuario/realizarAccion', [telefonosUsuarioController::class, 'realizarAccion'])->name('telefonosUsuario.realizarAccion');
 Route::post('/TelefonosUsuario/recuperar', [telefonosUsuarioController::class, 'recuperar'])->name('telefonosUsuario.recuperar');
+
+Route::get('/camiones/cargarDatos', [camionesController::class, 'cargarDatos'])->name('camiones.cargarDatos');
+Route::post('/camiones/realizarAccion', [camionesController::class, 'realizarAccion'])->name('camiones.realizarAccion');
+Route::post('/camiones/recuperar', [camionesController::class, 'recuperar'])->name('camiones.recuperar');

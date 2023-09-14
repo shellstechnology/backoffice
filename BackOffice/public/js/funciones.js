@@ -12,15 +12,20 @@ window.addEventListener("DOMContentLoaded", (event) => {
         botonCargar.click()
         var descripcionCaracteristica = document.getElementById('descripcionCaracteristica')
         var idLugaresEntrega = document.getElementById('idLugaresEntrega')
+        var listaMarcaModelo = document.getElementById('listaMarcaModelo');
+        var listaChoferes = document.getElementById('listaChoferes')
+        var listaEstado = document.getElementById('listaEstado');
         var idAlmacenes = document.getElementById('idAlmacenes')
         var idPaquetes = document.getElementById('idPaquetes')
         var idProducto = document.getElementById('idProductos')
         var estado = document.getElementById('estadoPaquete')
         var usuario = document.getElementById('tipoUsuario')
-        var idUsuario=document.getElementById('idUsuarios');
+        var idUsuario = document.getElementById('idUsuarios');
         var idLotes = document.getElementById('idLotes')
         var moneda = document.getElementById('moneda')
         var dia = document.getElementById('dia');
+
+
 
         if (descripcionCaracteristica != null) {
             crearCaracteristica(descripcionCaracteristica.value.replace('[', '').replace(']', '').split(','));
@@ -30,6 +35,15 @@ window.addEventListener("DOMContentLoaded", (event) => {
         }
         if (idLugaresEntrega != null) {
             crearIdLugarEntrega(idLugaresEntrega.value.replace('[', '').replace(']', '').split(','))
+        }
+        if (listaEstado != null) {
+            crearListaEstado(listaEstado.value.replace('[', '').replace(']', '').split(','))
+        }
+        if (listaMarcaModelo != null) {
+            crearListaMarcaModelo(listaMarcaModelo.value.replace('[', '').replace(']', '').split(','))
+        }
+        if (listaChoferes != null) {
+            crearListaChoferes(listaChoferes.value.replace('[', '').replace(']', '').split(','))
         }
         if (idPaquetes != null) {
             crearIdPaquetes(idPaquetes.value.replace('[', '').replace(']', '').split(','))
@@ -93,6 +107,40 @@ function crearIdLugarEntrega(infoLugaresEntrega) {
         inputIdLugares.appendChild(lugar);
     });
 }
+
+function crearListaEstado(infoListaEstado) {
+    var inputEstado = document.getElementById('estadoCamion');
+    infoListaEstado.forEach(function (datoEstado) {
+        datoEstado = datoEstado.replace('"', '').replace('"', '')
+        var estado = document.createElement('option');
+        estado.value = datoEstado;
+        estado.textContent = datoEstado;
+        inputEstado.appendChild(estado);
+    });
+}
+
+function crearListaMarcaModelo(infoListaMarcaModelo) {
+    var inputMarcaModelo = document.getElementById('marcaModeloCamion');
+    infoListaMarcaModelo.forEach(function (datoMarcaModelo) {
+        datoMarcaModelo = datoMarcaModelo.replace('"', '').replace('"', '')
+        var marcaModelo = document.createElement('option');
+        marcaModelo.value = datoMarcaModelo;
+        marcaModelo.textContent = datoMarcaModelo;
+        inputMarcaModelo.appendChild(marcaModelo);
+    });
+}
+function crearListaChoferes(infoListaChoferes) {
+    var inputChoferes = document.getElementById('chofer');
+    infoListaChoferes.forEach(function (datoChoferes) {
+        datoChoferes = datoChoferes.replace('"', '').replace('"', '')
+        var choferes = document.createElement('option');
+        choferes.value = datoChoferes;
+        choferes.textContent = datoChoferes;
+        inputChoferes.appendChild(choferes);
+    });
+}
+
+
 function crearIdPaquetes(infoPaquete) {
     var inputIdPaquete = document.getElementById('idPaquete');
     infoPaquete.forEach(function (datoPaquete) {
@@ -113,7 +161,7 @@ function crearIdProducto(infoProducto) {
         producto.textContent = datoProducto;
         inputIdProducto.appendChild(producto);
     });
-}   
+}
 
 function crearIdUsuario(infoUsuario) {
     var inputIdUsuario = document.getElementById('datoUsuario');
@@ -336,7 +384,11 @@ function imprimirDatos(fila) {
             cargarInputsUsuarios(datosFila);
             break;
         case 'vistaBackOfficeTelefonosUsuario':
-            cargarInputsTelefonosUsuario(datosFila)
+            cargarInputsTelefonosUsuario(datosFila);
+            break;
+        case 'vistaBackOfficeCamiones':
+            cargarInputsCamiones(datosFila);
+            break;
     }
 }
 
@@ -447,7 +499,7 @@ function cargarInputsUsuarios(datosFila) {
     document.getElementById('nombre').value = datosFila[1];
     document.getElementById('contraseña').value = datosFila[2];
     document.getElementById('mail').value = datosFila[3];
-     obtenerTipoUsuario(datosFila[5]);
+    obtenerTipoUsuario(datosFila[5]);
 }
 
 function cargarInputsTelefonosUsuario(datosFila) {
@@ -483,7 +535,11 @@ function obtenerTipoUsuario(datosFila) {
     });
 }
 
-
-
-
-
+function cargarInputsCamiones(datosFila) {
+    document.getElementById('identificador').value = datosFila[0]
+    document.getElementById('matricula').value = datosFila[0]
+    document.getElementById('marcaModeloCamion').value = datosFila[1]
+    document.getElementById('estadoCamion').value = datosFila[2];
+    document.getElementById('volumen').value = datosFila[4];
+    document.getElementById('peso').value = datosFila[5];
+}

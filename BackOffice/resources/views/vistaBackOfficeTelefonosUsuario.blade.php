@@ -27,6 +27,7 @@
       <form action="{{route('telefonosUsuario.realizarAccion')}}" method="POST">
         @csrf
         <input type="checkbox" name="cbxAgregar" id="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
+        <div class="item" onclick="redireccionar('{{route('backoffice.camiones')}}')"> Camiones</div>
             <input type="checkbox" name="cbxModificar" id="cbxModificar" onclick="comprobarCbxModificar()">Modificar </input>
             <input type="checkbox" name="cbxEliminar" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
             <input type="checkbox" name="cbxRecuperar" id="cbxRecuperar" onclick="comprobarCbxRecuperar()">Recuperar </input>
