@@ -48,7 +48,7 @@ class usuarioController extends Controller
             }
         }
 
-        Session::put('usuarios', json_encode($infoUsuario));
+        Session::put('usuarios', $infoUsuario);
         return redirect()->route('backoffice.usuarios');
 
     }
@@ -195,7 +195,7 @@ class usuarioController extends Controller
             $administrador = new Administradores;
             $administrador->id_usuarios = $idUsuario;
             $administrador->save();
-            DB::statement("GRANT ALL PRIVILEGES ON fast_tracker_bd.* TO '{$datoUsuario['nombre']}'@'localhost' IDENTIFIED BY '{$datoUsuario['contraseña']}'");
+            DB::statement("GRANT ALL PRIVILEGES ON fast_tracker_db.* TO '{$datoUsuario['nombre']}'@'localhost' IDENTIFIED BY '{$datoUsuario['contraseña']}'");
         }
         if (isset($datoUsuario['usuarioAlmacenero'])) {
             $almacenero = new Almaceneros;

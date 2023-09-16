@@ -1,7 +1,6 @@
 <?php
 
 
-use App\Models\Telefonos_Usuarios;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\almacenController;
 use App\Http\Controllers\lugarEntregaController;

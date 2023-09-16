@@ -66,5 +66,4 @@
     </div>
   </div>
 </body>
-{{(session('usuarios'))}}
 </html>
