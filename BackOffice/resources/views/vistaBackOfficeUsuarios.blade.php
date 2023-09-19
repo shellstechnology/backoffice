@@ -13,6 +13,7 @@
 <div class="barraDeNavegacion">
       <div class="item" onclick="redireccionar('{{route('backoffice')}}')"> Menu Principal</div>
       <div class="item" onclick="redireccionar('{{route('backoffice.almacen')}}')">Almacenes</div>
+      <div class="item" onclick="redireccionar('{{route('backoffice.camiones')}}')"> Camiones</div>
     <div class="item" onclick="redireccionar('{{route('backoffice.paquete')}}')"> Paquetes</div>
     <div class="item" onclick="redireccionar('{{route('backoffice.producto')}}')"> Productos</div>
     <div class="item" onclick="redireccionar('{{route('backoffice.lote')}}')"> Lotes</div>
@@ -22,40 +23,45 @@
     <div id="contenedorTabla"></div>
     </div>
     <div> 
+    <button onclick="redireccionar('{{route('usuarios.telefonosUsuario')}}')">Telefonos-></button>
     <div class="cajaDatos"> 
-       <input type="checkbox" id="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
-       <input type="checkbox" id="cbxModificar" onclick="comprobarCbxModificar()">Modificar </input>
-       <input type="checkbox" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
-       
        <div class="contenedorDatos">
+       <form action="{{route('usuario.realizarAccion')}}" method="POST">
+      @csrf
+      <input type="checkbox" name="cbxAgregar" id="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
+       <input type="checkbox" name="cbxModificar" id="cbxModificar" onclick="comprobarCbxModificar()">Modificar </input>
+       <input type="checkbox" name="cbxEliminar" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
+       <input type="checkbox" name="cbxRecuperar" id="cbxRecuperar" onclick="comprobarCbxRecuperar()">Recuperar </input>
         <div class="campo">
-          <input type="text" id="nombre" maxlength="20"></input>
+          <input type="text" name="nombre" id="nombre" maxlength="20"></input>
           <label for="nombre" >Nombre de Usuario</label>
         </div>
         <div class="campo">
-          <input type="text" id="contraseña" maxlength="20"></input>
+          <input type="text" name="contraseña" id="contraseña" maxlength="20"></input>
           <label for="contraseña" >Contraseña</label>
         </div>
         <div class="campo">
-          <input type="text" id="mail" maxlength="40"></input>
+          <input type="text" name="mail" id="mail" maxlength="40"></input>
           <label for="mail" >Correo electronico</label>
         </div>
-      <div class="campo">
-          <input type="number" id="telefono" maxlength="9" onkeydown="filtro(event)" oninput="limitarInput(this, 9)" onpaste="return false";></input>
-          <label for="telefono" >Numero de Telefono</label>
+        <div class="campo">
+          <input type="checkbox" name="usuarioAdministrador" id="usuarioAdministrador">Administrador</input>
+          <input type="checkbox" name="usuarioAlmacenero" id="usuarioAlmacenero">Almacenero</input>
+          <input type="checkbox" name="usuarioChofer" id="usuarioChofer">Chofer</input>
+          <input type="checkbox" name="usuarioCliente" id="usuarioCliente">Cliente</input>
         </div>
         <div class="campo">
-          <select id="tipoUsuario"> <select>
-          <label for="tipoUsuario" >Tipo de Usuario</label>
+          <input type="hidden" name="identificador" id="identificador"></input>
+          <button type="submit">Aceptar</button>
+        </div>
+
+</form>
        </div>
-        <button id="cargar"onclick="cargarSelectUsuario();
-                                cargarTabla('{{route('usuario.cargarDatos')}}'), 10">Cargar Tabla</button>
-    <button onclick="validarInputs('{{ route('usuario.agregar') }}',
-                                   '{{ route('usuario.modificar') }}',
-                                   '{{ route('usuario.eliminar')}}',
-                                   '{{route('usuario.cargarDatos')}}')">Aceptar</button>
-    <button onclick="recuperarDatos('{{route('usuario.recuperar')}}',
-                                    '{{route('usuario.cargarDatos')}}')">Reestablecer Dato</button>
+       <form action="{{route('usuario.cargarDatos')}}" method="GET">
+         @csrf
+         <button type="submit" name="cargar" id="cargar">Cargar Datos</button>
+       </form>
+       <button type="button" name="cargarTabla" id="cargarTabla" onclick="crearTabla(7, {{json_encode(session('usuarios', []))}})">Cargar Tabla</button>
       </div>
     </div>
   </div>

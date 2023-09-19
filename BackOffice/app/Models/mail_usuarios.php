@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-class Producto extends Model
+
+class Mail_Usuarios extends Model
 {
-    protected $table = 'productos';
+    protected $table = 'mail_usuarios';
+    protected $primaryKey = 'id_usuarios';
     use HasFactory;
     use SoftDeletes;
     use ValidatesRequests;
     public $timestamps = true;
-
 }

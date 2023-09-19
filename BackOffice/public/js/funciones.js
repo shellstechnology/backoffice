@@ -1,31 +1,210 @@
-var identificador = null;
 var idTabla = 0;
-var tipoDeMoneda = ["USD", "EUR", "UYU"];
 var arrayUsuarios = ["Administrador", "Almacenero", "Chofer", "Cliente"];
 var arrayDia = [];
 var arrayMes = [];
 var arrayAnio = [];
 
-function cargarAlmacenes(ruta) {
-    console.log('a')
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', ruta, true);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            var infoAlmacenes = JSON.parse(xhr.responseText);
-            console.log(infoAlmacenes);
-            crearIdAlmacenes(infoAlmacenes);
+
+window.addEventListener("DOMContentLoaded", (event) => {
+
+    var botonCargar = document.getElementById('cargarTabla')
+    if (botonCargar != null) {
+        botonCargar.click()
+        var descripcionCaracteristica = document.getElementById('descripcionCaracteristica')
+        var idLugaresEntrega = document.getElementById('idLugaresEntrega')
+        var listaMarcaModelo = document.getElementById('listaMarcaModelo');
+        var listaChoferes = document.getElementById('listaChoferes')
+        var listaEstado = document.getElementById('listaEstado');
+        var idAlmacenes = document.getElementById('idAlmacenes')
+        var idPaquetes = document.getElementById('idPaquetes')
+        var idProducto = document.getElementById('idProductos')
+        var estado = document.getElementById('estadoPaquete')
+        var usuario = document.getElementById('tipoUsuario')
+        var idUsuario = document.getElementById('idUsuarios');
+        var idLotes = document.getElementById('idLotes')
+        var moneda = document.getElementById('moneda')
+        var dia = document.getElementById('dia');
+
+
+
+        if (descripcionCaracteristica != null) {
+            crearCaracteristica(descripcionCaracteristica.value.replace('[', '').replace(']', '').split(','));
         }
-    };
-    xhr.send();
+        if (idAlmacenes != null) {
+            crearIdAlmacenes(idAlmacenes.value.replace('[', '').replace(']', '').split(','))
+        }
+        if (idLugaresEntrega != null) {
+            crearIdLugarEntrega(idLugaresEntrega.value.replace('[', '').replace(']', '').split(','))
+        }
+        if (listaEstado != null) {
+            crearListaEstado(listaEstado.value.replace('[', '').replace(']', '').split(','))
+        }
+        if (listaMarcaModelo != null) {
+            crearListaMarcaModelo(listaMarcaModelo.value.replace('[', '').replace(']', '').split(','))
+        }
+        if (listaChoferes != null) {
+            crearListaChoferes(listaChoferes.value.replace('[', '').replace(']', '').split(','))
+        }
+        if (idPaquetes != null) {
+            crearIdPaquetes(idPaquetes.value.replace('[', '').replace(']', '').split(','))
+        }
+        if (usuario != null) {
+            crearTipoUsuario();
+        }
+        if (idUsuario != null) {
+            crearIdUsuario(idUsuario.value.replace('[', '').replace(']', '').split(','))
+        }
+        if (idLotes != null) {
+            crearIdLotes(idLotes.value.replace('[', '').replace(']', '').split(','))
+        }
+        if (idProducto != null) {
+            crearIdProducto(idProducto.value.replace('[', '').replace(']', '').split(','))
+        }
+        if (moneda != null) {
+            console.log(moneda.value);
+            crearTipoMoneda(moneda.value.replace('[', '').replace(']', '').split(','))
+        }
+        if (estado != null) {
+            crearEstado(estado.value.replace('[', '').replace(']', '').split(','));
+        }
+        if (dia != null) {
+            crearFechasPaquete()
+        }
+    }
 }
+);
+
+
+function crearCaracteristica(infoCaracteristica) {
+    var inputCaracteristica = document.getElementById('caracteristica');
+    infoCaracteristica.forEach(function (datoCaracteristica) {
+        datoCaracteristica = datoCaracteristica.replace('"', '').replace('"', '')
+        console.log(datoCaracteristica)
+        var caracteristica = document.createElement('option');
+        caracteristica.value = datoCaracteristica;
+        caracteristica.textContent = datoCaracteristica;
+        inputCaracteristica.appendChild(caracteristica);
+    });
+}
+
 function crearIdAlmacenes(infoAlmacenes) {
     var inputIdAlmacen = document.getElementById('idAlmacen');
     infoAlmacenes.forEach(function (datoAlmacen) {
+        console.log(datoAlmacen)
         var almacen = document.createElement('option');
-        almacen.value = datoAlmacen['Id Almacen'];
-        almacen.textContent = datoAlmacen['Id Almacen'];
+        almacen.value = datoAlmacen;
+        almacen.textContent = datoAlmacen;
         inputIdAlmacen.appendChild(almacen);
+    });
+}
+function crearIdLugarEntrega(infoLugaresEntrega) {
+    var inputIdLugares = document.getElementById('idLugarEntrega');
+    infoLugaresEntrega.forEach(function (datoLugar) {
+        console.log(datoLugar)
+        var lugar = document.createElement('option');
+        lugar.value = datoLugar;
+        lugar.textContent = datoLugar;
+        inputIdLugares.appendChild(lugar);
+    });
+}
+
+function crearListaEstado(infoListaEstado) {
+    var inputEstado = document.getElementById('estadoCamion');
+    infoListaEstado.forEach(function (datoEstado) {
+        datoEstado = datoEstado.replace('"', '').replace('"', '')
+        var estado = document.createElement('option');
+        estado.value = datoEstado;
+        estado.textContent = datoEstado;
+        inputEstado.appendChild(estado);
+    });
+}
+
+function crearListaMarcaModelo(infoListaMarcaModelo) {
+    var inputMarcaModelo = document.getElementById('marcaModeloCamion');
+    infoListaMarcaModelo.forEach(function (datoMarcaModelo) {
+        datoMarcaModelo = datoMarcaModelo.replace('"', '').replace('"', '')
+        var marcaModelo = document.createElement('option');
+        marcaModelo.value = datoMarcaModelo;
+        marcaModelo.textContent = datoMarcaModelo;
+        inputMarcaModelo.appendChild(marcaModelo);
+    });
+}
+function crearListaChoferes(infoListaChoferes) {
+    var inputChoferes = document.getElementById('chofer');
+    infoListaChoferes.forEach(function (datoChoferes) {
+        datoChoferes = datoChoferes.replace('"', '').replace('"', '')
+        var choferes = document.createElement('option');
+        choferes.value = datoChoferes;
+        choferes.textContent = datoChoferes;
+        inputChoferes.appendChild(choferes);
+    });
+}
+
+
+function crearIdPaquetes(infoPaquete) {
+    var inputIdPaquete = document.getElementById('idPaquete');
+    infoPaquete.forEach(function (datoPaquete) {
+        console.log(datoPaquete)
+        var paquete = document.createElement('option');
+        paquete.value = datoPaquete;
+        paquete.textContent = datoPaquete;
+        inputIdPaquete.appendChild(paquete);
+    });
+}
+
+function crearIdProducto(infoProducto) {
+    var inputIdProducto = document.getElementById('idProducto');
+    infoProducto.forEach(function (datoProducto) {
+        console.log(datoProducto)
+        var producto = document.createElement('option');
+        producto.value = datoProducto;
+        producto.textContent = datoProducto;
+        inputIdProducto.appendChild(producto);
+    });
+}
+
+function crearIdUsuario(infoUsuario) {
+    var inputIdUsuario = document.getElementById('datoUsuario');
+    infoUsuario.forEach(function (datoUsuario) {
+        console.log(datoUsuario)
+        var usuario = document.createElement('option');
+        usuario.value = datoUsuario;
+        usuario.textContent = datoUsuario;
+        inputIdUsuario.appendChild(usuario);
+    });
+}
+
+
+function crearIdLotes(infoLote) {
+    var inputIdLote = document.getElementById('idLote');
+    infoLote.forEach(function (datoLote) {
+        console.log(datoLote)
+        var lote = document.createElement('option');
+        lote.value = datoLote;
+        lote.textContent = datoLote;
+        inputIdLote.appendChild(lote);
+    });
+}
+
+function crearEstado(estado) {
+    var inputEstado = document.getElementById('estado');
+    estado.forEach(function (datoEstado) {
+        datoEstado = datoEstado.replace('"', '').replace('"', '')
+        var state = document.createElement('option');
+        state.value = datoEstado;
+        state.textContent = datoEstado;
+        inputEstado.appendChild(state);
+    });
+}
+
+function crearTipoMoneda(tipoMoneda) {
+    var inputTipoMoneda = document.getElementById('tipoMoneda');
+    tipoMoneda.forEach(function (datoMoneda) {
+        datoMoneda = datoMoneda.replace('"', '').replace('"', '')
+        var moneda = document.createElement('option');
+        moneda.value = datoMoneda;
+        moneda.textContent = datoMoneda;
+        inputTipoMoneda.appendChild(moneda);
     });
 }
 
@@ -84,99 +263,33 @@ function crearPaquetes(infoPaquete) {
         inputIdPaquete.appendChild(paquete);
     });
 }
-function crearLotes(infoLotes) {
-    var inputIdLote = document.getElementById('idLote');
-    infoLotes.forEach(function (datoLote) {
-        var lote = document.createElement('option');
-        lote.value = datoLote['Id Lote'];
-        lote.textContent = datoLote['Id Lote'];
-        inputIdLote.appendChild(lote);
-    });
-}
+
 
 
 function crearFechasPaquete() {
     var inputDia = document.getElementById('dia');
     var inputMes = document.getElementById('mes');
     var inputAnio = document.getElementById('anio');
-    arrayDia.forEach(function (dia) {
+    for (var dia = 1; dia <= 31; dia++) {
         var day = document.createElement('option');
         day.value = dia;
         day.textContent = dia;
         inputDia.appendChild(day);
-    });
-    arrayMes.forEach(function (mes) {
+    }
+    for (var mes = 1; mes <= 12; mes++) {
         var month = document.createElement('option');
         month.value = mes;
         month.textContent = mes;
         inputMes.appendChild(month);
-    });
-    arrayAnio.forEach(function (anio) {
+    }
+    for (var anio = 1; anio <= 2023; anio++) {
         var year = document.createElement('option');
         year.value = anio;
         year.textContent = anio;
         inputAnio.appendChild(year);
-    });
-}
-function cargarIdProducto(ruta) {
-    console.log('a')
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', ruta, true);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            var infoProducto = JSON.parse(xhr.responseText);
-            console.log(infoProducto);
-            crearIdProducto(infoProducto);
-        }
-    };
-    xhr.send();
-}
-function crearIdProducto(infoProducto) {
-    var inputIdProducto = document.getElementById('idProducto');
-    infoProducto.forEach(function (datoProducto) {
-        var producto = document.createElement('option');
-        producto.value = datoProducto['Id'];
-        producto.textContent = datoProducto['Id'];
-        inputIdProducto.appendChild(producto);
-    });
-}
-function cargarIdLugarEntrega(ruta) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', ruta, true);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            var infoLugar = JSON.parse(xhr.responseText);
-            console.log(infoLugar);
-            crearIdLugarEntrega(infoLugar);
-        }
-    };
-    xhr.send();
-}
-function crearIdLugarEntrega(infoLugar) {
-    var inputIdLugarEntrega = document.getElementById('idLugarEntrega');
-    infoLugar.forEach(function (datoLugar) {
-        var lugar = document.createElement('option');
-        lugar.value = datoLugar['Id Lugar'];
-        lugar.textContent = datoLugar['Id Lugar'];
-        inputIdLugarEntrega.appendChild(lugar);
-        console.log(datoLugar)
-    });
-}
-
-
-
-function crearTipoMoneda(tipoDeMoneda) {
-    var inputTipoMoneda = document.getElementById('tipoMoneda');
-    if (inputTipoMoneda) {
-        tipoDeMoneda.forEach(function (moneda) {
-            var divisa = document.createElement('option');
-            divisa.value = moneda;
-            divisa.textContent = moneda;
-            inputTipoMoneda.appendChild(divisa);
-        });
     }
 }
-function cargarSelectUsuario() {
+function crearTipoUsuario() {
     var inputUsuarios = document.getElementById('tipoUsuario');
     if (inputUsuarios) {
         arrayUsuarios.forEach(function (datoUsuario) {
@@ -189,11 +302,11 @@ function cargarSelectUsuario() {
 }
 
 function crearTabla(idTablaPagina, infoProducto) {
+    console.log(infoProducto);
     if (idTabla != idTablaPagina) {
         console.log(infoProducto)
         var tabla = document.createElement("table");
         tabla.style.borderCollapse = "collapse";
-
         // Crear la cabecera de la tabla
         var cabecera = tabla.createTHead();
         var filaCabecera = cabecera.insertRow();
@@ -270,6 +383,12 @@ function imprimirDatos(fila) {
         case 'vistaBackOfficeUsuarios':
             cargarInputsUsuarios(datosFila);
             break;
+        case 'vistaBackOfficeTelefonosUsuario':
+            cargarInputsTelefonosUsuario(datosFila);
+            break;
+        case 'vistaBackOfficeCamiones':
+            cargarInputsCamiones(datosFila);
+            break;
     }
 }
 
@@ -290,108 +409,137 @@ function comprobarCbxAgregar() {
 
 function comprobarCbxModificar() {
     if (cbxModificar.checked) {
-        cbxAgregar.checked = false;
+        cbxAgregar.checked = false
         cbxEliminar.checked = false
+        cbxRecuperar.checked = false
     }
 }
 
 function comprobarCbxEliminar() {
     if (cbxEliminar.checked) {
         cbxAgregar.checked = false;
+        cbxRecuperar.checked = false
         var checkbox = document.getElementById('cbxModificar');
         if (checkbox)
             cbxModificar.checked = false
     }
 }
+
+function comprobarCbxRecuperar() {
+    if (cbxEliminar.checked) {
+        cbxAgregar.checked = false;
+        cbxEliminar.checked = false;
+        var checkbox = document.getElementById('cbxModificar');
+        if (checkbox)
+            cbxModificar.checked = false
+    }
+}
+
 function filtro(event) {
     var texto = event.key;
-    if ([',', 'e','E'].includes(texto))
+    if ([',', 'e', 'E'].includes(texto))
         event.preventDefault()
 }
 function limitarInput(input, maxLength) {
     if (input.value.length > maxLength) {
-      input.value = input.value.slice(0, maxLength);
+        input.value = input.value.slice(0, maxLength);
     }
-  }
-/****************************************************/
-function validarInputs(ruta1, ruta2, ruta3, rutaDestino) {
-    console.time("ingresarInputs");
-    var cbxAgregar = document.getElementById('cbxAgregar');
-    if (cbxAgregar.checked) {
-        var inputsProcesados = procesarInputs()
-        if (inputsProcesados != null)
-            enviarDatos(ruta1, inputsProcesados, rutaDestino)
-    } else {
-        var cbxModificar = document.getElementById('cbxModificar');
-        if (cbxModificar.checked) {
-            var inputsProcesados = procesarInputs()
-            if (inputsProcesados != null)
-                modificarDatos(ruta2, inputsProcesados, rutaDestino)
-        } else {
-            var cbxEliminar = document.getElementById('cbxEliminar');
-            if (cbxEliminar.checked) {
-                eliminarInput(ruta3, rutaDestino)
-            } else {
-                alert("Error:no hay ninguna checkbox activa")
-            }
-        }
-    }
-    console.timeEnd("ingresarInputs");
 }
-
+/****************************************************/
 
 function cargarInputsAlmacen(datosFila) {
     console.log(datosFila)
     document.getElementById('identificador').value = datosFila[0];
-    document.getElementById('identificarId').value = datosFila[0];
     document.getElementById('direccion').value = datosFila[1];
     document.getElementById('latitud').value = datosFila[2];
     document.getElementById('longitud').value = datosFila[3];
 }
 
 function cargarInputsLugarEntrega(datosFila) {
-    identificador = datosFila[0];
+    document.getElementById('identificador').value = datosFila[0];
     document.getElementById('direccion').value = datosFila[1];
-    document.getElementById('idAlmacen').value = datosFila[2];
-    document.getElementById('latitud').value = datosFila[4];
-    document.getElementById('longitud').value = datosFila[5];
+    document.getElementById('latitud').value = datosFila[2];
+    document.getElementById('longitud').value = datosFila[3];
 }
 function cargarInputsPaquete(datosFila) {
-    identificador = datosFila[0];
-    var arrayFecha = datosFila[1].split('-');
+    document.getElementById('identificador').value = datosFila[0];
+    document.getElementById('nombrePaquete').value = datosFila[1];
+    var arrayFecha = datosFila[2].split('-');
     document.getElementById('anio').value = parseInt(arrayFecha[0], 10);
     document.getElementById('mes').value = parseInt(arrayFecha[1], 10);
     document.getElementById('dia').value = parseInt(arrayFecha[2], 10);
-    document.getElementById('idLugarEntrega').value = datosFila[2];
-    document.getElementById('caracteristica').value = datosFila[4];
-    document.getElementById('nombreRemitente').value = datosFila[5];
-    document.getElementById('nombreDestinatario').value = datosFila[6];
-    document.getElementById('idProducto').value = datosFila[7];
-    document.getElementById('volumen').value = datosFila[9];
-    document.getElementById('peso').value = datosFila[10];
+    document.getElementById('idLugarEntrega').value = datosFila[3];
+    document.getElementById('estado').value = datosFila[5];
+    document.getElementById('caracteristica').value = datosFila[6];
+    document.getElementById('nombreRemitente').value = datosFila[7];
+    document.getElementById('nombreDestinatario').value = datosFila[8];
+    document.getElementById('idProducto').value = datosFila[9];
+    document.getElementById('volumen').value = datosFila[12];
+    document.getElementById('peso').value = datosFila[12];
 }
 function cargarInputsProducto(datosFila) {
-    identificador = datosFila[0];
+    document.getElementById('identificador').value = datosFila[0];
     document.getElementById('nombre').value = datosFila[1];
-    document.getElementById('precio').value = datosFila[2];
-    document.getElementById('tipoMoneda').value = datosFila[3];
-    document.getElementById('stock').value = datosFila[4];
+    document.getElementById('stock').value = datosFila[2];
+    document.getElementById('precio').value = datosFila[3];
+    document.getElementById('tipoMoneda').value = datosFila[4];
 }
 function cargarInputsLote(datosFila) {
-    identificador = datosFila[0];
+    document.getElementById('identificador').value = datosFila[0];
+    document.getElementById('identificarId').value = datosFila[0];
 }
 function cargarInputsPaqueteContieneLote(datosFila) {
-    identificador = datosFila[1];
-    document.getElementById('idLote').value = datosFila[0];
-    document.getElementById('idPaquete').value = datosFila[1];
+    document.getElementById('identificador').value = datosFila[0];
+    document.getElementById('idPaquete').value = datosFila[0];
+    document.getElementById('idLote').value = datosFila[1];
     document.getElementById('idAlmacen').value = datosFila[4];
 }
 function cargarInputsUsuarios(datosFila) {
-    identificador = datosFila[0];
+    document.getElementById('identificador').value = datosFila[0];
     document.getElementById('nombre').value = datosFila[1];
     document.getElementById('contraseña').value = datosFila[2];
-    document.getElementById('tipoUsuario').value = datosFila[3];
-    document.getElementById('mail').value = datosFila[5];
-    document.getElementById('telefono').value = datosFila[4];
+    document.getElementById('mail').value = datosFila[3];
+    obtenerTipoUsuario(datosFila[5]);
 }
 
+function cargarInputsTelefonosUsuario(datosFila) {
+    document.getElementById('identificadorId').value = datosFila[0];
+    document.getElementById('identificadorTelefono').value = datosFila[2];
+    document.getElementById('datoUsuario').value = datosFila[0];
+    document.getElementById('telefono').value = datosFila[2];
+}
+
+function obtenerTipoUsuario(datosFila) {
+    document.getElementById("usuarioAdministrador").checked = false;
+    document.getElementById("usuarioAlmacenero").checked = false;
+    document.getElementById("usuarioChofer").checked = false;
+    document.getElementById("usuarioCliente").checked = false;
+    datosFila = datosFila.split('/')
+    console.log(datosFila)
+    datosFila.forEach(function (palabra) {
+        palabra = palabra.trim();
+        switch (palabra) {
+            case "Administrador":
+                document.getElementById("usuarioAdministrador").checked = true;
+                break;
+            case "Almacenero":
+                document.getElementById("usuarioAlmacenero").checked = true;
+                break;
+            case "Chofer":
+                document.getElementById("usuarioChofer").checked = true;
+                break;
+            case "Cliente":
+                document.getElementById("usuarioCliente").checked = true;
+                break;
+        }
+    });
+}
+
+function cargarInputsCamiones(datosFila) {
+    document.getElementById('identificador').value = datosFila[0]
+    document.getElementById('matricula').value = datosFila[0]
+    document.getElementById('marcaModeloCamion').value = datosFila[1]
+    document.getElementById('estadoCamion').value = datosFila[2];
+    document.getElementById('volumen').value = datosFila[4];
+    document.getElementById('peso').value = datosFila[5];
+}
