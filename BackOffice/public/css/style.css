@@ -69,14 +69,36 @@ body {
     overflow-y: scroll;
 }
 
-table{
-    table-layout:fixed;
+table {
+    border-collapse: separate; 
+    border-spacing: 2px; 
+    width: 100%; 
 }
 
-table th, table td{
-    width: 10%;
-    padding: 10px;
-    text-align: left;
+table th, table td {
+    border: 1px solid black;
+    padding: 8px; 
+}
+
+table tr {
+    border-top: 2px solid black; 
+    border-bottom: 2px solid black; 
+}
+
+table tr:first-child {
+    border-top: none; 
+}
+
+table tr:last-child {
+    border-bottom: none;
+}
+
+table td:first-child {
+    border-left: none; 
+}
+
+table td:last-child {
+    border-right: none;
 }
 
 /*********************************************************************/
