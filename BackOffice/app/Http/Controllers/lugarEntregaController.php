@@ -36,7 +36,6 @@ class lugarEntregaController extends Controller
         foreach ($listaLugares as $dato) {
             $infoLugarEntrega[] = $this->obtenerDatosLugaresEntrega($dato);
         }
-        Session::put('idAlmacenes', $listaLugares);
         Session::put('lugaresEntrega', $infoLugarEntrega);
         return redirect()->route('almacen.lugarEntrega');
     }
@@ -120,7 +119,7 @@ class lugarEntregaController extends Controller
 
     private function modificarLugarEntrega($lugarEntrega)
     {
-        Lugares_Entrega::where('Id', $lugarEntrega['identificador'])->update([
+        Lugares_Entrega::where('id', $lugarEntrega['identificador'])->update([
             'Direccion' => $lugarEntrega['direccion'],
             'Latitud' => $lugarEntrega['latitud'],
             'Longitud' => $lugarEntrega['longitud'],

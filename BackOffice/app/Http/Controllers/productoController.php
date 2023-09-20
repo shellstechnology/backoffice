@@ -89,9 +89,9 @@ class productoController extends Controller
             'Stock' => $producto['stock'],
             'Precio' => $producto['precio'],
             'Moneda' => $moneda['moneda'],
-            'Fecha de Creacion' => $producto['created_at'],
-            'Ultima Actualizacion' => $producto['updated_at'],
-            'Fecha de Borrado' => $producto['deleted_at']
+            'created_at' => $producto['created_at'],
+            'updated_at' => $producto['updated_at'],
+            'deleted_at' => $producto['deleted_at']
         ]);
 
     }

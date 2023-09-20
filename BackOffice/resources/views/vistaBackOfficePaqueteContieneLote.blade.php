@@ -5,25 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BackOffice:Lotes</title>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}"> 
-    <script src="{{asset('js/funciones.js')}}"> </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{asset('js/funciones.js')}}"> </script>
 </head>
 <body>
 <div class="barraDeNavegacion">
-      <div class="item" onclick="redireccionar('{{route('backoffice')}}')"> Menu Principal</div>
-      <div class="item" onclick="redireccionar('{{route('backoffice.almacen')}}')">Almacenes</div>
-      <div class="item" onclick="redireccionar('{{route('backoffice.camiones')}}')"> Camiones</div>
-    <div class="item" onclick="redireccionar('{{route('backoffice.paquete')}}')"> Paquetes</div>
-    <div class="item" onclick="redireccionar('{{route('backoffice.producto')}}')"> Productos</div>
-    <div class="itemSeleccionado" onclick="redireccionar('{{route('backoffice.lote')}}')"> Lotes</div>
+<a href="{{ route('backoffice') }}" class="item">Menu Principal</a>
+     <a href="{{ route('backoffice.almacen') }}" class="item">Almacenes</a>
+     <a href="{{ route('backoffice.camiones') }}" class="item">Camiones</a>
+     <a href="{{ route('backoffice.paquete') }}" class="item">Paquetes</a>
+     <a href="{{ route('backoffice.producto') }}" class="item">Productos</a>
+     <a href="{{ route('backoffice.lote') }}" class="itemSelecciondo">Lotes</a>
 </div>
   <div class="container">
     <div class="cuerpo">
-    <div id="contenedorTabla"></div>
+    <div id="contenedorTabla">
+    <x-tabla-paquete-contiene-lote-component/>
+    </div>
     </div>
     <div> 
-    <button onclick="redireccionar('{{route('backoffice.lote')}}')"><-Crear Lotes</button>
+    <a href="{{route('backoffice.lote')}}"><-Crear Lotes</a>    
     <div class="cajaDatos"> 
     <form action="{{route('paqueteContieneLote.realizarAccion')}}" method="POST">
         @csrf
@@ -34,22 +35,16 @@
        
        <div class="contenedorDatos">
        <div class="campo">
-        <select name="idPaquete" id="idPaquete"> <select>
-          <label for="idPaquete" >Id del Paquete</label>
+       <x-select-paquete-component/>
         </div>
        <div class="campo">
-        <select name="idLote" id="idLote"> <select>
-          <label for="idLote" >Id del Lote</label>
+       <x-select-lote-component/>
         </div>
         <div class="campo">
-        <select name="idAlmacen" id="idAlmacen"> <select>
-          <label for="idAlmacen" >Id del Almacen</label>
+        <x-select-almacenes-component/>
           </div>
           <div class="contenedorDatos">
           <input type="hidden" name="identificador" id="identificador"></input>
-          <input type="hidden" name="idAlmacenes" id="idAlmacenes" value="{{ json_encode(session('idAlmacenes', [])) }}"></input>
-          <input type="hidden" name="idPaquetes" id="idPaquetes" value="{{ json_encode(session('idPaquetes', [])) }}"></input>
-          <input type="hidden" name="idLotes" id="idLotes" value="{{ json_encode(session('idLotes', [])) }}"></input>
           <button type="submit" name="aceptar">Aceptar</button>
           </form>
          </div>
@@ -57,7 +52,6 @@
          @csrf
          <button type="submit" name="cargar" id="cargar">Cargar Datos</button>
        </form>
-       <button type="button" name="cargarTabla" id="cargarTabla" onclick="crearTabla(5, {{json_encode(session('paqueteContieneLote', []))}})">Cargar Tabla</button>
     </div>
   </div>
 </body>

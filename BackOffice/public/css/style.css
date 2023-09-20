@@ -68,7 +68,6 @@ body {
     max-height: 400px;
     overflow-y: scroll;
 }
-
 table {
     border-collapse: separate; 
     border-spacing: 2px; 

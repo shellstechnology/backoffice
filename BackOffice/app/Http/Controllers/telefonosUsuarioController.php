@@ -56,9 +56,9 @@ class telefonosUsuarioController extends Controller
             'Id del Usuario' => $datoUsuario['id'],
             'Nombre de Usuario' => $datoUsuario['nombre_de_usuario'],
             'Telefono' => $datoTelefono['telefono'],
-            'Fecha de Creacion' => $datoTelefono['created_at'],
-            'Ultima Actualizacion' => $datoTelefono['updated_at'],
-            'Fecha de Borrado' => $datoTelefono['deleted_at']
+            'created_at' => $datoTelefono['created_at'],
+            'updated_at' => $datoTelefono['updated_at'],
+            'deleted_at' => $datoTelefono['deleted_at']
         ]);
     }
 
