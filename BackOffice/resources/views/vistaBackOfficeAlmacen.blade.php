@@ -6,6 +6,8 @@
      <title>BackOffice:Almacenes</title>
      <link rel="stylesheet" href="{{ asset('css/style.css') }}"> 
      <meta name="csrf-token" content="{{ csrf_token() }}">
+     <script src="{{asset('js/funciones.js')}}"> </script>
+
   </head>
   <body>
     @include('header')
@@ -25,7 +27,7 @@
         </div>
        </div>
        <div> 
-        <button onclick="redireccionar('{{route('almacen.lugarEntrega')}}')">Luares de entrega-></button>
+       <a href="{{ route('almacen.lugarEntrega') }}">Luares de entrega-></a>
         <div class="cajaDatos"> 
          <form  action="{{route('almacen.realizarAccion')}}" method="POST"> 
             @csrf

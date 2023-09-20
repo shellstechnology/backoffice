@@ -13,9 +13,9 @@ $datos = session('almacenes', []);
         <th>Fecha de borrado</th>
     </tr>
     @foreach ($datos as $almacen)
-        <tr onclick="seleccionarFila({{ $almacen['Id Almacen'] }}, '{{ $almacen['Direccion Almacen'] }}',
-                     {{ $almacen['Lat Almacen'] }}, {{ $almacen['Lng Almacen'] }}, '{{ $almacen['created_at'] }}',
-                     '{{ $almacen['updated_at'] }}', '{{ $almacen['deleted_at'] }}')">
+
+    <tr onclick="seleccionarFila({{ $almacen['Id Almacen'] }}, '{{ $almacen['Direccion Almacen'] }}',
+                 {{ $almacen['Lat Almacen'] }}, {{ $almacen['Lng Almacen'] }})">
             <td>{{ $almacen['Id Almacen'] }}</td>
             <td>{{ $almacen['Direccion Almacen'] }}</td>
             <td>{{ $almacen['Lat Almacen'] }}</td>
@@ -28,13 +28,12 @@ $datos = session('almacenes', []);
 </table>
 
 <script>
-    function seleccionarFila(id, direccion, latitud, longitud, fechaCreacion, ultimaActualizacion, fechaBorrado) {
+
+    function seleccionarFila(id, direccion, latitud, longitud) {
         document.getElementById('identificador').value = id;
+        document.getElementById('almacenes').value = id;
         document.getElementById('direccion').value = direccion;
         document.getElementById('latitud').value = latitud;
         document.getElementById('longitud').value = longitud;
-        document.getElementById('fecha_creacion').value = fechaCreacion;
-        document.getElementById('ultima_actualizacion').value = ultimaActualizacion;
-        document.getElementById('fecha_borrado').value = fechaBorrado;
     }
 </script>

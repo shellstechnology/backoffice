@@ -29,6 +29,7 @@ Route::get('/', function () {
 Route::get('vistaBackOffice', function(){
     return view('vistaBackOffice');
 })-> name('backoffice');
+
 Route::get('vistaBackOfficeUsuarios', function(){
     return view('vistaBackOfficeUsuarios');
 })-> name('backoffice.usuarios');

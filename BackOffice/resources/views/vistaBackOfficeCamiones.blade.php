@@ -5,22 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BackOffice:Camiones</title>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}"> 
-    <script src="{{asset('js/funciones.js')}}"> </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{asset('js/funciones.js')}}"> </script>
 </head>
 <body>
   <div class="barraDeNavegacion">
-      <div class="item" onclick="redireccionar('{{route('backoffice')}}')"> Menu Principal</div>
-      <div class="item" onclick="redireccionar('{{route('backoffice.almacen')}}')">Almacenes</div>
-      <div class="itemSeleccionado" onclick="redireccionar('{{route('backoffice.camiones')}}')"> Camiones</div>
-    <div class="item" onclick="redireccionar('{{route('backoffice.paquete')}}')"> Paquetes</div>
-    <div class="item" onclick="redireccionar('{{route('backoffice.producto')}}')"> Productos</div>
-    <div class="item" onclick="redireccionar('{{route('backoffice.lote')}}')"> Lotes</div>
+  <a href="{{ route('backoffice') }}" class="item">Menu Principal</a>
+     <a href="{{ route('backoffice.almacen') }}" class="item">Almacenes</a>
+     <a href="{{ route('backoffice.camiones') }}" class="itemSeleccionado">Camiones</a>
+     <a href="{{ route('backoffice.paquete') }}" class="item">Paquetes</a>
+     <a href="{{ route('backoffice.producto') }}" class="item">Productos</a>
+     <a href="{{ route('backoffice.lote') }}" class="item">Lotes</a>
    </div>
   <div class="container">
     <div class="cuerpo">
-     <div id="contenedorTabla"></div>
+     <div id="contenedorTabla">
+     <x-tabla-camiones-component/>
+     </div>
     </div>
     <div> 
       <div class="cajaDatos"> 
@@ -36,16 +37,13 @@
             <label for="matricula" >Matricula</label>
           </div>
           <div class="campo">
-          <select name="estadoCamion" id="estadoCamion"> <select>
-          <label for="estadoCamion" >Estado del Camion</label>
+          <x-select-estado-camion-component/>
           </div>
           <div class="campo">
-          <select name="marcaModeloCamion" id="marcaModeloCamion"> <select>
-          <label for="marcaModeloCamion" >Marca y Modelo del Camion</label>
+          <x-select-marca-modelo-component/>
           </div>
           <div class="campo">
-          <select name="chofer" id="chofer"> <select>
-          <label for="chofer" >Chofer del Camion</label>
+          <x-select-choferes-component/>
           </div>
           <div class="campo">
           <input type="text" id="volumen" name="volumen" onkeydown="filtro(event)" 
@@ -58,22 +56,17 @@
           <label for="peso" >Peso(Kg)</label>
 </div>
           <div class="campo">
-            <input type="hidden" name="producto"> </input>
             <input type="hidden" name="identificador" id="identificador"> </input>
           </div>
           <div class="campo">
           <button type="submit">Aceptar</button>
           </div>
         </form>
-        <input type="hidden" id="listaEstado" name="listaEstado"  value="{{ json_encode(session('listaEstado', [])) }}"> </input>
-        <input type="hidden" id="listaMarcaModelo" name="listaMarcaModelo"  value="{{ json_encode(session('listaMarcaModelo', [])) }}"> </input>
-        <input type="hidden" id="listaChoferes" name="listaChoferes"  value="{{ json_encode(session('listaChoferes', [])) }}"> </input>
        </div>
        <form action="{{route('camiones.cargarDatos')}}" method="GET">
          @csrf
          <button type="submit" name="cargar" id="cargar">Cargar Datos</button>
        </form>
-       <button type="button" name="cargarTabla" id="cargarTabla" onclick="crearTabla(9, {{json_encode(session('camiones', []))}})">Cargar Tabla</button>
        </div>
      </div>
     </div>

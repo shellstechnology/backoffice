@@ -80,9 +80,9 @@ class camionesController extends Controller
             'Chofer' => $chofer['nombre_de_usuario'],
             'Volumen Maximo' => $camion['volumen_max_l'],
             'Peso Maximo' => $camion['peso_max_kg'],
-            'Fecha de Creacion' => $camion['created_at'],
-            'Ultima Actualizacion' => $camion['updated_at'],
-            'Fecha de Borrado' => $camion['deleted_at']
+            'created_at' => $camion['created_at'],
+            'updated_at' => $camion['updated_at'],
+            'deleted_at' => $camion['deleted_at']
         ]);
     }
 

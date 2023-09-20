@@ -109,9 +109,9 @@ class usuarioController extends Controller
             'Mail' => $mail,
             'Telefono/s' => $telefono,
             'Tipo de Usuario' => $tipoUsuario,
-            'Fecha de Creacion' => $usuario['created_at'],
-            'Ultima Actualizacion' => $usuario['updated_at'],
-            'Fecha de Borrado' => $usuario['deleted_at']
+            'created_at' => $usuario['created_at'],
+            'updated_at' => $usuario['updated_at'],
+            'deleted_at' => $usuario['deleted_at']
         ]);
     }
 
