@@ -27,87 +27,87 @@ Route::get('/', function () {
     return view('vistaBackOffice');
 });
 
-Route::get('vistaBackOffice', function(){
+Route::get('backoffice', function(){
     return view('vistaBackOffice');
 })-> name('backoffice');
 
-Route::get('vistaBackOfficeUsuarios', function(){
+Route::get('usuarios', function(){
     return view('vistaBackOfficeUsuarios');
 })-> name('backoffice.usuarios');
 
-Route::get('vistaBackOfficeTelefonosUsuario', function(){
+Route::get('telefonos', function(){
     return view('vistaBackOfficeTelefonosUsuario');
 })-> name('usuarios.telefonosUsuario');
 
-Route::get('vistaBackOfficeCamiones', function(){
+Route::get('camiones', function(){
     return view('vistaBackOfficeCamiones');
 })-> name('backoffice.camiones');
 
-Route::get('vistaBackOfficeCamionLlevaLote', function(){
+Route::get('camion-lote', function(){
     return view('vistaBackOfficeCamionLlevaLote');
 })-> name('camion.camionLlevaLote');
 
-Route::get('vistaBackOfficeAlmacen', function(){
+Route::get('almacenes', function(){
     return view('vistaBackOfficeAlmacen');
 })-> name('backoffice.almacen');
 
-Route::get('vistaBackOfficeLugarEntrega', function(){
+Route::get('destinos', function(){
     return view('vistaBackOfficeLugarEntrega');
 })-> name('almacen.lugarEntrega');
 
-Route::get('vistaBackOfficePaquete', function(){
+Route::get('paquetes', function(){
     return view('vistaBackOfficePaquete');
 })-> name('backoffice.paquete');
 
-Route::get('vistaBackOfficeProducto', function(){
+Route::get('productos', function(){
     return view('vistaBackOfficeProducto');
 })-> name('backoffice.producto');
 
-Route::get('vistaBackOfficeLote', function(){
+Route::get('lotes', function(){
     return view('vistaBackOfficeLote');
 })-> name('backoffice.lote');
 
-Route::get('vistaBackOfficePaqueteContieneLote', function(){
+Route::get('paquete-lote', function(){
     return view('vistaBackOfficePaqueteContieneLote');
 })-> name('lote.paqueteContieneLote');
 
-Route::get('/producto/cargarDatos', [productoController::class, 'cargarDatos'])->name('producto.cargarDatos');
-Route::post('/producto/realizarAccion', [productoController::class, 'realizarAccion'])->name('producto.realizarAccion');
-Route::post('/producto/recuperar', [productoController::class, 'recuperar'])->name('producto.recuperar');
+Route::get('/Productos', [productoController::class, 'cargarDatos'])->name('producto.cargarDatos');
+Route::post('/productos', [productoController::class, 'realizarAccion'])->name('producto.realizarAccion');
+Route::post('/Productos', [productoController::class, 'recuperar'])->name('producto.recuperar');
 
-Route::get('/almacen/cargarDatos', [almacenController::class, 'cargarDatos'])->name('almacen.cargarDatos');
-Route::post('/almacen/realizarAccion', [almacenController::class, 'realizarAccion'])->name('almacen.realizarAccion');
+Route::get('/Almacenes', [almacenController::class, 'cargarDatos'])->name('almacen.cargarDatos');
+Route::post('/Almacenes', [almacenController::class, 'realizarAccion'])->name('almacen.realizarAccion');
 
-Route::get('/lugarEntrega/cargarDatos', [LugarEntregaController::class, 'cargarDatos'])->name('lugarEntrega.cargarDatos');
-Route::post('/lugarEntrega/realizarAccion', [LugarEntregaController::class, 'realizarAccion'])->name('lugarEntrega.realizarAccion');
-Route::post('/lugarEntrega/recuperar', [LugarEntregaController::class, 'recuperar'])->name('lugarEntrega.recuperar');
+Route::get('/Destinos', [LugarEntregaController::class, 'cargarDatos'])->name('lugarEntrega.cargarDatos');
+Route::post('/destinos', [LugarEntregaController::class, 'realizarAccion'])->name('lugarEntrega.realizarAccion');
+Route::post('/Destinos', [LugarEntregaController::class, 'recuperar'])->name('lugarEntrega.recuperar');
 
-Route::get('/paquete/cargarDatos', [paqueteController::class, 'cargarDatos'])->name('paquete.cargarDatos');
-Route::post('/paquete/realizarAccion', [paqueteController::class, 'realizarAccion'])->name('paquete.realizarAccion');
-Route::post('/paquete/recuperar', [paqueteController::class, 'recuperar'])->name('paquete.recuperar');
+Route::get('/Paquetes', [paqueteController::class, 'cargarDatos'])->name('paquete.cargarDatos');
+Route::post('/paquetes', [paqueteController::class, 'realizarAccion'])->name('paquete.realizarAccion');
+Route::post('/Paquetes', [paqueteController::class, 'recuperar'])->name('paquete.recuperar');
 
-Route::get('/lote/cargarDatos', [loteController::class, 'cargarDatos'])->name('lote.cargarDatos');
-Route::post('/lote/realizarAccion', [loteController::class, 'realizarAccion'])->name('lote.realizarAccion');
-Route::post('/lote/recuperar', [loteController::class, 'recuperar'])->name('lote.recuperar');
+Route::get('/Lotes', [loteController::class, 'cargarDatos'])->name('lote.cargarDatos');
+Route::post('/lotes', [loteController::class, 'realizarAccion'])->name('lote.realizarAccion');
+Route::post('/Lotes', [loteController::class, 'recuperar'])->name('lote.recuperar');
 
-Route::get('/paqueteContieneLote/cargarDatos', [paqueteContieneLoteController::class, 'cargarDatos'])->name('paqueteContieneLote.cargarDatos');
-Route::post('/paqueteContieneLote/realizarAccion', [paqueteContieneLoteController::class, 'realizarAccion'])->name('paqueteContieneLote.realizarAccion');
-Route::post('/paqueteContieneLote/recuperar', [paqueteContieneLoteController::class, 'recuperar'])->name('paqueteContieneLote.recuperar');
+Route::get('/Paquetes-lote', [paqueteContieneLoteController::class, 'cargarDatos'])->name('paqueteContieneLote.cargarDatos');
+Route::post('paquetes-lote', [paqueteContieneLoteController::class, 'realizarAccion'])->name('paqueteContieneLote.realizarAccion');
+Route::post('Paquetes-lote', [paqueteContieneLoteController::class, 'recuperar'])->name('paqueteContieneLote.recuperar');
 
-Route::get('/camionLlevaLote/cargarDatos', [camionLlevaLoteController::class, 'cargarDatos'])->name('camionLlevaLote.cargarDatos');
-Route::post('/camionLlevaLote/realizarAccion', [camionLlevaLoteController::class, 'realizarAccion'])->name('camionLlevaLote.realizarAccion');
-Route::post('/camionLlevaLote/recuperar', [camionLlevaLoteController::class, 'recuperar'])->name('camionLlevaLote.recuperar');
+Route::get('/Camion-lote', [camionLlevaLoteController::class, 'cargarDatos'])->name('camionLlevaLote.cargarDatos');
+Route::post('/camion-lote', [camionLlevaLoteController::class, 'realizarAccion'])->name('camionLlevaLote.realizarAccion');
+Route::post('/Camion-lote', [camionLlevaLoteController::class, 'recuperar'])->name('camionLlevaLote.recuperar');
 
 
 
-Route::get('/usuario/cargarDatos', [usuarioController::class, 'cargarDatos'])->name('usuario.cargarDatos');
-Route::post('/usuario/realizarAccion', [usuarioController::class, 'realizarAccion'])->name('usuario.realizarAccion');
-Route::post('/usuario/recuperar', [usuarioController::class, 'recuperar'])->name('usuario.recuperar');
+Route::get('/Usuarios', [usuarioController::class, 'cargarDatos'])->name('usuario.cargarDatos');
+Route::post('/usuarios', [usuarioController::class, 'realizarAccion'])->name('usuario.realizarAccion');
+Route::post('/Usuario', [usuarioController::class, 'recuperar'])->name('usuario.recuperar');
 
-Route::get('/TelefonosUsuario/cargarDatos', [telefonosUsuarioController::class, 'cargarDatos'])->name('telefonosUsuario.cargarDatos');
-Route::post('/TelefonosUsuario/realizarAccion', [telefonosUsuarioController::class, 'realizarAccion'])->name('telefonosUsuario.realizarAccion');
-Route::post('/TelefonosUsuario/recuperar', [telefonosUsuarioController::class, 'recuperar'])->name('telefonosUsuario.recuperar');
+Route::get('/Telefonos', [telefonosUsuarioController::class, 'cargarDatos'])->name('telefonosUsuario.cargarDatos');
+Route::post('/telefonos', [telefonosUsuarioController::class, 'realizarAccion'])->name('telefonosUsuario.realizarAccion');
+Route::post('/Telefonos', [telefonosUsuarioController::class, 'recuperar'])->name('telefonosUsuario.recuperar');
 
-Route::get('/camiones/cargarDatos', [camionesController::class, 'cargarDatos'])->name('camiones.cargarDatos');
-Route::post('/camiones/realizarAccion', [camionesController::class, 'realizarAccion'])->name('camiones.realizarAccion');
-Route::post('/camiones/recuperar', [camionesController::class, 'recuperar'])->name('camiones.recuperar');
+Route::get('/Camiones', [camionesController::class, 'cargarDatos'])->name('camiones.cargarDatos');
+Route::post('/camiones', [camionesController::class, 'realizarAccion'])->name('camiones.realizarAccion');
+Route::post('/Camiones', [camionesController::class, 'recuperar'])->name('camiones.recuperar');
