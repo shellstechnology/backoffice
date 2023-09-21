@@ -104,22 +104,26 @@ class camionesController extends Controller
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
-            $errores = $validador->getMessageBag();
-            return response()->json(['error:' => $errores], 422);
+            return;
         }
         $this->crearCamion($datosRequest);
     }
 
     private function validarDatos($camion)
     {
-
         $reglas = [
             'Matricula' => 'required|string|max:10',
+            'Marca Modelo'=>'required|string|max:101',
+            'Chofer'=>'required|string|max:50',
+            'Estado'=>'required|string|max:100',
             'Volumen' => 'required|numeric|min:0|max:99999',
             'Peso' => 'required|numeric|min:0|max:99999',
         ];
         return Validator::make([
             'Matricula' => $camion['matricula'],
+            'Marca Modelo'=>$camion['marcaModeloCamion'],
+            'Chofer'=>$camion['chofer'],
+            'Estado'=>$camion['estadoCamion'],
             'Volumen' => $camion['volumen'],
             'Peso' => $camion['peso'],
         ], $reglas);
@@ -127,6 +131,10 @@ class camionesController extends Controller
 
     private function crearCamion($camion)
     {
+        $choferExistente=Chofer_Conduce_Camion::withoutTrashed()->where('matricula_camion',$camion['matricula'])->first();
+        if($choferExistente!=null){
+            return;
+        }
         $nuevoCamion = new Camiones;
         list($marca, $modelo) = explode(':', $camion['marcaModeloCamion']);
         $idModelo = Modelos::withTrashed()->where('modelo', $modelo)->first();
@@ -150,8 +158,7 @@ class camionesController extends Controller
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
-            $errores = $validador->getMessageBag();
-            return response()->json(['error:' => $errores], 422);
+           return;
         }
         $this->modificarCamion($datosRequest);
 

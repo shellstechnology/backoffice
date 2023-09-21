@@ -37,17 +37,17 @@
             <input type="checkbox" name="cbxRecuperar" id="cbxRecuperar" onclick="comprobarCbxRecuperar()">Recuperar </input>
             <div class="contenedorDatos">
             <div class="campo">
-              <input type="text" name="direccion" id="direccion" maxlength="25">
+              <input type="text" name="direccion" id="direccion" maxlength="100">
               <label for="direccion">Direccion</label>
             </div>
             <div class="campo">
             <input type="text" id="latitud" name="latitud" onkeydown="filtro(event)" 
-                pattern="[0-9]*[.,]?[0-9]+" maxlength="9" required>
+                pattern="[0-9]*[.,]?[0-9]+" maxlength="16" required>
           <label for="latitud" >Latitud</label>
             </div>
             <div class="campo">
             <input type="text" id="longitud" name="longitud" onkeydown="filtro(event)" 
-                pattern="[0-9]*[.,]?[0-9]+" maxlength="9" required>
+                pattern="[0-9]*[.,]?[0-9]+" maxlength="16" required>
           <label for="longitud" >Longitud</label>
            <div class="campo">
            <input type="hidden" name="identificador" id="identificador">

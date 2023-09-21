@@ -46,8 +46,7 @@ class almacenController extends Controller
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
-            $errores = $validador->getMessageBag();
-            return response()->json(['error:' => $errores], 422);
+            return;
         }
         $this->crearLugarAlmacen($datosRequest);
     }
@@ -56,8 +55,7 @@ class almacenController extends Controller
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
-            $errores = $validador->getMessageBag();
-            return response()->json(['error:' => $errores], 422);
+            return;
         }
         $this->modificarAlmacen($datosRequest);
 
@@ -100,7 +98,7 @@ class almacenController extends Controller
     {
 
         $reglas = [
-            'Direccion Almacen' => 'required|string|max:25',
+            'Direccion Almacen' => 'required|string|max:100',
             'Lat Almacen' => 'required|numeric|min:-90|max:90',
             'Lng Almacen' => 'required|numeric|min:-180|max:180'
         ];

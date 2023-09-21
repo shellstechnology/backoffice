@@ -105,7 +105,7 @@ class usuarioController extends Controller
         return ([
             'Id Usuario' => $usuario['id'],
             'Nombre de Usuario' => $usuario['nombre_de_usuario'],
-            'Contraseña' => $usuario['contrasenia'],
+            'contrasenia' => $usuario['contrasenia'],
             'Mail' => $mail,
             'Telefono/s' => $telefono,
             'Tipo de Usuario' => $tipoUsuario,
@@ -161,21 +161,30 @@ class usuarioController extends Controller
     {
         $reglas = [
             'NombreUsuario' => 'required|string|max:40',
-            'Contraseña' => 'required|string|max:40',
+            'contrasenia' => 'required|string|max:40',
             'Mail' => 'required|email|max:40',
         ];
         return Validator::make([
             'NombreUsuario' => $usuario['nombre'],
-            'Contraseña' => $usuario['contraseña'],
+            'contrasenia' => $usuario['contrasenia'],
             'Mail' => $usuario['mail']
         ], $reglas);
     }
 
     private function crearUsuario($datosUsuario)
     {
+        $mailExistente=Mail_Usuarios::withTrashed()->where('mail',$datosUsuario['mail'])->first();
+        $contraseniaExistente=Usuarios::withTrashed()->where('contrasenia',$datosUsuario['contrasenia'])->first();
+        if($mailExistente!=null){
+            return;
+        }
+        if($contraseniaExistente!=null){
+            return;
+        }
+
         $usuario = new Usuarios;
         $usuario->nombre_de_usuario = $datosUsuario['nombre'];
-        $usuario->contrasenia = $datosUsuario['contraseña'];
+        $usuario->contrasenia = $datosUsuario['contrasenia'];
         $usuario->save();
         $idUsuario = $usuario->getKey();
         $this->crearMailUsuario($datosUsuario, $idUsuario);
@@ -195,7 +204,7 @@ class usuarioController extends Controller
             $administrador = new Administradores;
             $administrador->id_usuarios = $idUsuario;
             $administrador->save();
-            DB::statement("GRANT ALL PRIVILEGES ON fast_tracker_db.* TO '{$datoUsuario['nombre']}'@'localhost' IDENTIFIED BY '{$datoUsuario['contraseña']}'");
+            DB::statement("GRANT ALL PRIVILEGES ON fast_tracker_db.* TO '{$datoUsuario['nombre']}'@'localhost' IDENTIFIED BY '{$datoUsuario['contrasenia']}'");
         }
         if (isset($datoUsuario['usuarioAlmacenero'])) {
             $almacenero = new Almaceneros;
@@ -218,7 +227,7 @@ class usuarioController extends Controller
     {
         Usuarios::withTrashed()->where('Id', $datosUsuario['identificador'])->update([
             'nombre_de_usuario' => $datosUsuario['nombre'],
-            'contrasenia' => $datosUsuario['contraseña'],
+            'contrasenia' => $datosUsuario['contrasenia'],
         ]);
         $this->modificarMailUsuario($datosUsuario);
         $this->seleccionarTipoUsuario($datosUsuario);

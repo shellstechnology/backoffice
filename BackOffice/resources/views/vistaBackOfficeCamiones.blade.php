@@ -34,7 +34,7 @@
           <input type="checkbox" name="cbxRecuperar" id="cbxRecuperar" onclick="comprobarCbxRecuperar()">Recuperar </input>
           <div class="contenedorDatos">
             <div class="campo">
-            <input type="text" id="matricula" name="matricula" maxlength="20"></input>
+            <input type="text" id="matricula" name="matricula" maxlength="10"></input>
             <label for="matricula" >Matricula</label>
           </div>
           <div class="campo">

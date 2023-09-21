@@ -15,10 +15,10 @@ $datos = session('usuarios', []);
         <th>Fecha de borrado</th>
     </tr>
     @foreach ($datos as $usuario)
-    <tr onclick="seleccionarFila('{{ $usuario['Id Usuario'] }}', '{{ $usuario['Nombre de Usuario'] }}', '{{ $usuario['Contraseña'] }}', '{{ $usuario['Mail'] }}', '{{ $usuario['Tipo de Usuario'] }}')">
+    <tr onclick="seleccionarFila('{{ $usuario['Id Usuario'] }}', '{{ $usuario['Nombre de Usuario'] }}', '{{ $usuario['contrasenia'] }}', '{{ $usuario['Mail'] }}', '{{ $usuario['Tipo de Usuario'] }}')">
     <td>{{ $usuario['Id Usuario'] }}</td>
     <td>{{ $usuario['Nombre de Usuario'] }}</td>
-    <td>{{ $usuario['Contraseña'] }}</td>
+    <td>{{ $usuario['contrasenia'] }}</td>
     <td>{{ $usuario['Mail'] }}</td>
     <td>{{ $usuario['Telefono/s'] }}</td>
     <td>{{ $usuario['Tipo de Usuario'] }}</td>
@@ -35,7 +35,7 @@ $datos = session('usuarios', []);
     function seleccionarFila(id,nombre,contrasenia,mail,tipoUsuario) {
         document.getElementById('identificador').value =id ;
     document.getElementById('nombre').value = nombre;
-    document.getElementById('contraseña').value = contrasenia;
+    document.getElementById('contrasenia').value = contrasenia;
     document.getElementById('mail').value = mail;
     obtenerTipoUsuario(tipoUsuario);
 

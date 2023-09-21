@@ -38,8 +38,8 @@
           <label for="nombre" >Nombre de Usuario</label>
         </div>
         <div class="campo">
-          <input type="text" name="contraseña" id="contraseña" maxlength="20"></input>
-          <label for="contraseña" >Contraseña</label>
+          <input type="text" name="contrasenia" id="contrasenia" maxlength="20"></input>
+          <label for="contrasenia" >Contraseña</label>
         </div>
         <div class="campo">
           <input type="text" name="mail" id="mail" maxlength="40"></input>
