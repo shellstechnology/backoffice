@@ -5,72 +5,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BackOffice:Paquetes</title>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}"> 
-    <script src="{{asset('js/funciones.js')}}"> </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{asset('js/funciones.js')}}"> </script>
 </head>
 <body>
 <div class="barraDeNavegacion">
-      <div class="item" onclick="redireccionar('{{route('backoffice')}}')"> Menu Principal</div>
-      <div class="item" onclick="redireccionar('{{route('backoffice.almacen')}}')">Almacenes</div>
-      <div class="item" onclick="redireccionar('{{route('backoffice.producto')}}')"> Productos</div>
-      <div class="item" onclick="redireccionar('{{route('backoffice.lote')}}')"> Lotes</div>
+    <a href="{{ route('backoffice') }}" class="item">Menu Principal</a>
+     <a href="{{ route('backoffice.almacen') }}" class="item">Almacenes</a>
+     <a href="{{ route('backoffice.camiones') }}" class="item">Camiones</a>
+     <a href="{{ route('backoffice.paquete') }}" class="itemSeleccionado">Paquetes</a>
+     <a href="{{ route('backoffice.producto') }}" class="item">Productos</a>
+     <a href="{{ route('backoffice.lote') }}" class="item">Lotes</a>
    </div>
   <div class="container">
     <div class="cuerpo">
-    <div id="contenedorTabla"></div>
+    <div id="contenedorTabla">
+    <x-tabla-paquete-component/>
+    </div>
     </div>
     <div> 
     <div class="cajaDatos"> 
-       <input type="checkbox" id="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
-       <input type="checkbox" id="cbxModificar" onclick="comprobarCbxModificar()">Modificar </input>
-       <input type="checkbox" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
+
+    <form action="{{route('paquete.realizarAccion')}}" method="POST">
+      @csrf
+       <input type="checkbox" id="cbxAgregar" name="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
+       <input type="checkbox" id="cbxModificar" name="cbxModificar"onclick="comprobarCbxModificar()">Modificar </input>
+       <input type="checkbox" id="cbxEliminar" name="cbxEliminar"onclick="comprobarCbxEliminar()">Eliminar </input>
+       <input type="checkbox" name="cbxRecuperar" id="cbxRecuperar" onclick="comprobarCbxRecuperar()">Recuperar </input>
        <div class="contenedorDatos">
+        <duv class="campo">
+          <input type="text" name="nombrePaquete" id="nombrePaquete"></input>
+          <label for="nombrePaquete">Nombre del Paquete</label>
+        </div>
          <div class="campo">
-         <select id="anio"> <select>
-          <label for="anio" >Año</label>
-          <select id="mes"> <select>
-          <label for="mes" >Mes</label>
-          <select id="dia"> <select>
-          <label for="dia" >Dia</label>
+         <x-select-fecha-component/>
         </div>
         <div class="campo">
-        <select id="idLugarEntrega"> <select>
-          <label for="idLugarEntrega" >Lugar de Entrega</label>
+        <x-select-lugares-entrega-component/>
         </div>
-      <div class="campo">
-          <input type="text" id="caracteristica" maxlength="100"></input>
-          <label for="caracteristica" >Caracteristica</label>
+        <div class="campo">
+        <x-select-estado-paquete-component/>
       </div>
       <div class="campo">
-          <input type="text" id="nombreRemitente" maxlength="20"></input>
+      <x-select-caracteristica-paquete-component/>
+      </div>
+      <div class="campo">
+          <input type="text" name="nombreRemitente" id="nombreRemitente" maxlength="50"></input>
           <label for="nombreRemitente" >Nombre Remitente</label>
       </div>
       <div class="campo">
-          <input type="text" id="nombreDestinatario" maxlength="20"></input>
+          <input type="text" name="nombreDestinatario" id="nombreDestinatario" maxlength="50"></input>
           <label for="nombreDestinatario" >Nombre Destinatario</label>
       </div>
       <div class="campo">
-      <select id="idProducto"> <select>
-          <label for="idProducto" >Id Del Producto</label>
+      <x-select-producto-component/>
       </div>
       <div class="campo">
-          <input type="number" id="volumen" min=0 max=999  onkeydown="filtro(event)" oninput="limitarInput(this, 3)" onpaste="return false"></input>
+          <input type="text" id="volumen" name="volumen" onkeydown="filtro(event)" 
+                pattern="[0-9]*[.,]?[0-9]+" maxlength="9" required>
           <label for="volumen" >Volumen(L)</label>
       </div>
       <div class="campo">
-          <input type="number" id="peso" min=0 max=999  onkeydown="filtro(event)" oninput="limitarInput(this, 3)" onpaste="return false"></input>
+      <input type="text" id="peso" name="peso" onkeydown="filtro(event)" 
+                pattern="[0-9]*[.,]?[0-9]+" maxlength="9" required>
           <label for="peso" >Peso(Kg)</label>
+</div>
+<input type="hidden" name="identificador" id="identificador"></input>
+          <button type="submit" name="aceptar">Aceptar</button>
+</form>
+<form action="{{route('paquete.cargarDatos')}}" method="GET">
+         @csrf
+         <button type="submit" name="cargar" id="cargar">Cargar Datos</button>
+       </form>
       </div>
-      <button id="cargar" onclick="cargarFechasPaquete('{{route('producto.cargarDatos')}}','{{route('lugarEntrega.cargarDatos')}}');cargarTabla('{{route('paquete.cargarDatos')}}', 6)">Cargar Tabla</button>
-    <button onclick="validarInputs('{{ route('paquete.agregar') }}',
-                                   '{{ route('paquete.modificar') }}',
-                                   '{{ route('paquete.eliminar')}}',
-                                   '{{route('paquete.cargarDatos')}}')">Aceptar</button>
-    <button onclick="recuperarDatos('{{route('paquete.recuperar')}}',
-                                    '{{route('paquete.cargarDatos')}}')">Reestablecer Dato</button>
       </div>
     </div>
   </div>
+
+
 </body>
 </html>

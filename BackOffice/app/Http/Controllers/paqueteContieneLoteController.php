@@ -2,158 +2,140 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Almacen;
-use App\Models\Lote;
-use App\Models\LugarEntrega;
-use App\Models\Paquete;
-use App\Models\PaqueteContieneLote;
+use App\Models\Almacenes;
+use App\Models\Lotes;
+use App\Models\Paquetes;
+use App\Models\Paquete_Contiene_Lote;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class paqueteContieneLoteController extends Controller
 {
+
+    public function realizarAccion(Request $request)
+    {
+        $datosRequest = $request->all();
+        if ($request->has('cbxAgregar')) {
+            $this->agregar($datosRequest);
+        }
+        if ($request->has('cbxModificar')) {
+            $this->modificar($datosRequest);
+        }
+        if ($request->has('cbxEliminar')) {
+            $this->eliminar($datosRequest);
+        }
+        if ($request->has('cbxRecuperar')) {
+            $this->recuperar($datosRequest);
+        }
+        $this->cargarDatos();
+        return redirect()->route('lote.paqueteContieneLote');
+    }
     public function cargarDatos()
     {
-        $datosLote = Lote::withTrashed()->get();
-        $infoLote = [];
-        if ($datosLote) {
-            foreach ($datosLote as $lote) {
-                $datosPaquete = PaqueteContieneLote::withTrashed()->where('IdLote', $lote['Id'])->get();
-                if ($datosPaquete) {
-                    foreach ($datosPaquete as $paquete) {
-                        $almacen = Almacen::withTrashed()->where('Id', $paquete['IdAlmacen'])->first();
-                        $objeto = Paquete::withTrashed()->where('Id', $paquete['IdPaquete'])->first();
-                        $infoLote[] = [
-                            'Id Lote' => $lote['Id'],
-                            'Id Paquete' => $paquete['IdPaquete'],
-                            'Volumen(L)' => $objeto['VolumenL'],
-                            'Peso(Kg)' => $objeto['PesoKg'],
-                            'Almacen' => $almacen['Id'],
-                            'created_at' => $paquete['created_at'],
-                            'updated_at' => $paquete['updated_at'],
-                            'deleted_at' => $paquete['deleted_at']
-                        ];
-
-                    }
-                }
-            }
+        $datosPaqueteContieneLote = Paquete_Contiene_Lote::withTrashed()->get();
+        $infoPaqueteContieneLote = [];
+        $idAlmacen = [];
+        $idPaquete = [];
+        $idLote = [];
+        foreach ($datosPaqueteContieneLote as $paqueteContieneLote) {
+            $infoPaqueteContieneLote[] = $this->definirPaquete($paqueteContieneLote);
         }
-        return response()->json($infoLote);
+        $lugarAlmacen = Almacenes::withoutTrashed()->get();
+        foreach ($lugarAlmacen as $datoLugar) {
+            $idAlmacen[] = $datoLugar['id'];
+        }
+        $paquete = Paquetes::withoutTrashed()->get();
+        foreach ($paquete as $datoPaquete) {
+            $idPaquete[] = $datoPaquete['id'];
+        }
+        $lote = Lotes::withoutTrashed()->get();
+        foreach ($lote as $datoLote) {
+            $idLote[] = $datoLote['id'];
+        }
+        Session::put('idAlmacenes', $idAlmacen);
+        Session::put('idPaquetes', $idPaquete);
+        Session::put('idLotes', $idLote);
+        Session::put('paqueteContieneLote', $infoPaqueteContieneLote);
+        return redirect()->route('lote.paqueteContieneLote');
     }
 
-    public function agregar(Request $request)
+    public function agregar($datosRequest)
     {
-        try {
-
-            $datosRequest = $request->all();
-            $paqueteExistente = PaqueteContieneLote::where('IdPaquete', $datosRequest[1])->first();
-            if (!$paqueteExistente) {
-                $paqueteContieneLote = new PaqueteContieneLote;
-                $paqueteContieneLote->idLote = $datosRequest[0];
-                $paqueteContieneLote->idPaquete = $datosRequest[1];
-                $paqueteContieneLote->idAlmacen = $datosRequest[2];
-                $paqueteContieneLote->save();
-                $valores = Paquete::withTrashed()->where('Id', $datosRequest[1])->first();
-                $lote = Lote::withTrashed()->where('Id', $datosRequest[0])->first();
-                $volumen = $lote['VolumenL'] + $valores['VolumenL'];
-                $peso = $lote['PesoKg'] + $valores['PesoKg'];
-                Lote::withTrashed()->where('Id', $datosRequest[0])->update([
-                    'VolumenL' => $volumen,
-                    'PesoKg' => $peso
-                ]);
-                return response()->json('Paquete agregado');
-            } else {
-                return response()->json('El paquete ya pertenece a un lote');
-            }
-        } catch (\Exception $e) {
-            return response()->json(['Error al modificar el almacen'], 500);
+        $paqueteExistente = Paquete_Contiene_Lote::where('id_paquete', $datosRequest['idPaquete'])->first();
+        if (!$paqueteExistente) {
+            $this->crearPaqueteContieneLote($datosRequest);
         }
-
     }
-    public function modificar(Request $request)
+    public function modificar($datosRequest)
     {
-        try {
-            $datosRequest = $request->all();
-            $paqueteAntiguo = PaqueteContieneLote::where('IdPaquete', $datosRequest[0])->first();
-            $valoresAntiguos = Paquete::withTrashed()->where('Id', $paqueteAntiguo['IdPaquete'])->first();
-            $loteAntiguo = Lote::withTrashed()->where('Id', $paqueteAntiguo['IdLote'])->first();
-            $volumen = $loteAntiguo['VolumenL'] - $valoresAntiguos['VolumenL'];
-            $peso = $loteAntiguo['PesoKg'] - $valoresAntiguos['PesoKg'];
-            Lote::withTrashed()->where('Id', $paqueteAntiguo['IdLote'])->update([
-                'VolumenL' => $volumen,
-                'PesoKg' => $peso
-            ]);
-            PaqueteContieneLote::where('IdPaquete', $datosRequest[0])->update([
-                'IdLote' => $datosRequest[1],
-                'IdPaquete' => $datosRequest[2],
-                'IdAlmacen' => $datosRequest[3],
-            ]);
+        $this->modificarValores($datosRequest);
+    }
 
-            $valores = Paquete::withTrashed()->where('Id', $datosRequest[2])->first();
-            $lote = Lote::withTrashed()->where('Id', $datosRequest[1])->first();
-            $volumen = $lote['VolumenL'] + $valores['VolumenL'];
-            $peso = $lote['PesoKg'] + $valores['PesoKg'];
-            Lote::withTrashed()->where('Id', $datosRequest[1])->update([
-                'VolumenL' => $volumen,
-                'PesoKg' => $peso
-            ]);
-            return response()->json('Lote modificado agregado');
-
-        } catch (\Exception $e) {
-            return response()->json(['Error al modificar el almacen'], 500);
+    public function eliminar($datosRequest)
+    {
+        $id = $datosRequest['identificador'];
+        $paqueteAntiguo = Paquete_Contiene_Lote::withoutTrashed()->where('id_paquete', $id)->first();
+        if ($paqueteAntiguo) {
+            $paqueteAntiguo->delete();
         }
     }
 
-    public function eliminar(Request $request)
+    public function recuperar($datosRequest)
     {
-        $id = $request->get('identificador'); {
-            try {
-                $paqueteAntiguo = PaqueteContieneLote::where('IdPaquete', $id)->first();
-                $valoresAntiguos = Paquete::withTrashed()->where('Id', $paqueteAntiguo['IdPaquete'])->first();
-                $loteAntiguo = Lote::withTrashed()->where('Id', $paqueteAntiguo['IdLote'])->first();
-                $volumen = $loteAntiguo['VolumenL'] - $valoresAntiguos['VolumenL'];
-                $peso = $loteAntiguo['PesoKg'] - $valoresAntiguos['PesoKg'];
-                Lote::withTrashed()->where('Id', $paqueteAntiguo['IdLote'])->update([
-                    'VolumenL' => $volumen,
-                    'PesoKg' => $peso
-                ]);
-                PaqueteContieneLote::where('IdPaquete', $id)->delete();
-
-                return response()->json(['Almacen eliminado correctamente']);
-            } catch (\Exception $e) {
-                return response()->json(['Error al eliminar el almacen'], 500);
-            }
-        }
-    }
-
-    public function recuperar(Request $request)
-    {
-        $id = $request->get('identificador');
-        $paqueteContieneLote = PaqueteContieneLote::withTrashed()->where('IdPaquete',$id)->first();
+        $id = $datosRequest['identificador'];
+        $paqueteContieneLote = Paquete_Contiene_Lote::onlyTrashed()->where('id_paquete', $id)->first();
 
         if ($paqueteContieneLote) {
-            try {
-
-                PaqueteContieneLote::onlyTrashed()->where('IdPaquete', $id)->restore();
-                $paquete = PaqueteContieneLote::where('IdPaquete', $id)->first();
-                $valoresAntiguos = Paquete::withTrashed()->where('Id', $paquete['IdPaquete'])->first();
-                $valoresNuevos = $paquete;
-                $lote = Lote::withTrashed()->where('Id', $paquete['IdLote'])->first();
-                $volumen = $lote['VolumenL'] + ($valoresNuevos['VolumenL'] - $valoresAntiguos['VolumenL']);
-                $peso = $lote['PesoKg'] + ($valoresNuevos['PesoKg'] - $valoresAntiguos['PesoKg']);
-
-                Lote::withTrashed()->where('Id', $paquete['IdLote'])->update([
-                    'VolumenL' => $volumen,
-                    'PesoKg' => $peso
-                ]);
-
-                return response()->json(['Paquete restaurado correctamente']);
-            } catch (\Exception $e) {
-                return response()->json(['Error al restaurar el Paquete'], 500);
-            }
-        } else {
-            return response()->json(['El paquete no puede ser recuperado porque ya existe']);
+            $paqueteContieneLote->restore();
         }
-
     }
 
+    private function definirPaquete($paqueteContieneLote)
+    {
+        $datosPaquete = Paquetes::withTrashed()->where('id', $paqueteContieneLote['id_paquete'])->first();
+        $infoPaquete = [
+            'Id Paquete' => $datosPaquete['id'],
+            'Lote' => $paqueteContieneLote['id_lote'],
+            'Volumen(L)' => $datosPaquete['volumen_l'],
+            'Peso(Kg)' => $datosPaquete['peso_kg'],
+            'Almacen' => $paqueteContieneLote['id_almacen'],
+            'created_at' => $paqueteContieneLote['created_at'],
+            'updated_at' => $paqueteContieneLote['updated_at'],
+            'deleted_at' => $paqueteContieneLote['deleted_at']
+        ];
+
+        return $infoPaquete;
+    }
+
+    private function crearPaqueteContieneLote($paquete)
+    {
+        $paqueteContieneLote = new Paquete_Contiene_Lote;
+        $paqueteContieneLote->id_paquete = $paquete['idPaquete'];
+        $paqueteContieneLote->id_lote = $paquete['idLote'];
+        $paqueteContieneLote->id_almacen = $paquete['idAlmacen'];
+        $paqueteContieneLote->save();
+    }
+
+
+    private function actualizarLote($paquete)
+    {
+        $valores = Paquetes::withTrashed()->where('id', $paquete['idPaquete'])->first();
+        $lote = Lotes::withTrashed()->where('id', $paquete['idLote'])->first();
+        $peso = $valores['peso_kg'] + $lote['peso_kg'];
+        $volumen = $valores['volumen_l'] + $lote['volumen_l'];
+        Lotes::withTrashed()->where('id', $paquete['idLote'])->update([
+            'peso_kg'=>$peso,
+            'volumen_l'=>$volumen,
+
+        ]);
+    }
+
+    private function modificarValores($datosRequest)
+    {
+        Paquete_Contiene_Lote::where('id_paquete', $datosRequest['identificador'])->update([
+            'id_lote' => $datosRequest['idLote'],
+            'id_paquete' => $datosRequest['idPaquete'],
+            'id_almacen' => $datosRequest['idAlmacen'],
+        ]);
+    }
 }

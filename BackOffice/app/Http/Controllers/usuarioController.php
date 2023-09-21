@@ -2,148 +2,349 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MailUsuario;
-use App\Models\TelefonosUsuario;
 use App\Http\Controllers\Controller;
-use App\Models\Telefonos_Usuario;
-use App\Models\Usuario;
+use App\Models\Administradores;
+use App\Models\Almaceneros;
+use App\Models\Choferes;
+use App\Models\Clientes;
+use App\Models\Telefonos_Usuarios;
+use App\Models\Usuarios;
+use App\Models\Mail_Usuarios;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Validator;
 
 class usuarioController extends Controller
 {
 
-    public function cargarDatos()
-    {
-        $datoUsuario = Usuario::withTrashed()->get();
-        $infoPaquete = [];
-        if ($datoUsuario) {
-            foreach ($datoUsuario as $dato) {
-                $telefonoUsuario = TelefonosUsuario::withTrashed()->where('IdUsuario', $dato['Id'])->first();
-                $mailUsuario = MailUsuario::withTrashed()->where('IdUsuario', $dato['Id'])->first();
-                if ($mailUsuario) {
-                    $infoPaquete[] =
-                        [
-                            'Id Usuario' => $dato['Id'],
-                            'Nombre de Usuario' => $dato['NombreDeUsuario'],
-                            'Contraseña' => $dato['Contraseña'],
-                            'Tipo de Usuario' => $dato['TipoDeUsuario'],
-                            'Telefono' => $telefonoUsuario['Telefono'],
-                            'Mail' => $mailUsuario['Mail'],
-                            'created_at' => $dato['created_at'],
-                            'updated_at' => $dato['updated_at'],
-                            'deleted_at' => $dato['deleted_at'],
-                        ];
-                }
-            }
-
-        }
-        return response()->json($infoPaquete);
-    }
-
-    public function agregar(Request $request)
+    public function realizarAccion(Request $request)
     {
         $datosRequest = $request->all();
-        $reglas = [
-            'NombreUsuario' => 'required|string|max:20',
-            'Contraseña' => 'required|string|max:20',
-            'TipoUsuario' => 'required|string|max:20',
-            'Telefono' => 'required|string|max:9',
-            'Mail' => 'required|string|max:40',
-        ];
-        $validador = Validator::make([
-            'NombreUsuario' => $datosRequest[0],
-            'Contraseña' => $datosRequest[1],
-            'TipoUsuario' => $datosRequest[4],
-            'Telefono' => $datosRequest[3],
-            'Mail' => $datosRequest[2]
-        ], $reglas);
-        
+        if ($request->has('cbxAgregar')) {
+            ;
+            $this->agregar($datosRequest);
+        }
+        if ($request->has('cbxModificar')) {
+            $this->modificar($datosRequest);
+        }
+        if ($request->has('cbxEliminar')) {
+            $this->eliminar($datosRequest);
+        }
+        if ($request->has('cbxRecuperar')) {
+            $this->recuperar($datosRequest);
+        }
+        $this->cargarDatos();
+        return redirect()->route('backoffice.usuarios');
+
+    }
+    public function cargarDatos()
+    {
+        $datoUsuario = Usuarios::withTrashed()->get();
+        $infoUsuario = [];
+        if ($datoUsuario) {
+            foreach ($datoUsuario as $dato) {
+                $infoUsuario[] = $this->definirUsuarios($dato);
+            }
+        }
+
+        Session::put('usuarios', $infoUsuario);
+        return redirect()->route('backoffice.usuarios');
+
+    }
+
+    public function agregar($datosRequest)
+    {
+
+        $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
             $errores = $validador->getMessageBag();
             return response()->json(['error:' => $errores], 422);
         }
-        $datosRequest = $request->all();
-        $usuario = new Usuario;
-        $usuario->NombreDeUsuario = $datosRequest[0];
-        $usuario->Contraseña = $datosRequest[1];
-        $usuario->TipoDeUsuario = $datosRequest[4];
+        $this->crearUsuario($datosRequest);
+
+    }
+
+    public function modificar($datosRequest)
+    {
+
+        $validador = $this->validarDatos($datosRequest);
+        if ($validador->fails()) {
+            $errores = $validador->getMessageBag();
+            return response()->json(['error:' => $errores], 422);
+        }
+        $this->modificarUsuario($datosRequest);
+    }
+
+
+    public function eliminar($datosRequest)
+    {
+        $id = $datosRequest['identificador'];
+        Mail_Usuarios::where('id_usuarios', $id)->delete();
+        Usuarios::where('id', $id)->delete();
+
+    }
+
+    public function recuperar($datosRequest)
+    {
+
+        $id = $datosRequest['identificador'];
+        $producto = Usuarios::onlyTrashed()->find($id);
+        if ($producto) {
+            Usuarios::where('id', $id)->restore();
+            Mail_Usuarios::where('id_usuarios', $id)->restore();
+            return response()->json(['Usuario restaurado correctamente']);
+        }
+    }
+
+    private function definirUsuarios($usuario)
+    {
+        $mail = $this->obtenerMails($usuario);
+        $telefono = $this->obtenerTelefonos($usuario);
+        $tipoUsuario = $this->obtenerTipoUsuario($usuario);
+        return ([
+            'Id Usuario' => $usuario['id'],
+            'Nombre de Usuario' => $usuario['nombre_de_usuario'],
+            'contrasenia' => $usuario['contrasenia'],
+            'Mail' => $mail,
+            'Telefono/s' => $telefono,
+            'Tipo de Usuario' => $tipoUsuario,
+            'created_at' => $usuario['created_at'],
+            'updated_at' => $usuario['updated_at'],
+            'deleted_at' => $usuario['deleted_at']
+        ]);
+    }
+
+    private function obtenerMails($usuario)
+    {
+        $mail = Mail_Usuarios::withTrashed()->where('id_usuarios', $usuario['id'])->first();
+        return $mail['mail'];
+    }
+
+    private function obtenerTelefonos($usuario)
+    {
+        $listaTelefonos = [];
+        $telefonos = Telefonos_Usuarios::withTrashed()->where('id_usuarios', $usuario['id'])->get();
+        foreach ($telefonos as $telefono) {
+            $listaTelefonos[] = $telefono['telefono'];
+        }
+        return implode('/', $listaTelefonos);
+    }
+
+    private function obtenerTipoUsuario($usuario)
+    {
+        $tiposUsuario = [];
+
+        $administrador = Administradores::withoutTrashed()->where('id_usuarios', $usuario['id'])->first();
+        $almacenero = Almaceneros::withoutTrashed()->where('id_usuarios', $usuario['id'])->first();
+        $chofer = Choferes::withoutTrashed()->where('id_usuarios', $usuario['id'])->first();
+        $cliente = Clientes::withoutTrashed()->where('id_usuarios', $usuario['id'])->first();
+
+        if ($administrador) {
+            $tiposUsuario[] = 'Administrador';
+        }
+        if ($almacenero) {
+            $tiposUsuario[] = 'Almacenero';
+        }
+        if ($chofer) {
+            $tiposUsuario[] = 'Chofer';
+        }
+        if ($cliente) {
+            $tiposUsuario[] = 'Cliente';
+        }
+
+        return implode('/', $tiposUsuario);
+    }
+
+
+    private function validarDatos($usuario)
+    {
+        $reglas = [
+            'NombreUsuario' => 'required|string|max:40',
+            'contrasenia' => 'required|string|max:40',
+            'Mail' => 'required|email|max:40',
+        ];
+        return Validator::make([
+            'NombreUsuario' => $usuario['nombre'],
+            'contrasenia' => $usuario['contrasenia'],
+            'Mail' => $usuario['mail']
+        ], $reglas);
+    }
+
+    private function crearUsuario($datosUsuario)
+    {
+        $mailExistente=Mail_Usuarios::withTrashed()->where('mail',$datosUsuario['mail'])->first();
+        $contraseniaExistente=Usuarios::withTrashed()->where('contrasenia',$datosUsuario['contrasenia'])->first();
+        if($mailExistente!=null){
+            return;
+        }
+        if($contraseniaExistente!=null){
+            return;
+        }
+
+        $usuario = new Usuarios;
+        $usuario->nombre_de_usuario = $datosUsuario['nombre'];
+        $usuario->contrasenia = $datosUsuario['contrasenia'];
         $usuario->save();
         $idUsuario = $usuario->getKey();
-        $usuarioTelefono = new TelefonosUsuario;
-        $usuarioTelefono->IdUsuario = $idUsuario;
-        $usuarioTelefono->Telefono = $datosRequest[3];
-        $usuarioTelefono->save();
-        $mailUsuario = new MailUsuario;
-        $mailUsuario->IdUsuario = $idUsuario;
-        $mailUsuario->Mail = $datosRequest[2];
+        $this->crearMailUsuario($datosUsuario, $idUsuario);
+        $this->establecerTipoUsuario($datosUsuario, $idUsuario);
+    }
+    private function crearMailUsuario($usuario, $idUsuario)
+    {
+        $mailUsuario = new Mail_Usuarios;
+        $mailUsuario->id_usuarios = $idUsuario;
+        $mailUsuario->mail = $usuario['mail'];
         $mailUsuario->save();
-        if($datosRequest[4]=='Administrador'){
-            DB::statement("GRANT ALL PRIVILEGES ON backofficebd.* TO '$datosRequest[0]'@'localhost' IDENTIFIED BY '$datosRequest[1]'");
-        }
-        return response()->json('Usuario Agregado');
-
     }
 
-    public function modificar(Request $request)
+    private function establecerTipoUsuario($datoUsuario, $idUsuario)
     {
-        try{
-            $datosRequest = $request->all();
-            Usuario::withTrashed()->where('Id',$datosRequest[0])->update([
-                'NombreDeUsuario'=>$datosRequest[1],
-                'Contraseña'=>$datosRequest[2],
-                'TipoDeUsuario'=>$datosRequest[5],
-            ]);
-            MailUsuario::withTrashed()->where('IdUsuario',$datosRequest[0])->update([
-                'Mail'=>$datosRequest[3],
-            ]);
-            TelefonosUsuario::withTrashed()->where('IdUsuario',$datosRequest[0])->update([
-                'Telefono'=>$datosRequest[4],
-            ]);
-            if($datosRequest[5]=='Administrador'){
-                DB::statement("GRANT ALL PRIVILEGES ON backofficebd.* TO '$datosRequest[1]'@'localhost' IDENTIFIED BY '$datosRequest[2]'");
-            }else{
-                DB::statement("REVOKE ALL PRIVILEGES ON backofficebd.* FROM '$datosRequest[1]'@'localhost'");
-            }
-            return response()->json('Usuario Modificado');
-
-        }catch(\Exception $e){   
-            return response()->json(['Error al Modificar el usuario'], 500);
+        if (isset($datoUsuario['usuarioAdministrador'])) {
+            $administrador = new Administradores;
+            $administrador->id_usuarios = $idUsuario;
+            $administrador->save();
+            DB::statement("GRANT ALL PRIVILEGES ON fast_tracker_db.* TO '{$datoUsuario['nombre']}'@'localhost' IDENTIFIED BY '{$datoUsuario['contrasenia']}'");
+        }
+        if (isset($datoUsuario['usuarioAlmacenero'])) {
+            $almacenero = new Almaceneros;
+            $almacenero->id_usuarios = $idUsuario;
+            $almacenero->save();
+        }
+        if (isset($datoUsuario['usuarioChofer'])) {
+            $choferes = new Choferes;
+            $choferes->id_usuarios = $idUsuario;
+            $choferes->save();
+        }
+        if (isset($datoUsuario['usuarioCliente'])) {
+            $cliente = new Clientes;
+            $cliente->id_usuarios = $idUsuario;
+            $cliente->save();
         }
     }
 
-
-    public function eliminar(Request $request)
+    private function modificarUsuario($datosUsuario)
     {
-        $id = $request->get('identificador'); {
-            try {
-                TelefonosUsuario::where('IdUsuario', $id)->delete();
-                MailUsuario::where('IdUsuario', $id)->delete();
-                Usuario::where('Id', $id)->delete();
-                return response()->json(['Usuario eliminado correctamente']);
-            } catch (\Exception $e) {
-                return response()->json(['Error al eliminar el usuario'], 500);
-            }
+        Usuarios::withTrashed()->where('Id', $datosUsuario['identificador'])->update([
+            'nombre_de_usuario' => $datosUsuario['nombre'],
+            'contrasenia' => $datosUsuario['contrasenia'],
+        ]);
+        $this->modificarMailUsuario($datosUsuario);
+        $this->seleccionarTipoUsuario($datosUsuario);
+    }
+    private function modificarMailUsuario($usuario)
+    {
+        Mail_Usuarios::withTrashed()->where('id_usuarios', $usuario['identificador'])->update([
+            'mail' => $usuario['mail'],
+        ]);
+    }
+
+    private function seleccionarTipoUsuario($datoUsuario)
+    {
+        $administrador = null;
+        $almacenero = null;
+        $chofer = null;
+        $cliente = null;
+        if (isset($datoUsuario['usuarioAdministrador'])) {
+            $administrador = 'crear';
+        }
+        if (isset($datoUsuario['usuarioAlmacenero'])) {
+            $almacenero = 'crear';
+        }
+        if (isset($datoUsuario['usuarioChofer'])) {
+            $chofer = 'crear';
+        }
+        if (isset($datoUsuario['usuarioCliente'])) {
+            $cliente = 'crear';
+        }
+        $this->modificarTipoUsuario($datoUsuario, $administrador, $almacenero, $chofer, $cliente);
+
+    }
+
+    private function modificarTipoUsuario($datoUsuario, $administrador, $almacenero, $chofer, $cliente)
+    {
+        switch ($administrador) {
+            case 'crear':
+                $datoAdministardor = Administradores::withTrashed()->updateOrCreate(['id_usuarios' => $datoUsuario['identificador']]);
+
+                if ($datoAdministardor->trashed()) {
+                    $datoAdministardor->restore();
+                }
+                break;
+            default:
+                $this->eliminarAdministrador($datoUsuario);
+
+        }
+
+        switch ($almacenero) {
+            case 'crear':
+                $datoAlmacenero = Almaceneros::withTrashed()->updateOrCreate(['id_usuarios' => $datoUsuario['identificador']]);
+
+                if ($datoAlmacenero->trashed()) {
+                    $datoAlmacenero->restore();
+                }
+                break;
+            default:
+                $this->eliminarAlmacenero($datoUsuario);
+
+        }
+
+        switch ($chofer) {
+            case 'crear':
+                $datoChofer = Choferes::withTrashed()->updateOrCreate(['id_usuarios' => $datoUsuario['identificador']]);
+
+                if ($datoChofer->trashed()) {
+                    $datoChofer->restore();
+                }
+                break;
+            default:
+                $this->eliminarChofer($datoUsuario);
+
+        }
+
+        switch ($cliente) {
+            case 'crear':
+                $datoCliente = Clientes::withTrashed()->updateOrCreate(['id_usuarios' => $datoUsuario['identificador']]);
+
+                if ($datoCliente->trashed()) {
+                    $datoCliente->restore();
+                }
+                break;
+            default:
+                $this->eliminarCliente($datoUsuario);
+
         }
     }
 
-    public function recuperar(Request $request)
+    private function eliminarAdministrador($datoUsuario)
     {
+        $admnistrador = Administradores::withoutTrashed()->where('id_usuarios', $datoUsuario['identificador'])->first();
+        if (isset($admnistrador)) {
+            $admnistrador->delete();
+        }
+    }
 
-        $id = $request->get('identificador');
-        $producto = Usuario::onlyTrashed()->find($id);
-        if ($producto) {
-            try {
-                Usuario::where('Id', $id)->restore();
-                TelefonosUsuario::where('IdUsuario', $id)->restore();
-                MailUsuario::where('IdUsuario', $id)->restore();
-                return response()->json(['Usuario restaurado correctamente']);
-            } catch (\Exception $e) {
-                return response()->json(['Error al restaurar el usuario'], 500);
-            }
-        } else {
-            return response()->json(['El usuario no puede ser recuperado porque ya existe']);
+    private function eliminarAlmacenero($datoUsuario)
+    {
+        $almacenero = Almaceneros::withoutTrashed()->where('id_usuarios', $datoUsuario['identificador'])->first();
+        if (isset($almacenero)) {
+            $almacenero->delete();
+        }
+    }
+
+    private function eliminarCliente($datoUsuario)
+    {
+        $cliente = Clientes::withoutTrashed()->where('id_usuarios', $datoUsuario['identificador'])->first();
+        if (isset($cliente)) {
+            $cliente->delete();
+        }
+    }
+
+    private function eliminarChofer($datoUsuario)
+    {
+        $chofer = Choferes::withoutTrashed()->where('id_usuarios', $datoUsuario['identificador'])->first();
+        if (isset($chofer)) {
+            $chofer->delete();
         }
     }
 }

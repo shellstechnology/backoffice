@@ -5,54 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BackOffice:Almacenes</title>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}"> 
-    <script src="{{asset('js/funciones.js')}}"> </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{asset('js/funciones.js')}}"> </script>
 </head>
-<body>
-<div class="barraDeNavegacion">
-      <div class="item" onclick="redireccionar('{{route('backoffice')}}')"> Menu Principal</div>
-      <div class="item" onclick="redireccionar('{{route('backoffice.paquete')}}')"> Paquetes</div>
-      <div class="item" onclick="redireccionar('{{route('backoffice.producto')}}')"> Productos</div>
-       <div class="item" onclick="redireccionar('{{route('backoffice.lote')}}')"> Lotes</div>
-   </div>
-  <div class="container">
-    <div class="cuerpo">
-    <div id="contenedorTabla"></div>
+  <body>
+  <div class="barraDeNavegacion">
+  <a href="{{ route('backoffice') }}" class="item">Menu Principal</a>
+     <a href="{{ route('backoffice.almacen') }}" class="itemSeleccionado">Almacenes</a>
+     <a href="{{ route('backoffice.camiones') }}" class="item">Camiones</a>
+     <a href="{{ route('backoffice.paquete') }}" class="item">Paquetes</a>
+     <a href="{{ route('backoffice.producto') }}" class="item">Productos</a>
+     <a href="{{ route('backoffice.lote') }}" class="item">Lotes</a>
     </div>
-    <div> 
-    <button onclick="redireccionar('{{route('backoffice.almacen')}}')"><-Almacen</button>
-    <div class="cajaDatos"> 
-       <input type="checkbox" id="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
-       <input type="checkbox" id="cbxModificar" onclick="comprobarCbxModificar()">Modificar </input>
-       <input type="checkbox" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
-       
-       <div class="contenedorDatos">
+    <div class="container">
+     <div class="cuerpo">
+     <div id="contenedorTabla">
+     <x-tabla-lugar-entrega-component/>
+     </div>
+      </div>
+      <div> 
+      <a href="{{route('backoffice.almacen')}}"><-Almacen</a>
+      <div class="cajaDatos"> 
+      <form action="{{route('lugarEntrega.realizarAccion')}}" method="POST">
+        @csrf
+        <input type="checkbox" name="cbxAgregar" id="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
+            <input type="checkbox" name="cbxModificar" id="cbxModificar" onclick="comprobarCbxModificar()">Modificar </input>
+            <input type="checkbox" name="cbxEliminar" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
+            <input type="checkbox" name="cbxRecuperar" id="cbxRecuperar" onclick="comprobarCbxRecuperar()">Recuperar </input>
+        <div class="contenedorDatos">
+          <div class="campo">
+            <input type="text" id="direccion" name="direccion" maxlength="25"></input>
+           <label for="direccion" >Direccion</label>
+         </div>
        <div class="campo">
-        <select id="idAlmacen"> <select>
-          <label for="idAlmacen" >Id del Almacen</label>
+           <input type="number" id="latitud" name="latitud" min="-90" max="90"  onkeydown="filtro(event)" oninput="limitarInput(this, 15) " onpaste="return false"></input>
+           <label for="latitud" >Latitud</label>
         </div>
-         <div class="campo">
-          <input type="text" id="direccion" maxlength="25"></input>
-          <label for="nombreProducto" >Direccion</label>
+        <div class="campo">
+          <input type="number" id="longitud" name="longitud" min="-180" max="180" onkeydown="filtro(event)" oninput="limitarInput(this, 15)" onpaste="return false" ></input>
+          <label for="longitud" >Longitud</label>
+          <div class="contenedorDatos">
+          <input type="hidden" name="identificador" id="identificador">
+          <button type="submit" name="aceptar">Aceptar</button>
         </div>
-      <div class="campo">
-          <input type="number" id="latitud" min="-90" max="90"  onkeydown="filtro(event)" oninput="limitarInput(this, 15) " onpaste="return false"></input>
-          <label for="stockProducto" >Latitud</label>
-      </div>
-      <div class="campo">
-          <input type="number" id="longitud" min="-180" max="180" onkeydown="filtro(event)" oninput="limitarInput(this, 15)" onpaste="return false" ></input>
-          <label for="stockProducto" >Longitud</label>
-      </div>
-    <button id="cargar" onclick="cargarAlmacenes('{{route('almacen.cargarDatos')}}');cargarTabla('{{route('lugarEntrega.cargarDatos')}}', 2)">Cargar Tabla</button>
-    <button onclick="validarInputs('{{ route('lugarEntrega.agregar') }}',
-                                   '{{ route('lugarEntrega.modificar') }}',
-                                   '{{ route('lugarEntrega.eliminar')}}',
-                                   '{{route('lugarEntrega.cargarDatos')}}')">Aceptar</button>
-    <button onclick="recuperarDatos('{{route('lugarEntrega.recuperar')}}',
-                                    '{{route('lugarEntrega.cargarDatos')}}')">Reestablecer Dato</button>
-      </div>
-    </div>
-  </div>
-</body>
+          </form>
+       </div>
+      <form action="{{route('lugarEntrega.cargarDatos')}}" method="GET">
+         @csrf
+         <button type="submit" name="cargar" id="cargar">Cargar Datos</button>
+       </form>
+     </div>
+   </div>
+  </body>
 </html>

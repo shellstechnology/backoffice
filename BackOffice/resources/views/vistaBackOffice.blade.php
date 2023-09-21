@@ -9,12 +9,14 @@
 </head>
 <body>
 <div class="barraDeNavegacion">
-<div class="item" onclick="redireccionar('{{route('backoffice.almacen')}}')">Almacenes</div>
-    <div class="item" onclick="redireccionar('{{route('backoffice.paquete')}}')"> Paquetes</div>
-    <div class="item" onclick="redireccionar('{{route('backoffice.producto')}}')"> Productos</div>
-    <div class="item" onclick="redireccionar('{{route('backoffice.lote')}}')"> Lotes</div>
+<a href="{{ route('backoffice') }}" class="item">Menu Principal</a>
+     <a href="{{ route('backoffice.almacen') }}" class="item">Almacenes</a>
+     <a href="{{ route('backoffice.camiones') }}" class="item">Camiones</a>
+     <a href="{{ route('backoffice.paquete') }}" class="item">Paquetes</a>
+     <a href="{{ route('backoffice.producto') }}" class="item">Productos</a>
+     <a href="{{ route('backoffice.lote') }}" class="item">Lotes</a>
 </div>
-<div class="cajaUsuario"  onclick="redireccionar('{{route('backoffice.usuarios')}}')">
+<div class="cajaUsuario" onclick="redireccionar('{{route('backoffice.usuarios')}}')">
 <div class="head"></div>
 <div class="body"></div>
 </div>

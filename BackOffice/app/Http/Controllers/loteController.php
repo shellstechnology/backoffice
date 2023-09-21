@@ -2,66 +2,80 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Lote;
+use App\Models\Lotes;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Session;
 
 class loteController extends Controller
 {
+    public function realizarAccion(Request $request)
+    {
+        $datosRequest = $request->all();
+        if ($request->has('cbxAgregar')) {
+            $this->agregar();
+        }
+        if ($request->has('cbxEliminar')) {
+            $this->eliminar($datosRequest);
+        }
+        if ($request->has('cbxRecuperar')) {
+            $this->recuperar($datosRequest);
+        }
+        $this->cargarDatos();
+        return redirect()->route('backoffice.lote');
+    }
+
     public function cargarDatos()
     {
-        $datoLote = Lote::withTrashed()->get();
-        $infoLote = [];
+        $datoLote = Lotes::withTrashed()->get();
+        $infoLote= [];
         if ($datoLote) {
             foreach ($datoLote as $lote) {
-                $infoLote[] = [
-                    'Id Lote' => $lote['Id'],
-                    'Volumen(L)' => $lote['VolumenL'],
-                    'Peso(Kg)' => $lote['PesoKg'],
-                    'created_at' => $lote['created_at'],
-                    'updated_at' => $lote['updated_at'],
-                    'deleted_at' => $lote['deleted_at'],
-                ];
+                $infoLote []= $this->obtenerDatosLotes($lote);
             }
-            return response()->json($infoLote);
+            Session::put('lotes', $infoLote);
+            return redirect()->route('backoffice.lote');
         }
-
-        return response()->json('No hay ningun lote');
     }
 
-    public function crearLote()
+    public function agregar()
     {
-        $lote = new Lote;
-        $lote->VolumenL = 0;
-        $lote->PesoKg = 0;
+        $lote = new Lotes;
+        $lote->volumen_l = 0;
+        $lote->peso_kg = 0;
         $lote->save();
-        return response()->json('Lote creado');
     }
 
-    public function eliminar(Request $request){
-        $id = $request->get('identificador'); {
-            try {
-                Lote::where('Id',$id )->delete();
-                return response()->json(['Paquete eliminado correctamente']);
-            } catch (\Exception $e) {
-                return response()->json(['Error al eliminar el Paquete'], 500);
-            }
-        }
-    }
-
-    public function recuperar(Request $request){
-        $id = $request->get('identificador');
-        $lote = Lote::onlyTrashed()->find($id);
+    public function eliminar($datosRequest)
+    {
+        $id = $datosRequest['identificador'];
+        $lote = Lotes::withoutTrashed()->find($id);
         if ($lote) {
-            try {
-                Lote::where('Id',$id )->restore();
-                return response()->json(['Lote restaurado correctamente']);
-            } catch (\Exception $e) {
-                return response()->json(['Error al restaurar el Lote'], 500);
-            }
-        } else {
-            return response()->json(['El Lote no puede ser recuperado porque ya existe']);
+            Lotes::where('id', $datosRequest['identificador'])->delete();
         }
+    }
+
+    public function recuperar($datosRequest)
+    {
+        $id = $datosRequest['identificador'];
+        $lote = Lotes::onlyTrashed()->find($id);
+        if ($lote) {
+            Lotes::where('id', $id)->restore();
+        }
+        return redirect()->route('backoffice.lote');
+    }
+
+    private function obtenerDatosLotes($lote)
+    {
+
+        return ([
+            'Id Lote' => $lote['id'],
+            'Volumen(L)' => $lote['volumen_l'],
+            'Peso(Kg)' => $lote['peso_kg'],
+            'created_at' => $lote['created_at'],
+            'updated_at' => $lote['updated_at'],
+            'deleted_at' => $lote['deleted_at'],
+        ]);
+
     }
 }
