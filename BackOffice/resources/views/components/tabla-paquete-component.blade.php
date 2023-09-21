@@ -23,13 +23,14 @@ $datos = session('paquete', []);
     </tr>
     @foreach ($datos as $paquete)
     <tr onclick="seleccionarFila('{{ $paquete['Id Paquete'] }}','{{ $paquete['Nombre del Paquete'] }}',
-    '{{ $paquete['Fecha de Entrega'] }}','{{ $paquete['Direccion'] }}','{{ $paquete['Estado'] }}',
+    '{{ $paquete['Fecha de Entrega'] }}','{{ $paquete['Id Lugar Entrega'] }}','{{ $paquete['Estado'] }}',
     '{{ $paquete['Caracteristicas'] }}','{{ $paquete['Nombre del Remitente'] }}','{{ $paquete['Nombre del Destinatario'] }}',
     '{{ $paquete['Id del Producto'] }}','{{ $paquete['Volumen(L)'] }}','{{ $paquete['Peso(Kg)'] }}'
 )">
             <td>{{ $paquete['Id Paquete'] }}</td>
             <td>{{ $paquete['Nombre del Paquete'] }}</td>
             <td>{{ $paquete['Fecha de Entrega'] }}</td>
+            <td>{{ $paquete['Id Lugar Entrega'] }}</td>
             <td>{{ $paquete['Direccion'] }}</td>
             <td>{{ $paquete['Estado'] }}</td>
             <td>{{ $paquete['Caracteristicas'] }}</td>
@@ -56,7 +57,7 @@ $datos = session('paquete', []);
     document.getElementById('mes').value = parseInt(arrayFecha[1], 10);
     document.getElementById('dia').value = parseInt(arrayFecha[2], 10);
     document.getElementById('idLugarEntrega').value = lugarEntrega;
-    document.getElementById('estado').value = estado;
+    document.getElementById('estadoPaquete').value = estado;
     document.getElementById('caracteristica').value = caracteristica;
     document.getElementById('nombreRemitente').value = nombreRemitente;
     document.getElementById('nombreDestinatario').value = nombreDestinatario;

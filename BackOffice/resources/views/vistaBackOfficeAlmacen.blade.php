@@ -41,15 +41,18 @@
               <label for="direccion">Direccion</label>
             </div>
             <div class="campo">
-              <input type="number" name="latitud" id="latitud" min="-90" max="90" onkeydown="filtro(event)" oninput="limitarInput(this, 15)" onpaste="return false">
-              <label for="latitud">Latitud</label>
+            <input type="text" id="latitud" name="latitud" onkeydown="filtro(event)" 
+                pattern="[0-9]*[.,]?[0-9]+" maxlength="9" required>
+          <label for="latitud" >Latitud</label>
             </div>
             <div class="campo">
-               <input type="number" name="longitud" id="longitud" min="-180" max="180" onkeydown="filtro(event)" oninput="limitarInput(this, 15)" onpaste="return false">
-               <label for="longitud">Longitud</label>
-             </div>
-             <input type="hidden" name="identificador" id="identificador">
+            <input type="text" id="longitud" name="longitud" onkeydown="filtro(event)" 
+                pattern="[0-9]*[.,]?[0-9]+" maxlength="9" required>
+          <label for="longitud" >Longitud</label>
+           <div class="campo">
+           <input type="hidden" name="identificador" id="identificador">
              <button type="submit" name='aceptar'>Aceptar</button>
+           </div>
           </form>
           <form action="{{route('almacen.cargarDatos')}}" method="GET">
             <button type="submit" name="cargar">Cargar Datos</button>

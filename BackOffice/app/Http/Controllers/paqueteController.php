@@ -31,6 +31,7 @@ class paqueteController extends Controller
         }
         $this->cargarDatos();
         return redirect()->route('backoffice.paquete');
+
     }
 
     public function cargarDatos()
@@ -144,8 +145,8 @@ class paqueteController extends Controller
     {
         $reglas = [
             'Caracteristica' => 'required|string|max:100',
-            'Nombre Remitente' => 'required|string|max:20',
-            'Nombre Destinatario' => 'required|string|max:20',
+            'Nombre Remitente' => 'required|string|max:40',
+            'Nombre Destinatario' => 'required|string|max:40',
             'Volumen' => 'required|numeric|min:1|max:999',
             'Peso' => 'required|numeric|min:1|max:999',
         ];
@@ -182,6 +183,7 @@ class paqueteController extends Controller
 
     private function modificarPaquete($paquete)
     {
+
         $caracteristica = $this->obtenerIdCaracteristica($paquete);
         $estado=$this->obtenerIdEstado($paquete);
         $dia = $paquete['dia'];
@@ -189,6 +191,7 @@ class paqueteController extends Controller
         $anio = $paquete['anio'];
         $fechaEntrega = sprintf('%04d-%02d-%02d', $anio, $mes, $dia);
         Paquetes::where('id', $paquete['identificador'])->update([
+            'nombre'=>$paquete['nombrePaquete'],
             'fecha_de_entrega' => $fechaEntrega,
             'nombre_remitente' => $paquete['nombreRemitente'],
             'id_lugar_entrega'=>$paquete['idLugarEntrega'],
@@ -208,7 +211,7 @@ class paqueteController extends Controller
     }
 
     private function obtenerIdEstado($paquete){
-        $estado = Estados_p::withTrashed()->where('descripcion_estado_p',$paquete['estado'])->first();
+        $estado = Estados_p::withTrashed()->where('descripcion_estado_p',$paquete['estadoPaquete'])->first();
         return $estado['id'];
     }
 }

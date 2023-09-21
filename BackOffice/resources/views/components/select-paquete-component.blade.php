@@ -3,7 +3,7 @@ $datos = session('idPaquetes', []);
 @endphp
 
 @if (!empty($datos))
-    <select id="idPaquete">
+    <select id="idPaquete" name="idPaquete">
         @foreach ($datos as $paquete)
             <option value="{{$paquete}}">{{ $paquete}}</option>
         @endforeach
