@@ -33,7 +33,7 @@
           <input type="checkbox" name="cbxRecuperar" id="cbxRecuperar" onclick="comprobarCbxRecuperar()">Recuperar </input>
           <div class="contenedorDatos">
             <div class="campo">
-            <input type="text" id="nombre" name="nombre" maxlength="20"></input>
+            <input type="text" id="nombre" name="nombre" maxlength="20" required></input>
             <label for="nombreProducto" >Nombre</label>
           </div>
           <div class="campo">
