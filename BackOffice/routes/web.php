@@ -2,6 +2,7 @@
 
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\camionLlevaLoteController;
 use App\Http\Controllers\almacenController;
 use App\Http\Controllers\lugarEntregaController;
 use App\Http\Controllers\paqueteController;
@@ -41,6 +42,10 @@ Route::get('vistaBackOfficeTelefonosUsuario', function(){
 Route::get('vistaBackOfficeCamiones', function(){
     return view('vistaBackOfficeCamiones');
 })-> name('backoffice.camiones');
+
+Route::get('vistaBackOfficeCamionLlevaLote', function(){
+    return view('vistaBackOfficeCamionLlevaLote');
+})-> name('camion.camionLlevaLote');
 
 Route::get('vistaBackOfficeAlmacen', function(){
     return view('vistaBackOfficeAlmacen');
@@ -88,6 +93,11 @@ Route::post('/lote/recuperar', [loteController::class, 'recuperar'])->name('lote
 Route::get('/paqueteContieneLote/cargarDatos', [paqueteContieneLoteController::class, 'cargarDatos'])->name('paqueteContieneLote.cargarDatos');
 Route::post('/paqueteContieneLote/realizarAccion', [paqueteContieneLoteController::class, 'realizarAccion'])->name('paqueteContieneLote.realizarAccion');
 Route::post('/paqueteContieneLote/recuperar', [paqueteContieneLoteController::class, 'recuperar'])->name('paqueteContieneLote.recuperar');
+
+Route::get('/camionLlevaLote/cargarDatos', [camionLlevaLoteController::class, 'cargarDatos'])->name('camionLlevaLote.cargarDatos');
+Route::post('/camionLlevaLote/realizarAccion', [camionLlevaLoteController::class, 'realizarAccion'])->name('camionLlevaLote.realizarAccion');
+Route::post('/camionLlevaLote/recuperar', [camionLlevaLoteController::class, 'recuperar'])->name('camionLlevaLote.recuperar');
+
 
 
 Route::get('/usuario/cargarDatos', [usuarioController::class, 'cargarDatos'])->name('usuario.cargarDatos');

@@ -31,7 +31,6 @@ $datos = session('almacenes', []);
 
     function seleccionarFila(id, direccion, latitud, longitud) {
         document.getElementById('identificador').value = id;
-        document.getElementById('almacenes').value = id;
         document.getElementById('direccion').value = direccion;
         document.getElementById('latitud').value = latitud;
         document.getElementById('longitud').value = longitud;

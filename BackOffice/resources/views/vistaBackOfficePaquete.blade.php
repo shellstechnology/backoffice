@@ -41,8 +41,7 @@
          <x-select-fecha-component/>
         </div>
         <div class="campo">
-        <select name="idLugarEntrega" id="idLugarEntrega"> <select>
-          <label for="idLugarEntrega" >Lugar de Entrega</label>
+        <x-select-lugares-entrega-component/>
         </div>
         <div class="campo">
         <x-select-estado-paquete-component/>

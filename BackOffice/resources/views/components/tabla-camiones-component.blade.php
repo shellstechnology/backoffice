@@ -38,7 +38,7 @@ $datos = session('camiones', []);
         document.getElementById('matricula').value = matricula;
         document.getElementById('marcaModeloCamion').value = marcaModelo;
         document.getElementById('estadoCamion').value =  estado;
-        document.getElementById('choferesCamion').value =  choferes;
+        document.getElementById('chofer').value =  choferes;
         document.getElementById('volumen').value = volumen;
         document.getElementById('peso').value = peso;
     }

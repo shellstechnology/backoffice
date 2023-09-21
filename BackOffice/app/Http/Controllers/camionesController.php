@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Camion_Lleva_Lote;
 use App\Models\Camiones;
 use App\Models\Chofer_Conduce_Camion;
 use App\Models\Choferes;
@@ -11,6 +12,7 @@ use App\Models\Modelos;
 use App\Models\Usuarios;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
@@ -142,8 +144,6 @@ class camionesController extends Controller
         $choferCoduceCamion->id_chofer = $idUsuario['id'];
         $choferCoduceCamion->matricula_camion = $nuevoCamion->getKey();
         $choferCoduceCamion->save();
-
-
     }
 
     public function modificar($datosRequest)
@@ -159,18 +159,38 @@ class camionesController extends Controller
 
     private function modificarCamion($camion)
     {
-        $estado = Estados_c::withTrashed()->where('descripcion_estado_c', $camion['estadoCamion'])->first();
-        list($marca, $modelo) = explode(':', $camion['marcaModeloCamion']);
-        $modeloCamion = Modelos::withTrashed()->where('modelo', $modelo)->first();
-        $marcaCamion = Marcas::withTrashed()->where('marca', $marca)->where('id_modelo', $modeloCamion['id'])->first();
-        Camiones::where('matricula', $camion['identificador'])->update([
-            'matricula' => $camion['matricula'],
-            'id_estado_c' => $estado['id'],
-            'id_marca_modelo' => $marcaCamion['id'],
-            'volumen_max_l' => $camion['volumen'],
-            'peso_max_kg' => $camion['peso']
+        $this->crearNuevoCamion($camion);
+        Camion_Lleva_Lote::withTrashed()->where('matricula', $camion['identificador'])->update([
+            'matricula' => $camion['matricula']
         ]);
+        Chofer_Conduce_Camion::withTrashed()->where('matricula_camion', $camion['identificador'])->update([
+            'matricula_camion' => $camion['matricula']
+        ]);
+        $viejoCamion = Camiones::withTrashed()->where('matricula', $camion['identificador'])->first();
+        if (!is_null($viejoCamion['created_at'])) {
+            Camiones::withTrashed()->where('matricula', $camion['matricula'])->update([
+                'created_at' => $viejoCamion['created_at']
+            ]);
+        }        
+        Camiones::withTrashed()->where('matricula', $camion['identificador'])->forceDelete();
     }
+
+    private function crearNuevoCamion($camion)
+    {
+        $nuevoCamion = new Camiones;
+        list($marca, $modelo) = explode(':', $camion['marcaModeloCamion']);
+        $idModelo = Modelos::withTrashed()->where('modelo', $modelo)->first();
+        $idMarca = Marcas::withTrashed()->where('marca', $marca)->where('id_modelo', $idModelo['id'])->first();
+        $idUsuario = Usuarios::withTrashed()->where('nombre_de_usuario', $camion['chofer'])->first();
+        $estado = Estados_c::withTrashed()->where('descripcion_estado_c', $camion['estadoCamion'])->first();
+        $nuevoCamion->matricula = $camion['matricula'];
+        $nuevoCamion->id_marca_modelo = $idMarca['id'];
+        $nuevoCamion->id_estado_c = $estado['id'];
+        $nuevoCamion->volumen_max_l = $camion['volumen'];
+        $nuevoCamion->peso_max_kg = $camion['peso'];
+        $nuevoCamion->save();
+    }
+
 
     public function eliminar($datosRequest)
     {

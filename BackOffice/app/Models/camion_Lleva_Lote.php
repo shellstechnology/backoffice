@@ -7,19 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
-class Camiones extends Model
+class Camion_Lleva_Lote extends Model
 {
-    protected $table = 'camiones';
-    protected $primaryKey='matricula';
+    
+    protected $table = 'camion_lleva_lote';
+    protected $primaryKey='id_lote';
     protected $fillable =['matricula'];
     public $incrementing = false;
     use HasFactory;
     use SoftDeletes;
     use ValidatesRequests;
     public $timestamps = true;
-
-    public function camionLlevaLote()
-    {
-        return $this->hasMany(CamionLlevaLote::class, 'matricula', 'matricula');
-    }
 }

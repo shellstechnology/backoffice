@@ -24,6 +24,7 @@
      </div>
     </div>
     <div> 
+    <a href="{{ route('camion.camionLlevaLote') }}">Asignar Lotes a Camiones-></a>
       <div class="cajaDatos"> 
          <form action="{{route('camiones.realizarAccion')}}" method="POST">
           @csrf

@@ -123,9 +123,9 @@ class lugarEntregaController extends Controller
 
 
         Lugares_Entrega::where('id', $lugarEntrega['identificador'])->update([
-            'Direccion' => $lugarEntrega['direccion'],
-            'Latitud' => $lugarEntrega['latitud'],
-            'Longitud' => $lugarEntrega['longitud'],
+            'direccion' => $lugarEntrega['direccion'],
+            'latitud' => $lugarEntrega['latitud'],
+            'longitud' => $lugarEntrega['longitud'],
         ]);
     }
 
