@@ -33,18 +33,18 @@
           <input type="checkbox" name="cbxRecuperar" id="cbxRecuperar" onclick="comprobarCbxRecuperar()">Recuperar </input>
           <div class="contenedorDatos">
             <div class="campo">
-            <input type="text" id="nombre" name="nombre" maxlength="20" required></input>
+            <input type="text" id="nombre" name="nombre" maxlength="50" required></input>
             <label for="nombreProducto" >Nombre</label>
           </div>
           <div class="campo">
-            <input type="number" id="precio" name="precio" min="1" max="9999999" onkeydown="filtro(event)" oninput="limitarInput(this, 7)" onpaste="return false"></input>
+            <input type="number" id="precio" name="precio" min="1" max="99999999" onkeydown="filtro(event)" oninput="limitarInput(this, 7)" onpaste="return false"></input>
             <label for="precioProducto" >Precio </label>
           </div>
           <div class="campo">
           <x-select-moneda-component/>
           </div>
           <div class="campo">
-            <input type="number" id="stock" name="stock" min="0" max="9999999" onkeydown="filtro(event)" onpaste="return false";></input>
+            <input type="number" id="stock" name="stock" min="0" max="999999" onkeydown="filtro(event)" onpaste="return false";></input>
             <label for="stockProducto" >Stock</label>
             <input type="hidden" name="producto"> </input>
             <input type="hidden" name="identificador" id="identificador"> </input>

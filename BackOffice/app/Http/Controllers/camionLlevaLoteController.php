@@ -7,6 +7,7 @@ use App\Models\Camiones;
 use App\Models\Lotes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class camionLlevaLoteController extends Controller
 {
@@ -53,13 +54,34 @@ class camionLlevaLoteController extends Controller
 
     public function agregar($datosRequest)
     {
+        dd($datosRequest);
+        $validador = $this->validarDatos($datosRequest);
+        if ($validador->fails()) {
+            return;
+        }
         $camionLlevaLoteExistente = Camion_Lleva_Lote::where('id_lote', $datosRequest['idLote'])->first();
         if (!$camionLlevaLoteExistente) {
             $this->crearCamionLlevaLote($datosRequest);
         }
     }
+
+    private function validarDatos($camionLlevaLote)
+    {
+        $reglas = [
+            'Id Lote'=>'required|integer',
+            'Matricula' => 'required|string|max:10',
+        ];
+        return Validator::make([
+            'Id Lote' => $camionLlevaLote['idLote'],
+            'Matricula'=>$camionLlevaLote['idCamion'],
+        ], $reglas);
+    }
     public function modificar($datosRequest)
     {
+        $validador = $this->validarDatos($datosRequest);
+        if ($validador->fails()) {
+            return;
+        }
         $this->modificarCamionLlevaLote($datosRequest);
     }
 
@@ -91,7 +113,6 @@ class camionLlevaLoteController extends Controller
             'updated_at' => $camionLlevaLote['updated_at'],
             'deleted_at' => $camionLlevaLote['deleted_at']
         ];
-
         return $infoCamionLlevaLote;
     }
 

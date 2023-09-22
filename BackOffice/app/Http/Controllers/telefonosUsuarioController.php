@@ -117,8 +117,7 @@ class telefonosUsuarioController extends Controller
 
     public function eliminar($datosRequest)
     {
-        $telefono = Telefonos_Usuarios::withoutTrashed()->where('id_usuarios', $datosRequest['identificadorId'])
-            ->where('telefono', $datosRequest['identificadorTelefono'])->first();
+        $telefono = Telefonos_Usuarios::withoutTrashed()->where('telefono', $datosRequest['identificadorTelefono'])->first();
         if ($telefono) {
             $telefono->delete();
         }
@@ -127,13 +126,10 @@ class telefonosUsuarioController extends Controller
 
     public function recuperar($datosRequest)
     {
-        $telefono = Telefonos_Usuarios::onlyTrashed()->where('id_usuarios', $datosRequest['identificadorId'])
-            ->where('telefono', $datosRequest['identificadorTelefono'])->first();
+        $telefono = Telefonos_Usuarios::onlyTrashed()->where('telefono', $datosRequest['identificadorTelefono'])->first();
         if ($telefono) {
             $telefono->restore();
         }
-
-
     }
 
 }
