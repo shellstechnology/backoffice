@@ -37,13 +37,16 @@
             <input type="text" id="direccion" name="direccion" maxlength="100"></input>
            <label for="direccion" >Direccion</label>
          </div>
-       <div class="campo">
-           <input type="number" id="latitud" name="latitud" min="-90" max="90"  onkeydown="filtro(event)" oninput="limitarInput(this, 16) " onpaste="return false"></input>
-           <label for="latitud" >Latitud</label>
-        </div>
-        <div class="campo">
-          <input type="number" id="longitud" name="longitud" min="-180" max="180" onkeydown="filtro(event)" oninput="limitarInput(this, 16)" onpaste="return false" ></input>
+         <div class="campo">
+            <input type="text" id="latitud" name="latitud" onkeydown="filtro(event)" 
+                pattern="[0-9]*[.,]?[0-9]+" maxlength="16" required>
+          <label for="latitud" >Latitud</label>
+            </div>
+            <div class="campo">
+            <input type="text" id="longitud" name="longitud" onkeydown="filtro(event)" 
+                pattern="[0-9]*[.,]?[0-9]+" maxlength="16" required>
           <label for="longitud" >Longitud</label>
+          </div>
           <div class="contenedorDatos">
           <input type="hidden" name="identificador" id="identificador">
           <button type="submit" name="aceptar">Aceptar</button>

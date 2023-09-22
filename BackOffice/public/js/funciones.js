@@ -46,7 +46,3 @@ function limitarInput(input, maxLength) {
         input.value = input.value.slice(0, maxLength);
     }
 }
-
-function redireccionar(ruta) {
-    window.location.href = ruta;
-}

@@ -15,10 +15,7 @@ class AlmacenesTest extends TestCase
         $response = $this->followingRedirects()->post('/Almacenes',
         [
             "cbxAgregar" => "on",
-            "identificador" => "50",
-            "direccion" => "nuevoalmacen",
-            "latitud"=> "20",
-            "longitud"=>"20"
+            "idLugarEntrega" => "1",
         ]);
         $ultimoAlmacen= Almacenes::latest('created_at')->first();
         $idAlmacen = $ultimoAlmacen['id'];
@@ -29,7 +26,6 @@ class AlmacenesTest extends TestCase
             'id' => $idAlmacen,
         ]);
         Almacenes::withTrashed()->where('id',$idAlmacen)->forceDelete();
-        Lugares_Entrega::withTrashed()->where('id',$idDireccion)->forceDelete();
        }
     
 
@@ -39,9 +35,7 @@ class AlmacenesTest extends TestCase
         [
             "cbxModificar" => "on",
             "identificador" => "42",
-            "direccion" => "nuevoalmacen",
-            "latitud"=> "47",
-            "longitud"=>"47"
+            "idLugarEntrega" => "1",
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseHas('almacenes',[

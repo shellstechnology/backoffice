@@ -16,10 +16,12 @@
      <a href="{{ route('backoffice.producto') }}" class="item">Productos</a>
      <a href="{{ route('backoffice.lote') }}" class="item">Lotes</a>
 </div>
-<div class="cajaUsuario" onclick="redireccionar('{{route('backoffice.usuarios')}}')">
+<a href="{{ route('backoffice.usuarios') }}" class="enlaceCajaUsuario">
+<div class="cajaUsuario">
 <div class="head"></div>
 <div class="body"></div>
 </div>
+</a>
 <header>
         <h1>Instrucciones de uso</h1>
     </header>
