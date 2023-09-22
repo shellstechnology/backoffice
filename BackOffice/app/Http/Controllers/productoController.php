@@ -47,7 +47,6 @@ class productoController extends Controller
 
     public function agregar($datosRequest)
     {
-        dd($datosRequest);
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
             return;
