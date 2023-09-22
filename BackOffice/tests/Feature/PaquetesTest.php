@@ -13,36 +13,32 @@ use App\Models\Producto;
 
 class PaquetesTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
+
+
     public function test_agregarUnPaquete(){
 
         $response = $this->followingRedirects()->post('/paquetes',
         [
             "cbxAgregar" => "on",
-            "identificador" => "444",
-            "nombrePaquete" => "paquetenuevo",
+            "identificador" => "99",
+            "nombrePaquete" => "inbuscable",
             "dia"=> "4",
             "mes"=> "7",
-            "anio"=> "2001",
-            "idLugarEntrega" =>"4",
+            "anio"=> "2040",
+            "idLugarEntrega" =>"1",
             "estadoPaquete" => "en almacen",
             "caracteristica"=> "explosivo",
-            "nombreRemitente" => "NADIE",
-            "nombreDestinatario"=> "yo?",
+            "nombreRemitente" => "ab",
+            "nombreDestinatario"=> "yo",
             "idProducto" =>"42",
             "volumen"=>"1",
-            "peso"=> "1",
+            "peso"=> "1"
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseHas('paquetes', [
-            'nombre' => 'paquetenuevo',
-            "nombre_remitente" => "NADIE"
+            'nombre' => 'inbuscable'
         ]);
-        Paquetes::withTrashed()->where('nombre','paquetenuevo')->where('nombre_remitente', 'NADIE')->forceDelete();
+        Paquetes::withTrashed()->where('nombre','inbuscable')->forceDelete();
        }
     
 
