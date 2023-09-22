@@ -34,15 +34,15 @@
        <input type="checkbox" name="cbxEliminar" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
        <input type="checkbox" name="cbxRecuperar" id="cbxRecuperar" onclick="comprobarCbxRecuperar()">Recuperar </input>
         <div class="campo">
-          <input type="text" name="nombre" id="nombre" maxlength="20"></input>
+          <input type="text" name="nombre" id="nombre" maxlength="50"></input>
           <label for="nombre" >Nombre de Usuario</label>
         </div>
         <div class="campo">
-          <input type="text" name="contrasenia" id="contrasenia" maxlength="20"></input>
+          <input type="text" name="contrasenia" id="contrasenia" maxlength="25"></input>
           <label for="contrasenia" >Contraseña</label>
         </div>
         <div class="campo">
-          <input type="text" name="mail" id="mail" maxlength="40"></input>
+          <input type="text" name="mail" id="mail" maxlength="50"></input>
           <label for="mail" >Correo electronico</label>
         </div>
         <div class="campo">

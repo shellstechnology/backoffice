@@ -69,8 +69,7 @@ class paqueteController extends Controller
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
-            $errores = $validador->getMessageBag();
-            return response()->json(['error:' => $errores], 422);
+           return;
         }
         $this->crearPaquete($datosRequest);
     }
@@ -144,18 +143,32 @@ class paqueteController extends Controller
     private function validarDatos($paquete)
     {
         $reglas = [
-            'Caracteristica' => 'required|string|max:100',
-            'Nombre Remitente' => 'required|string|max:40',
-            'Nombre Destinatario' => 'required|string|max:40',
-            'Volumen' => 'required|numeric|min:1|max:999',
-            'Peso' => 'required|numeric|min:1|max:999',
+            'nombrePaquete'=>'required|string|max:50',
+            'dia'=>'required|numeric|min:1|max:31',
+            'mes'=>'required|numeric|min:1|max:12|',
+            'anio'=>'required|numeric|min:2023|max:2050',
+            'idLugarEntrega'=>'required|numeric',
+            'estadoPaquete'=>'required|string|max:100',
+            'caracteristica' => 'required|string|max:100',
+            'nombreRemitente' => 'required|string|max:40',
+            'nombreDestinatario' => 'required|string|max:40',
+            'idProducto'=>'required|integer',
+            'volumen' => 'required|numeric|min:1|max:99999',
+            'peso' => 'required|numeric|min:1|max:99999',
         ];
         return Validator::make([
-            'Caracteristica' => $paquete['caracteristica'],
-            'Nombre Remitente' => $paquete['nombreRemitente'],
-            'Nombre Destinatario' => $paquete['nombreDestinatario'],
-            'Volumen' => $paquete['volumen'],
-            'Peso' => $paquete['peso']
+            'nombrePaquete'=>$paquete['nombrePaquete'],
+            'dia'=>$paquete['dia'],
+            'mes'=>$paquete['mes'],
+            'anio'=>$paquete['anio'],
+            'idLugarEntrega'=>$paquete['idLugarEntrega'],
+            'estadoPaquete'=>$paquete['estadoPaquete'],
+            'nombreRemitente'=>$paquete['nombreRemitente'],
+            'nombreDestinatario'=>$paquete['nombreDestinatario'],
+            'caracteristica' => $paquete['caracteristica'],
+            'idProducto'=>$paquete['idProducto'],
+            'volumen' => $paquete['volumen'],
+            'peso' => $paquete['peso']
         ], $reglas);
     }
 

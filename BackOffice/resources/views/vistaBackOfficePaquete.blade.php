@@ -34,7 +34,7 @@
        <input type="checkbox" name="cbxRecuperar" id="cbxRecuperar" onclick="comprobarCbxRecuperar()">Recuperar </input>
        <div class="contenedorDatos">
         <duv class="campo">
-          <input type="text" name="nombrePaquete" id="nombrePaquete"></input>
+          <input type="text" name="nombrePaquete" id="nombrePaquete" maxlength="50"></input>
           <label for="nombrePaquete">Nombre del Paquete</label>
         </div>
          <div class="campo">
@@ -50,11 +50,11 @@
       <x-select-caracteristica-paquete-component/>
       </div>
       <div class="campo">
-          <input type="text" name="nombreRemitente" id="nombreRemitente" maxlength="50"></input>
+          <input type="text" name="nombreRemitente" id="nombreRemitente" maxlength="40"></input>
           <label for="nombreRemitente" >Nombre Remitente</label>
       </div>
       <div class="campo">
-          <input type="text" name="nombreDestinatario" id="nombreDestinatario" maxlength="50"></input>
+          <input type="text" name="nombreDestinatario" id="nombreDestinatario" maxlength="40"></input>
           <label for="nombreDestinatario" >Nombre Destinatario</label>
       </div>
       <div class="campo">
@@ -62,12 +62,12 @@
       </div>
       <div class="campo">
           <input type="text" id="volumen" name="volumen" onkeydown="filtro(event)" 
-                pattern="[0-9]*[.,]?[0-9]+" maxlength="9" required>
+                pattern="[0-9]*[.,]?[0-9]+" maxlength="10" required>
           <label for="volumen" >Volumen(L)</label>
       </div>
       <div class="campo">
       <input type="text" id="peso" name="peso" onkeydown="filtro(event)" 
-                pattern="[0-9]*[.,]?[0-9]+" maxlength="9" required>
+                pattern="[0-9]*[.,]?[0-9]+" maxlength="10" required>
           <label for="peso" >Peso(Kg)</label>
 </div>
 <input type="hidden" name="identificador" id="identificador"></input>

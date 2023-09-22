@@ -55,11 +55,9 @@ class usuarioController extends Controller
 
     public function agregar($datosRequest)
     {
-
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
-            $errores = $validador->getMessageBag();
-            return response()->json(['error:' => $errores], 422);
+            return;
         }
         $this->crearUsuario($datosRequest);
 
@@ -70,8 +68,7 @@ class usuarioController extends Controller
 
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
-            $errores = $validador->getMessageBag();
-            return response()->json(['error:' => $errores], 422);
+            return;
         }
         $this->modificarUsuario($datosRequest);
     }
@@ -134,7 +131,6 @@ class usuarioController extends Controller
     private function obtenerTipoUsuario($usuario)
     {
         $tiposUsuario = [];
-
         $administrador = Administradores::withoutTrashed()->where('id_usuarios', $usuario['id'])->first();
         $almacenero = Almaceneros::withoutTrashed()->where('id_usuarios', $usuario['id'])->first();
         $chofer = Choferes::withoutTrashed()->where('id_usuarios', $usuario['id'])->first();
@@ -160,14 +156,14 @@ class usuarioController extends Controller
     private function validarDatos($usuario)
     {
         $reglas = [
-            'NombreUsuario' => 'required|string|max:40',
-            'contrasenia' => 'required|string|max:40',
-            'Mail' => 'required|email|max:40',
+            'nombreUsuario' => 'required|string|max:50',
+            'contrasenia' => 'required|string|max:25',
+            'mail' => 'required|email|max:50',
         ];
         return Validator::make([
-            'NombreUsuario' => $usuario['nombre'],
+            'nombreUsuario' => $usuario['nombre'],
             'contrasenia' => $usuario['contrasenia'],
-            'Mail' => $usuario['mail']
+            'mail' => $usuario['mail']
         ], $reglas);
     }
 

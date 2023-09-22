@@ -47,9 +47,10 @@ class productoController extends Controller
 
     public function agregar($datosRequest)
     {
+        dd($datosRequest);
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
-            $errores = $validador->getMessageBag();
+            return;
         }
         $this->crearProducto($datosRequest);
     }
@@ -58,8 +59,7 @@ class productoController extends Controller
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
-            $errores = $validador->getMessageBag();
-            return redirect()->route('backoffice.producto');
+            return;
         }
         $this->modificarProducto($datosRequest);
     }
@@ -112,10 +112,10 @@ class productoController extends Controller
     {
         $reglas = [
             'Identificador'=>'required|integer',
-            'Nombre' => 'required|string|max:20',
-            'Precio' => 'required|integer|min:1|max:9999999',
-            'Moneda' => 'required|string|max:20',
-            'Stock' => 'required|integer|min:0|max:9999999',
+            'Nombre' => 'required|string|max:50',
+            'Precio' => 'required|integer|min:1|max:99999999',
+            'Moneda' => 'required|string|max:30',
+            'Stock' => 'required|integer|min:0|max:999999',
         ];
         return Validator::make([
             'Identificador'=>$producto['identificador'],

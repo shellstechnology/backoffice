@@ -45,8 +45,7 @@ class lugarEntregaController extends Controller
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
-            $errores = $validador->getMessageBag();
-            return response()->json(['error:' => $errores], 422);
+            return;
         }
         $this->crearLugarEntrega($datosRequest);
     }
@@ -56,8 +55,7 @@ class lugarEntregaController extends Controller
     {
         $validador = $this->validarDatos($lugarEntrega);
         if ($validador->fails()) {
-            $errores = $validador->getMessageBag();
-            return response()->json(['error:' => $errores], 422);
+            return;
         }
         $this->modificarLugarEntrega($lugarEntrega);
     }
@@ -97,14 +95,14 @@ class lugarEntregaController extends Controller
     {
 
         $reglas = [
-            'Direccion Lugar' => 'required|string|max:25',
-            'Lat Lugar' => 'required|numeric|min:-90|max:90',
-            'Lng Lugar' => 'required|numeric|min:-180|max:180'
+            'direccionLugar' => 'required|string|max:100',
+            'latitud' => 'required|numeric|min:-90|max:90',
+            'longitud' => 'required|numeric|min:-180|max:180'
         ];
         return Validator::make([
-            'Direccion Lugar' => $lugarEntrega['direccion'],
-            'Lat Lugar' => $lugarEntrega['latitud'],
-            'Lng Lugar' => $lugarEntrega['longitud'],
+            'direccionLugar' => $lugarEntrega['direccion'],
+            'latitud' => $lugarEntrega['latitud'],
+            'longitud' => $lugarEntrega['longitud'],
         ], $reglas);
     }
 

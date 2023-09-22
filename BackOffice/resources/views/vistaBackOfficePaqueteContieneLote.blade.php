@@ -10,13 +10,13 @@
 </head>
 <body>
 <div class="barraDeNavegacion">
-<a href="{{ route('backoffice') }}" class="item">Menu Principal</a>
+    <a href="{{ route('backoffice') }}" class="item">Menu Principal</a>
      <a href="{{ route('backoffice.almacen') }}" class="item">Almacenes</a>
      <a href="{{ route('backoffice.camiones') }}" class="item">Camiones</a>
      <a href="{{ route('backoffice.paquete') }}" class="item">Paquetes</a>
      <a href="{{ route('backoffice.producto') }}" class="item">Productos</a>
-     <a href="{{ route('backoffice.lote') }}" class="itemSelecciondo">Lotes</a>
-</div>
+     <a href="{{ route('backoffice.lote') }}" class="itemSeleccionado">Lotes</a>
+    </div>
   <div class="container">
     <div class="cuerpo">
     <div id="contenedorTabla">

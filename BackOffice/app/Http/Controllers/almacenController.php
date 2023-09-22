@@ -43,7 +43,7 @@ class almacenController extends Controller
     }
 
     public function agregar($datosRequest)
-    {
+    { 
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
             return;
@@ -98,14 +98,14 @@ class almacenController extends Controller
     {
 
         $reglas = [
-            'Direccion Almacen' => 'required|string|max:100',
-            'Lat Almacen' => 'required|numeric|min:-90|max:90',
-            'Lng Almacen' => 'required|numeric|min:-180|max:180'
+            'direccion' => 'required|string|max:100',
+            'latitud' => 'required|numeric|min:-90|max:90',
+            'longitud' => 'required|numeric|min:-180|max:180'
         ];
         return Validator::make([
-            'Direccion Almacen' => $almacen['direccion'],
-            'Lat Almacen' => $almacen['latitud'],
-            'Lng Almacen' => $almacen['longitud'],
+            'direccion' => $almacen['direccion'],
+            'latitud' => $almacen['latitud'],
+            'longitud' => $almacen['longitud'],
         ], $reglas);
     }
 

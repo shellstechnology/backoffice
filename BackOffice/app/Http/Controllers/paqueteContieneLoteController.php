@@ -8,6 +8,7 @@ use App\Models\Paquetes;
 use App\Models\Paquete_Contiene_Lote;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class paqueteContieneLoteController extends Controller
 {
@@ -66,6 +67,21 @@ class paqueteContieneLoteController extends Controller
             $this->crearPaqueteContieneLote($datosRequest);
         }
     }
+
+    private function validarDatos($producto)
+    {
+        $reglas = [
+            'idPaquete'=>'required|integer',
+            'idLote' => 'required|integer',
+            'idAlmacen' => 'required|integer',
+        ];
+        return Validator::make([
+            'idPaquete'=>$producto['idPaquete'],
+            'idLote' => $producto['idLote'],
+            'idAlmacen' => $producto['idAlmacen'],
+        ], $reglas);
+    }
+
     public function modificar($datosRequest)
     {
         $this->modificarValores($datosRequest);
