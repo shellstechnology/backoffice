@@ -37,7 +37,8 @@
             <input type="checkbox" name="cbxRecuperar" id="cbxRecuperar" onclick="comprobarCbxRecuperar()">Recuperar </input>
             <div class="contenedorDatos">
             <div class="campo">
-            <x-select-lugares-entrega-component/>
+              <input type="text" name="direccion" id="direccion" maxlength="100">
+              <label for="direccion">Direccion</label>
             </div>
             <div class="campo">
             <input type="text" id="latitud" name="latitud" onkeydown="filtro(event)" 
