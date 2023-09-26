@@ -8,6 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{asset('js/funciones.js')}}"> </script>
   </head>
+  @include('header')
   <body>
     <div class="barraDeNavegacion">
     <a href="{{ route('backoffice') }}" class="item">Menu Principal</a>
@@ -42,5 +43,7 @@
        </form>
     </div>
   </div>
+</div>
 </body>
+@include('footer')
 </html>

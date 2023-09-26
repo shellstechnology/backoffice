@@ -8,6 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{asset('js/funciones.js')}}"> </script>
 </head>
+@include('header')
   <body>
   <div class="barraDeNavegacion">
   <a href="{{ route('backoffice') }}" class="item">Menu Principal</a>
@@ -34,7 +35,7 @@
             <input type="checkbox" name="cbxRecuperar" id="cbxRecuperar" onclick="comprobarCbxRecuperar()">Recuperar </input>
         <div class="contenedorDatos">
           <div class="campo">
-            <input type="text" id="direccion" name="direccion" maxlength="100"></input>
+            <input type="text" id="direccion" name="direccion" maxlength="100" required></input>
            <label for="direccion" >Direccion</label>
          </div>
          <div class="campo">
@@ -59,5 +60,7 @@
        </form>
      </div>
    </div>
+</div>
   </body>
+  @include('footer')
 </html>

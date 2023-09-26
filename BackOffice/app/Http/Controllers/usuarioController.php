@@ -13,7 +13,7 @@ use App\Models\Mail_Usuarios;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 
 class usuarioController extends Controller
 {
@@ -159,16 +159,22 @@ class usuarioController extends Controller
             'nombreUsuario' => 'required|string|max:50',
             'contrasenia' => 'required|string|max:25',
             'mail' => 'required|email|max:50',
+            
         ];
         return Validator::make([
             'nombreUsuario' => $usuario['nombre'],
             'contrasenia' => $usuario['contrasenia'],
-            'mail' => $usuario['mail']
+            'mail' => $usuario['mail'],
+
         ], $reglas);
     }
 
     private function crearUsuario($datosUsuario)
     {
+        $checkCbx=$this->verificarCbx($datosUsuario);
+        if($checkCbx!=true){
+            return;
+        }
         $mailExistente=Mail_Usuarios::withTrashed()->where('mail',$datosUsuario['mail'])->first();
         $contraseniaExistente=Usuarios::withTrashed()->where('contrasenia',$datosUsuario['contrasenia'])->first();
         if($mailExistente!=null){
@@ -221,6 +227,10 @@ class usuarioController extends Controller
 
     private function modificarUsuario($datosUsuario)
     {
+        $checkCbx=$this->verificarCbx($datosUsuario);
+        if($checkCbx!=true){
+            return;
+        }
         Usuarios::withTrashed()->where('Id', $datosUsuario['identificador'])->update([
             'nombre_de_usuario' => $datosUsuario['nombre'],
             'contrasenia' => $datosUsuario['contrasenia'],
@@ -343,4 +353,15 @@ class usuarioController extends Controller
             $chofer->delete();
         }
     }
+
+    private function verificarCbx($datosUsuario) {
+        $checkboxes = ['usuarioAdministrador', 'usuarioAlmacenero', 'usuarioChofer', 'usuarioCliente'];
+        foreach ($checkboxes as $checkbox) {
+            if (isset($datosUsuario[$checkbox]) && $datosUsuario[$checkbox] === 'on') {
+                return true;
+            }
+        }
+        return false;
+    }
+    
 }
