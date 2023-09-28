@@ -19,6 +19,12 @@ class almacenController extends Controller
         foreach ($arrayAlmacenes as $almacen) {
             $datosAlmacenes[] = $this->obtenerDatosAlmacenes($almacen);
         }
+
+
+        $datoLugarEntrega = Lugares_Entrega::withoutTrashed()->get();
+        $idLugaresEntrega = [];
+        $idLugaresEntrega = $this->definirIdsClase($datoLugarEntrega);
+        Session::put('idLugaresEntrega', $idLugaresEntrega);
         Session::put('almacenes', $datosAlmacenes);
         return redirect()->route('backoffice.almacen');
 
@@ -50,6 +56,16 @@ class almacenController extends Controller
         }
         $this->crearLugarAlmacen($datosRequest);
     }
+
+    private function definirIdsClase($datoClase)
+    {
+        $datoId = [];
+        foreach ($datoClase as $dato) {
+            $datoId[] = $dato['id'];
+        }
+        return $datoId;
+    }
+
 
     public function modificar($datosRequest)
     {
@@ -84,6 +100,7 @@ class almacenController extends Controller
         $lugarAlmacen = Lugares_Entrega::withTrashed()->where('id', $almacen['id_lugar_entrega'])->first();
         return [
             'Id Almacen' => $almacen['id'],
+            'Id Lugar'=>$lugarAlmacen['id'],
             'Direccion Almacen' => $lugarAlmacen['direccion'],
             'Lat Almacen' => $lugarAlmacen['latitud'],
             'Lng Almacen' => $lugarAlmacen['longitud'],
@@ -98,36 +115,25 @@ class almacenController extends Controller
     {
 
         $reglas = [
-            'direccion' => 'required|string|max:100',
-            'latitud' => 'required|numeric|min:-90|max:90',
-            'longitud' => 'required|numeric|min:-180|max:180'
+            'lugar' => 'required|integer',
         ];
         return Validator::make([
-            'direccion' => $almacen['direccion'],
-            'latitud' => $almacen['latitud'],
-            'longitud' => $almacen['longitud'],
+            'lugar' => $almacen['idLugarEntrega'],
         ], $reglas);
     }
 
     private function crearLugarAlmacen($almacen)
     {
-        $lugarAlmacen = new Lugares_Entrega;
-        $lugarAlmacen->direccion = $almacen['direccion'];
-        $lugarAlmacen->latitud = $almacen['latitud'];
-        $lugarAlmacen->longitud = $almacen['longitud'];
-        $lugarAlmacen->save();
         $nuevaAlmacen = new Almacenes;
-        $nuevaAlmacen->id_lugar_entrega = $lugarAlmacen->id;
+        $nuevaAlmacen->id_lugar_entrega = $almacen['idLugarEntrega'];
         $nuevaAlmacen->save();
     }
 
     private function modificarAlmacen($lugarAlmacen)
     {
-        $almacen=Almacenes::where('id', $lugarAlmacen['identificador'])->first();;
-        Lugares_Entrega::where('id', $almacen['id_lugar_entrega'])->update([
-            'direccion' => $lugarAlmacen['direccion'],
-            'latitud' => $lugarAlmacen['latitud'],
-            'longitud' => $lugarAlmacen['longitud'],
+        Almacenes::where('id', $lugarAlmacen['identificador'])->update([
+            'id_lugar_entrega'=>$lugarAlmacen['idLugarEntrega']
+
         ]);
     }
 }

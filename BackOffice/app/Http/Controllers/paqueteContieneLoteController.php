@@ -62,6 +62,10 @@ class paqueteContieneLoteController extends Controller
 
     public function agregar($datosRequest)
     {
+        $validador = $this->validarDatos($datosRequest);
+        if ($validador->fails()) {
+            return;
+        }
         $paqueteExistente = Paquete_Contiene_Lote::where('id_paquete', $datosRequest['idPaquete'])->first();
         if (!$paqueteExistente) {
             $this->crearPaqueteContieneLote($datosRequest);
@@ -84,6 +88,10 @@ class paqueteContieneLoteController extends Controller
 
     public function modificar($datosRequest)
     {
+        $validador = $this->validarDatos($datosRequest);
+        if ($validador->fails()) {
+            return;
+        }
         $this->modificarValores($datosRequest);
     }
 

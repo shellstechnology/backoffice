@@ -8,6 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{asset('js/funciones.js')}}"> </script>
 </head>
+@include('header')
 <body>
 <div class="barraDeNavegacion">
      <a href="{{ route('backoffice') }}" class="item">Menu Principal</a>
@@ -34,15 +35,15 @@
        <input type="checkbox" name="cbxEliminar" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
        <input type="checkbox" name="cbxRecuperar" id="cbxRecuperar" onclick="comprobarCbxRecuperar()">Recuperar </input>
         <div class="campo">
-          <input type="text" name="nombre" id="nombre" maxlength="50"></input>
+          <input type="text" name="nombre" id="nombre" maxlength="50" required></input>
           <label for="nombre" >Nombre de Usuario</label>
         </div>
         <div class="campo">
-          <input type="text" name="contrasenia" id="contrasenia" maxlength="25"></input>
+          <input type="text" name="contrasenia" id="contrasenia" maxlength="25" required></input>
           <label for="contrasenia" >Contraseña</label>
         </div>
         <div class="campo">
-          <input type="text" name="mail" id="mail" maxlength="50"></input>
+          <input type="text" name="mail" id="mail" maxlength="50" required></input>
           <label for="mail" >Correo electronico</label>
         </div>
         <div class="campo">
@@ -66,4 +67,5 @@
     </div>
   </div>
 </body>
+@include('footer')
 </html>

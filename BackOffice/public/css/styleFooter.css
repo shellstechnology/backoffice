@@ -20,14 +20,15 @@ a {
 .divPrincipalFooter {
     width: 100%;
     height: 70px;
-    border-width: 1px;
+    bottom: 0;
+    left: 0;
     background-color: var(--FondoDelHeader);
     border-color: var(--colorBordesClaro);
     border-style: groove;
     display: flex;
     text-align: center;
     align-content: space-evenly;
-    position: absolute;
+
 }
 
 .divHijoFooter {

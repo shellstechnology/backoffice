@@ -77,8 +77,7 @@ class paqueteController extends Controller
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
-            $errores = $validador->getMessageBag();
-            return response()->json(['error:' => $errores], 422);
+            return;
         }
         $this->modificarPaquete($datosRequest);
 

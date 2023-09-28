@@ -5,6 +5,7 @@ $datos = session('almacenes', []);
 <table class="tabla">
     <tr>
         <th>Id Almacen</th>
+        <th>Id Lugar</th>
         <th>Direccion Almacen</th>
         <th>Lat Almacen</th>
         <th>Lng Almacen</th>
@@ -14,9 +15,9 @@ $datos = session('almacenes', []);
     </tr>
     @foreach ($datos as $almacen)
 
-    <tr onclick="seleccionarFila({{ $almacen['Id Almacen'] }}, '{{ $almacen['Direccion Almacen'] }}',
-                 {{ $almacen['Lat Almacen'] }}, {{ $almacen['Lng Almacen'] }})">
+    <tr onclick="seleccionarFila({{ $almacen['Id Almacen'] }}, '{{ $almacen['Id Lugar'] }}')">
             <td>{{ $almacen['Id Almacen'] }}</td>
+            <td>{{ $almacen['Id Lugar'] }}</td>
             <td>{{ $almacen['Direccion Almacen'] }}</td>
             <td>{{ $almacen['Lat Almacen'] }}</td>
             <td>{{ $almacen['Lng Almacen'] }}</td>
@@ -29,10 +30,8 @@ $datos = session('almacenes', []);
 
 <script>
 
-    function seleccionarFila(id, direccion, latitud, longitud) {
+    function seleccionarFila(id, lugar) {
         document.getElementById('identificador').value = id;
-        document.getElementById('direccion').value = direccion;
-        document.getElementById('latitud').value = latitud;
-        document.getElementById('longitud').value = longitud;
+        document.getElementById('idLugarEntrega').value = lugar
     }
 </script>

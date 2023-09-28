@@ -7,19 +7,22 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}"> 
     <script src="{{asset('js/funciones.js')}}"> </script>
 </head>
+@include('header')
 <body>
 <div class="barraDeNavegacion">
-<a href="{{ route('backoffice') }}" class="item">Menu Principal</a>
+<a href="{{ route('backoffice') }}" class="itemSeleccionado">Menu Principal</a>
      <a href="{{ route('backoffice.almacen') }}" class="item">Almacenes</a>
      <a href="{{ route('backoffice.camiones') }}" class="item">Camiones</a>
      <a href="{{ route('backoffice.paquete') }}" class="item">Paquetes</a>
      <a href="{{ route('backoffice.producto') }}" class="item">Productos</a>
      <a href="{{ route('backoffice.lote') }}" class="item">Lotes</a>
 </div>
-<div class="cajaUsuario" onclick="redireccionar('{{route('backoffice.usuarios')}}')">
+<a href="{{ route('backoffice.usuarios') }}" class="enlaceCajaUsuario">
+<div class="cajaUsuario">
 <div class="head"></div>
 <div class="body"></div>
 </div>
+</a>
 <header>
         <h1>Instrucciones de uso</h1>
     </header>
@@ -57,4 +60,5 @@
         </section>
     </main>
 </body>
+@include('footer')
 </html>

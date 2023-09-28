@@ -9,8 +9,8 @@
      <script src="{{asset('js/funciones.js')}}"> </script>
 
   </head>
+  @include('header')
   <body>
-    @include('header')
      <div class="barraDeNavegacion">
      <a href="{{ route('backoffice') }}" class="item">Menu Principal</a>
      <a href="{{ route('backoffice.almacen') }}" class="itemSeleccionado">Almacenes</a>
@@ -39,15 +39,6 @@
             <div class="campo">
             <x-select-lugares-entrega-component/>
             </div>
-            <div class="campo">
-            <input type="text" id="latitud" name="latitud" onkeydown="filtro(event)" 
-                pattern="[0-9]*[.,]?[0-9]+" maxlength="16" required>
-          <label for="latitud" >Latitud</label>
-            </div>
-            <div class="campo">
-            <input type="text" id="longitud" name="longitud" onkeydown="filtro(event)" 
-                pattern="[0-9]*[.,]?[0-9]+" maxlength="16" required>
-          <label for="longitud" >Longitud</label>
            <div class="campo">
            <input type="hidden" name="identificador" id="identificador">
              <button type="submit" name='aceptar'>Aceptar</button>
