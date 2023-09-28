@@ -5,9 +5,6 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use App\Models\Almacenes;
-use App\Models\Lotes;
-use App\Models\Paquetes;
 use App\Models\Paquete_Contiene_Lote;
 
 class paquete_contiene_loteTest extends TestCase

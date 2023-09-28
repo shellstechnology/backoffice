@@ -23,41 +23,40 @@ class almacenController extends Controller
 
         $datoLugarEntrega = Lugares_Entrega::withoutTrashed()->get();
         $idLugaresEntrega = [];
-        $idLugaresEntrega = $this->definirIdsClase($datoLugarEntrega);
+        $idLugaresEntrega = $this->obtenerIdsClase($datoLugarEntrega);
         Session::put('idLugaresEntrega', $idLugaresEntrega);
         Session::put('almacenes', $datosAlmacenes);
         return redirect()->route('backoffice.almacen');
-
     }
     public function realizarAccion(Request $request)
     {
         $datosRequest = $request->all();
         if ($request->has('cbxAgregar')) {
-            $this->agregar($datosRequest);
+            $this->verificarDatosAgregar($datosRequest);
         }
         if ($request->has('cbxModificar')) {
-            $this->modificar($datosRequest);
+            $this->verificarDatosModificar($datosRequest);
         }
         if ($request->has('cbxEliminar')) {
-            $this->eliminar($datosRequest);
+            $this->eliminarCamion($datosRequest);
         }
         if ($request->has('cbxRecuperar')) {
-            $this->recuperar($datosRequest);
+            $this->recuperarCamion($datosRequest);
         }
         $this->cargarDatos();
         return redirect()->route('backoffice.almacen');
     }
 
-    public function agregar($datosRequest)
+    public function verificarDatosAgregar($datosRequest)
     { 
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
             return;
         }
-        $this->crearLugarAlmacen($datosRequest);
+        $this->crearAlmacen($datosRequest);
     }
 
-    private function definirIdsClase($datoClase)
+    private function obtenerIdsClase($datoClase)
     {
         $datoId = [];
         foreach ($datoClase as $dato) {
@@ -67,7 +66,7 @@ class almacenController extends Controller
     }
 
 
-    public function modificar($datosRequest)
+    public function verificarDatosModificar($datosRequest)
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
@@ -77,7 +76,7 @@ class almacenController extends Controller
 
     }
 
-    public function eliminar($datosRequest)
+    public function eliminarCamion($datosRequest)
     {
         $id = $datosRequest['identificador'];
         $almacen = Almacenes::withoutTrashed()->find($id);
@@ -86,7 +85,7 @@ class almacenController extends Controller
         }
     }
 
-    public function recuperar($datosRequest)
+    public function recuperarCamion($datosRequest)
     {
         $id = $datosRequest['identificador'];
         $almacen = Almacenes::onlyTrashed()->find($id);
@@ -122,7 +121,7 @@ class almacenController extends Controller
         ], $reglas);
     }
 
-    private function crearLugarAlmacen($almacen)
+    private function crearAlmacen($almacen)
     {
         $nuevaAlmacen = new Almacenes;
         $nuevaAlmacen->id_lugar_entrega = $almacen['idLugarEntrega'];

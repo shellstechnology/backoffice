@@ -5,14 +5,8 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use App\Models\Camion_Lleva_Lote;
 use App\Models\Camiones;
 use App\Models\Chofer_Conduce_Camion;
-use App\Models\Choferes;
-use App\Models\Estados_c;
-use App\Models\Marcas;
-use App\Models\Modelos;
-use App\Models\Usuarios;
 
 class CamionesTest extends TestCase
 {

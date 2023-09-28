@@ -11,7 +11,6 @@ use App\Models\Telefonos_Usuarios;
 use App\Models\Usuarios;
 use App\Models\Mail_Usuarios;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
@@ -23,10 +22,10 @@ class usuarioController extends Controller
         $datosRequest = $request->all();
         if ($request->has('cbxAgregar')) {
             ;
-            $this->agregar($datosRequest);
+            $this->verificarDatosAgregar($datosRequest);
         }
         if ($request->has('cbxModificar')) {
-            $this->modificar($datosRequest);
+            $this->verificarDatosModificar($datosRequest);
         }
         if ($request->has('cbxEliminar')) {
             $this->eliminar($datosRequest);
@@ -44,7 +43,7 @@ class usuarioController extends Controller
         $infoUsuario = [];
         if ($datoUsuario) {
             foreach ($datoUsuario as $dato) {
-                $infoUsuario[] = $this->definirUsuarios($dato);
+                $infoUsuario[] = $this->obtenerUsuarios($dato);
             }
         }
 
@@ -53,7 +52,7 @@ class usuarioController extends Controller
 
     }
 
-    public function agregar($datosRequest)
+    public function verificarDatosAgregar($datosRequest)
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
@@ -63,7 +62,7 @@ class usuarioController extends Controller
 
     }
 
-    public function modificar($datosRequest)
+    public function verificarDatosModificar($datosRequest)
     {
 
         $validador = $this->validarDatos($datosRequest);
@@ -94,7 +93,7 @@ class usuarioController extends Controller
         }
     }
 
-    private function definirUsuarios($usuario)
+    private function obtenerUsuarios($usuario)
     {
         $mail = $this->obtenerMails($usuario);
         $telefono = $this->obtenerTelefonos($usuario);
@@ -168,11 +167,10 @@ class usuarioController extends Controller
 
         ], $reglas);
     }
-
     private function crearUsuario($datosUsuario)
     {
-        $checkCbx=$this->verificarCbx($datosUsuario);
-        if($checkCbx!=true){
+        $checkboxSeleccionada=$this->verificarCheckboxTipoUsuario($datosUsuario);
+        if($checkboxSeleccionada!=true){
             return;
         }
         $mailExistente=Mail_Usuarios::withTrashed()->where('mail',$datosUsuario['mail'])->first();
@@ -206,7 +204,6 @@ class usuarioController extends Controller
             $administrador = new Administradores;
             $administrador->id_usuarios = $idUsuario;
             $administrador->save();
-            DB::statement("GRANT ALL PRIVILEGES ON fast_tracker_db.* TO '{$datoUsuario['nombre']}'@'localhost' IDENTIFIED BY '{$datoUsuario['contrasenia']}'");
         }
         if (isset($datoUsuario['usuarioAlmacenero'])) {
             $almacenero = new Almaceneros;
@@ -227,8 +224,8 @@ class usuarioController extends Controller
 
     private function modificarUsuario($datosUsuario)
     {
-        $checkCbx=$this->verificarCbx($datosUsuario);
-        if($checkCbx!=true){
+        $checkboxSeleccionada=$this->verificarCheckboxTipoUsuario($datosUsuario);
+        if($checkboxSeleccionada!=true){
             return;
         }
         Usuarios::withTrashed()->where('Id', $datosUsuario['identificador'])->update([
@@ -354,7 +351,7 @@ class usuarioController extends Controller
         }
     }
 
-    private function verificarCbx($datosUsuario) {
+    private function verificarCheckboxTipoUsuario($datosUsuario) {
         $checkboxes = ['usuarioAdministrador', 'usuarioAlmacenero', 'usuarioChofer', 'usuarioCliente'];
         foreach ($checkboxes as $checkbox) {
             if (isset($datosUsuario[$checkbox]) && $datosUsuario[$checkbox] === 'on') {

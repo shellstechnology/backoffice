@@ -15,16 +15,16 @@ class lugarEntregaController extends Controller
     {
         $datosRequest = $request->all();
         if ($request->has('cbxAgregar')) {
-            $this->agregar($datosRequest);
+            $this->verificarDatosAgregar($datosRequest);
         }
         if ($request->has('cbxModificar')) {
-            $this->modificar($datosRequest);
+            $this->verificarDatosModificar($datosRequest);
         }
         if ($request->has('cbxEliminar')) {
-            $this->eliminar($datosRequest);
+            $this->eliminarLugarEntrega($datosRequest);
         }
         if ($request->has('cbxRecuperar')) {
-            $this->recuperar($datosRequest);
+            $this->recuperarLugarEntrega($datosRequest);
         }
         $this->cargarDatos();
         return redirect()->route('almacen.lugarEntrega');
@@ -41,7 +41,7 @@ class lugarEntregaController extends Controller
         return redirect()->route('almacen.lugarEntrega');
     }
 
-    public function agregar($datosRequest)
+    public function verificarDatosAgregar($datosRequest)
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
@@ -51,7 +51,7 @@ class lugarEntregaController extends Controller
     }
 
 
-    public function modificar($lugarEntrega)
+    public function verificarDatosModificar($lugarEntrega)
     {
         $validador = $this->validarDatos($lugarEntrega);
         if ($validador->fails()) {
@@ -61,7 +61,7 @@ class lugarEntregaController extends Controller
     }
 
 
-    public function eliminar($lugarEntrega)
+    public function eliminarLugarEntrega($lugarEntrega)
     {
         $id = $lugarEntrega['identificador'];
         $lugarEntregaEliminable = Lugares_Entrega::withoutTrashed()->find($id);
@@ -70,7 +70,7 @@ class lugarEntregaController extends Controller
         }
     }
 
-    public function recuperar($lugarEntrega)
+    public function recuperarLugarEntrega($lugarEntrega)
     {
         $id = $lugarEntrega['identificador'];
         $lugarEntregaRestaurable = Lugares_Entrega::onlyTrashed()->find($id);

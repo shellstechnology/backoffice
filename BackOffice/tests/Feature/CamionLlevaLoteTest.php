@@ -6,8 +6,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Camion_Lleva_Lote;
-use App\Models\Camiones;
-use App\Models\Lotes;
 
 class CamionLlevaLoteTest extends TestCase
 {

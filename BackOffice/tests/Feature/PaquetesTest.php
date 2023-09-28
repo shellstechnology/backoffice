@@ -5,11 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use App\Models\Caracteristicas;
-use App\Models\Estados_p;
-use App\Models\Lugares_Entrega;
 use App\Models\Paquetes;
-use App\Models\Producto;
 
 class PaquetesTest extends TestCase
 {

@@ -5,9 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use App\Models\Moneda;
 use App\Models\Producto;
-use App\Http\Controllers\Controller;
 
 class ProductosTest extends TestCase
 {

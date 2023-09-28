@@ -44,11 +44,11 @@
           <button type="submit" name="aceptar">Aceptar</button>
         </div>
           </form>
-       </div>
-      <form action="{{route('camionLlevaLote.cargarDatos')}}" method="GET">
+          <form action="{{route('camionLlevaLote.cargarDatos')}}" method="GET">
          @csrf
          <button type="submit" name="cargar" id="cargar">Cargar Datos</button>
        </form>
+       </div>
      </div>
    </div>
 </div>

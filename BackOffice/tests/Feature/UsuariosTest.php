@@ -9,7 +9,6 @@ use App\Models\Administradores;
 use App\Models\Almaceneros;
 use App\Models\Choferes;
 use App\Models\Clientes;
-use App\Models\Telefonos_Usuarios;
 use App\Models\Usuarios;
 use App\Models\Mail_Usuarios;
 

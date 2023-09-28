@@ -15,16 +15,16 @@ class camionLlevaLoteController extends Controller
     {
         $datosRequest = $request->all();
         if ($request->has('cbxAgregar')) {
-            $this->agregar($datosRequest);
+            $this->verificarDatosAgregar($datosRequest);
         }
         if ($request->has('cbxModificar')) {
-            $this->modificar($datosRequest);
+            $this->verificarDatosModificar($datosRequest);
         }
         if ($request->has('cbxEliminar')) {
-            $this->eliminar($datosRequest);
+            $this->eliminarCamionLlevaLote($datosRequest);
         }
         if ($request->has('cbxRecuperar')) {
-            $this->recuperar($datosRequest);
+            $this->recuperarCamionLlevaLote($datosRequest);
         }
         $this->cargarDatos();
         return redirect()->route('camion.camionLlevaLote');
@@ -36,7 +36,7 @@ class camionLlevaLoteController extends Controller
         $matriculaCamion = [];
         $idLote = [];
         foreach ($datosCamionLlevaLote as $camionLlevaLote) {
-            $infoCamionLlevaLote[] = $this->definirCamionLlevaLote($camionLlevaLote);
+            $infoCamionLlevaLote[] = $this->obtenerCamionLlevaLote($camionLlevaLote);
         }
         $camiones = Camiones::withoutTrashed()->get();
         foreach ($camiones as $camion) {
@@ -52,7 +52,7 @@ class camionLlevaLoteController extends Controller
         return redirect()->route('camion.camionLlevaLote');
     }
 
-    public function agregar($datosRequest)
+    public function verificarDatosAgregar($datosRequest)
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
@@ -75,7 +75,7 @@ class camionLlevaLoteController extends Controller
             'Matricula'=>$camionLlevaLote['idCamion'],
         ], $reglas);
     }
-    public function modificar($datosRequest)
+    public function verificarDatosModificar($datosRequest)
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
@@ -84,7 +84,7 @@ class camionLlevaLoteController extends Controller
         $this->modificarCamionLlevaLote($datosRequest);
     }
 
-    public function eliminar($datosRequest)
+    public function eliminarCamionLlevaLote($datosRequest)
     {
         $id = $datosRequest['identificador'];
         $camionLlevaLoteAntiguo = Camion_Lleva_Lote::withoutTrashed()->where('id_lote', $id)->first();
@@ -93,17 +93,16 @@ class camionLlevaLoteController extends Controller
         }
     }
 
-    public function recuperar($datosRequest)
+    public function recuperarCamionLlevaLote($datosRequest)
     {
         $id = $datosRequest['identificador'];
         $camionLlevaLote = Camion_Lleva_Lote::onlyTrashed()->where('id_lote', $id)->first();
-
         if ($camionLlevaLote) {
             $camionLlevaLote->restore();
         }
     }
 
-    private function definirCamionLlevaLote($camionLlevaLote)
+    private function obtenerCamionLlevaLote($camionLlevaLote)
     {
         $infoCamionLlevaLote = [
             'Id Lote' => $camionLlevaLote['id_lote'],

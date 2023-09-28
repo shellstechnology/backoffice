@@ -13,13 +13,13 @@ class loteController extends Controller
     {
         $datosRequest = $request->all();
         if ($request->has('cbxAgregar')) {
-            $this->agregar();
+            $this->verificarDatosAgregar();
         }
-        if ($request->has('cbxEliminar')) {
-            $this->eliminar($datosRequest);
+        if ($request->has('cbxeliminarCamionLlevaLote')) {
+            $this->eliminarLote($datosRequest);
         }
         if ($request->has('cbxRecuperar')) {
-            $this->recuperar($datosRequest);
+            $this->recuperarLote($datosRequest);
         }
         $this->cargarDatos();
         return redirect()->route('backoffice.lote');
@@ -38,7 +38,7 @@ class loteController extends Controller
         }
     }
 
-    public function agregar()
+    public function verificarDatosAgregar()
     {
         $lote = new Lotes;
         $lote->volumen_l = 0;
@@ -46,7 +46,7 @@ class loteController extends Controller
         $lote->save();
     }
 
-    public function eliminar($datosRequest)
+    public function eliminarLote($datosRequest)
     {
         $id = $datosRequest['identificador'];
         $lote = Lotes::withoutTrashed()->find($id);
@@ -55,7 +55,7 @@ class loteController extends Controller
         }
     }
 
-    public function recuperar($datosRequest)
+    public function recuperarLote($datosRequest)
     {
         $id = $datosRequest['identificador'];
         $lote = Lotes::onlyTrashed()->find($id);

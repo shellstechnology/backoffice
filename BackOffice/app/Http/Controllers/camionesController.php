@@ -12,7 +12,6 @@ use App\Models\Modelos;
 use App\Models\Usuarios;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
@@ -23,16 +22,16 @@ class camionesController extends Controller
     {
         $datosRequest = $request->all();
         if ($request->has('cbxAgregar')) {
-            $this->agregar($datosRequest);
+            $this->verificarDatosAgregar($datosRequest);
         }
         if ($request->has('cbxModificar')) {
-            $this->modificar($datosRequest);
+            $this->verificarDatosModificar($datosRequest);
         }
         if ($request->has('cbxEliminar')) {
-            $this->eliminar($datosRequest);
+            $this->eliminarCamion($datosRequest);
         }
         if ($request->has('cbxRecuperar')) {
-            $this->recuperar($datosRequest);
+            $this->recuperarCamion($datosRequest);
         }
         $this->cargarDatos();
         return redirect()->route('backoffice.camiones');
@@ -100,13 +99,13 @@ class camionesController extends Controller
         return $usuario['nombre_de_usuario'];
     }
 
-    public function agregar($datosRequest)
+    public function verificarDatosAgregar($datosRequest)
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
             return;
         }
-        $this->crearCamion($datosRequest);
+        $this->agregarCamion($datosRequest);
     }
 
     private function validarDatos($camion)
@@ -129,7 +128,7 @@ class camionesController extends Controller
         ], $reglas);
     }
 
-    private function crearCamion($camion)
+    private function agregarCamion($camion)
     {
         $choferExistente=Chofer_Conduce_Camion::withoutTrashed()->where('matricula_camion',$camion['matricula'])->first();
         if($choferExistente!=null){
@@ -154,7 +153,7 @@ class camionesController extends Controller
         $choferCoduceCamion->save();
     }
 
-    public function modificar($datosRequest)
+    public function verificarDatosModificar($datosRequest)
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
@@ -166,14 +165,12 @@ class camionesController extends Controller
 
     private function modificarCamion($camion)
     {
-       
-
         list($marca, $modelo) = explode(':', $camion['marcaModeloCamion']);
         $idModelo = Modelos::withTrashed()->where('modelo', $modelo)->first();
         $idMarca = Marcas::withTrashed()->where('marca', $marca)->where('id_modelo', $idModelo['id'])->first();
         $estado = Estados_c::withTrashed()->where('descripcion_estado_c', $camion['estadoCamion'])->first();
         if($camion['matricula']!=$camion['identificador']){
-            $this->crearNuevoCamion($camion,$idMarca,$estado);
+            $this->agregarNuevoCamion($camion,$idMarca,$estado);
         }
         Camiones::withTrashed()->where('matricula',$camion['identificador'])->update([
             'id_marca_modelo'=>$idMarca['id'],
@@ -198,7 +195,7 @@ class camionesController extends Controller
         Camiones::withTrashed()->where('matricula', $camion['identificador'])->forceDelete();
     }
 
-    private function crearNuevoCamion($camion,$idMarca,$estado)
+    private function agregarNuevoCamion($camion,$idMarca,$estado)
     {
         $nuevoCamion = new Camiones;
         $nuevoCamion->matricula = $camion['matricula'];
@@ -210,7 +207,7 @@ class camionesController extends Controller
     }
 
 
-    public function eliminar($datosRequest)
+    public function eliminarCamion($datosRequest)
     {
         $id = $datosRequest['identificador'];
         $camiones = Camiones::withTrashed()->find($id);
@@ -221,7 +218,7 @@ class camionesController extends Controller
 
     }
 
-    public function recuperar($datosRequest)
+    public function recuperarCamion($datosRequest)
     {
         $id = $datosRequest['identificador'];
         $camiones = Camiones::onlyTrashed()->find($id);
