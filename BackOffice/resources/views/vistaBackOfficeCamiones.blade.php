@@ -19,6 +19,7 @@
      <a href="{{ route('backoffice.lote') }}" class="item">Lotes</a>
    </div>
   <div class="container">
+
     <div class="cuerpo">
      <div id="contenedorTabla">
      <x-tabla-camiones-component/>
@@ -29,10 +30,25 @@
       <div class="cajaDatos"> 
          <form action="{{route('camiones.realizarAccion')}}" method="POST">
           @csrf
-          <input type="checkbox" id="cbxAgregar" name="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
-          <input type="checkbox" id="cbxModificar" name="cbxModificar" onclick="comprobarCbxModificar()">Modificar </input>
-          <input type="checkbox" id="cbxEliminar" name="cbxEliminar"onclick="comprobarCbxEliminar()">Eliminar </input>
-          <input type="checkbox" name="cbxRecuperar" id="cbxRecuperar" onclick="comprobarCbxRecuperar()">Recuperar </input>
+            <fieldset>
+               <legend>Selecciona una accion:</legend>
+                 <div>
+                  <input type="radio" id="agregar" name="accion" value="agregar" checked />
+                  <label for="agregar">Agregar</label>
+                 </div>
+                 <div>
+                   <input type="radio" id="modificar" name="accion" value="modificar" />
+                   <label for="dewey">Modificar</label>
+                </div>
+                <div>
+                 <input type="radio" id="eliminar" name="accion" value="eliminar" />
+                 <label for="louie">Eliminar</label>
+                </div>
+                <div>
+                 <input type="radio" id="recuperar" name="accion" value="recuperar" />
+                 <label for="louie">Recuperar</label>
+               </div >
+             </fieldset>
           <div class="contenedorDatos">
             <div class="campo">
             <input type="text" id="matricula" name="matricula" maxlength="10"></input>
@@ -72,6 +88,8 @@
        </div>
      </div>
     </div>
+    <x-mensaje-respuesta-component/>
   </body>
+  
   @include('footer')
 </html>

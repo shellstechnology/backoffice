@@ -13,60 +13,81 @@ class almacenController extends Controller
 {
 
     public function cargarDatos()
-    {
-        $datosAlmacenes = [];
-        $arrayAlmacenes = Almacenes::withTrashed()->get();
-        foreach ($arrayAlmacenes as $almacen) {
-            $datosAlmacenes[] = $this->obtenerDatosAlmacenes($almacen);
+    { {
+            try {
+                $datosAlmacenes = [];
+                $arrayAlmacenes = Almacenes::withTrashed()->get();
+                foreach ($arrayAlmacenes as $almacen) {
+                    $datosAlmacenes[] = $this->obtenerDatosAlmacenes($almacen);
+                }
+                $datoLugarEntrega = Lugares_Entrega::withoutTrashed()->get();
+                $idLugaresEntrega = [];
+                $idLugaresEntrega = $this->obtenerIdsClase($datoLugarEntrega);
+                Session::put('idLugaresEntrega', $idLugaresEntrega);
+                Session::put('almacenes', $datosAlmacenes);
+            } catch (\Exception $e) {
+                $mensajeDeError = 'Error,no se pudieron cargar los datos';
+                Session::put('respuesta', $mensajeDeError);
+            }
+            return redirect()->route('backoffice.almacen');
         }
-
-
-        $datoLugarEntrega = Lugares_Entrega::withoutTrashed()->get();
-        $idLugaresEntrega = [];
-        $idLugaresEntrega = $this->obtenerIdsClase($datoLugarEntrega);
-        Session::put('idLugaresEntrega', $idLugaresEntrega);
-        Session::put('almacenes', $datosAlmacenes);
-        return redirect()->route('backoffice.almacen');
     }
     public function realizarAccion(Request $request)
     {
         $datosRequest = $request->all();
-        if ($request->has('cbxAgregar')) {
-            $this->verificarDatosAgregar($datosRequest);
+        switch ($request->input('accion')) {
+            case 'agregar':
+                $this->verificarDatosAAgregar($datosRequest);
+                break;
+            case 'modificar':
+                $this->verificarDatosAModificar($datosRequest);
+                break;
+            case 'eliminar':
+                $this->eliminarAlmacen($datosRequest);
+                break;
+            case 'recuperar':
+                $this->recuperarAlmacen($datosRequest);
+                break;
         }
-        if ($request->has('cbxModificar')) {
-            $this->verificarDatosModificar($datosRequest);
-        }
-        if ($request->has('cbxEliminar')) {
-            $this->eliminarCamion($datosRequest);
-        }
-        if ($request->has('cbxRecuperar')) {
-            $this->recuperarCamion($datosRequest);
-        }
+        ;
         $this->cargarDatos();
         return redirect()->route('backoffice.almacen');
     }
 
-    public function verificarDatosAgregar($datosRequest)
-    { 
-        $validador = $this->validarDatos($datosRequest);
-        if ($validador->fails()) {
-            return;
+    public function verificarDatosAAgregar($datosRequest)
+    { {
+            try {
+                $validador = $this->validarDatos($datosRequest);
+                if ($validador->fails()) {
+                    $errores = $validador->getMessageBag();
+                    Session::put('respuesta', json_encode($errores->messages()));
+                    return;
+                }
+                $this->crearAlmacen($datosRequest);
+            } catch (\Exception $e) {
+                $mensajeDeError = 'Error,no se pudieron validar los datos';
+                Session::put('respuesta', $mensajeDeError);
+            }
         }
-        $this->crearAlmacen($datosRequest);
     }
 
     private function obtenerIdsClase($datoClase)
-    {
-        $datoId = [];
-        foreach ($datoClase as $dato) {
-            $datoId[] = $dato['id'];
+    { {
+            try {
+                $datoId = [];
+                foreach ($datoClase as $dato) {
+                    $datoId[] = $dato['id'];
+                }
+                return $datoId;
+            } catch (\Exception $e) {
+                $mensajeDeError = 'Error,no se pudieron cargar los datos:No se pudo obtener los datos de un lugar entrega ';
+                Session::put('respuesta', $mensajeDeError);
+            }
         }
-        return $datoId;
     }
 
 
-    public function verificarDatosModificar($datosRequest)
+    public function verificarDatosAModificar($datosRequest)
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
@@ -76,63 +97,109 @@ class almacenController extends Controller
 
     }
 
-    public function eliminarCamion($datosRequest)
-    {
-        $id = $datosRequest['identificador'];
-        $almacen = Almacenes::withoutTrashed()->find($id);
-        if ($almacen) {
-            $almacen->delete();
+    public function eliminarAlmacen($datosRequest)
+    { {
+            try {
+                $id = $datosRequest['identifiddcador'];
+                $almacen = Almacenes::withoutTrashed()->find($id);
+                if ($almacen) {
+                    $almacen->delete();
+                }
+                $mensajeConfirmacion = 'Almacen eliminado exitosamente';
+                Session::put('respuesta', $mensajeConfirmacion);
+            } catch (\Exception) {
+                $mensajeDeError = 'Error,no se pudo eliminar el almacen';
+                Session::put('respuesta', $mensajeDeError);
+            }
         }
     }
 
-    public function recuperarCamion($datosRequest)
-    {
-        $id = $datosRequest['identificador'];
-        $almacen = Almacenes::onlyTrashed()->find($id);
-        if ($almacen) {
-            $almacen->restore();
+    public function recuperarAlmacen($datosRequest)
+    { {
+            try {
+                $id = $datosRequest['identificador'];
+                $almacen = Almacenes::onlyTrashed()->find($id);
+                if ($almacen) {
+                    $almacen->restore();
+                }
+                $mensajeConfirmacion = 'Almacen restaurado exitosamente';
+                Session::put('respuesta', $mensajeConfirmacion);
+
+            } catch (\Exception $e) {
+                $mensajeDeError = 'Error:no se pudo restaurar el almacen';
+                Session::put('respuesta', $mensajeDeError);
+            }
         }
     }
 
     private function obtenerDatosAlmacenes($almacen)
-    {
-        $lugarAlmacen = Lugares_Entrega::withTrashed()->where('id', $almacen['id_lugar_entrega'])->first();
-        return [
-            'Id Almacen' => $almacen['id'],
-            'Id Lugar'=>$lugarAlmacen['id'],
-            'Direccion Almacen' => $lugarAlmacen['direccion'],
-            'Lat Almacen' => $lugarAlmacen['latitud'],
-            'Lng Almacen' => $lugarAlmacen['longitud'],
-            'created_at' => $almacen['created_at'],
-            'updated_at' => $almacen['updated_at'],
-            'deleted_at' => $almacen['deleted_at'],
-        ];
-
+    { {
+            try {
+                $lugarAlmacen = Lugares_Entrega::withTrashed()->where('id', $almacen['id_lugar_entrega'])->first();
+                return [
+                    'Id Almacen' => $almacen['id'],
+                    'Id Lugar' => $lugarAlmacen['id'],
+                    'Direccion Almacen' => $lugarAlmacen['direccion'],
+                    'Lat Almacen' => $lugarAlmacen['latitud'],
+                    'Lng Almacen' => $lugarAlmacen['longitud'],
+                    'created_at' => $almacen['created_at'],
+                    'updated_at' => $almacen['updated_at'],
+                    'deleted_at' => $almacen['deleted_at'],
+                ];
+            } catch (\Exception) {
+                $mensajeDeError = 'Error: No se pudieron cargar los datos del producto ' . $almacen['id'];
+                Session::put('respuesta', $mensajeDeError);
+            }
+        }
     }
 
     private function validarDatos($almacen)
-    {
-
-        $reglas = [
-            'lugar' => 'required|integer',
-        ];
-        return Validator::make([
-            'lugar' => $almacen['idLugarEntrega'],
-        ], $reglas);
+    { {
+            try {
+                $reglas = [
+                    'lugar' => 'required|numeric',
+                ];
+                $messages = [
+                    'lugar.required' => 'Es necesario que ingreses el Id de un Lugar',
+                    'lugar.numeric' => 'El Id del Lugar debe ser un Numero'
+                ];
+                return Validator::make([
+                    'lugar' => $almacen['idLugarEntrega'],
+                ], $reglas, $messages);
+            } catch (\Exception $e) {
+                $mensajeDeError = 'Algo salio mal al intentar validar los datos';
+                Session::put('respuestaDetallada', $mensajeDeError);
+            }
+        }
     }
 
     private function crearAlmacen($almacen)
-    {
-        $nuevaAlmacen = new Almacenes;
-        $nuevaAlmacen->id_lugar_entrega = $almacen['idLugarEntrega'];
-        $nuevaAlmacen->save();
+    { {
+            try {
+                $nuevaAlmacen = new Almacenes;
+                $nuevaAlmacen->id_lugar_entrega = $almacen['idLugarEntrega'];
+                $nuevaAlmacen->save();
+                $mensajeConfirmacion = 'Almacen creado exitosamente';
+                Session::put('respuesta', $mensajeConfirmacion);
+            } catch (\Exception $e) {
+                $mensajeDeError = 'Error:no se pudo crear el almacen';
+                Session::put('respuesta', $mensajeDeError);
+            }
+        }
     }
 
     private function modificarAlmacen($lugarAlmacen)
-    {
-        Almacenes::where('id', $lugarAlmacen['identificador'])->update([
-            'id_lugar_entrega'=>$lugarAlmacen['idLugarEntrega']
-
-        ]);
+    { {
+            try {
+                Almacenes::where('id', $lugarAlmacen['identificador'])->update([
+                    'id_lugar_entrega' => $lugarAlmacen['idLugarEntrega']
+                ]);
+                $mensajeConfirmacion = 'Almacen modificado exitosamente';
+                Session::put('respuesta', $mensajeConfirmacion);
+            } catch (\Exception $e) {
+                $mensajeDeError = 'Error:no se pudo modificar el almacen';
+                Session::put('respuesta', $mensajeDeError);
+            }
+        }
     }
 }

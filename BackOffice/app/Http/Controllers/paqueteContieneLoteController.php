@@ -16,18 +16,21 @@ class paqueteContieneLoteController extends Controller
     public function realizarAccion(Request $request)
     {
         $datosRequest = $request->all();
-        if ($request->has('cbxAgregar')) {
-            $this->verificarDatosAgregar($datosRequest);
-        }
-        if ($request->has('cbxModificar')) {
-            $this->verificarDatosModificar($datosRequest);
-        }
-        if ($request->has('cbxEliminar')) {
-            $this->eliminarLugarEntrega($datosRequest);
-        }
-        if ($request->has('cbxRecuperar')) {
-            $this->recuperaLugarEntregaLugarEntrega($datosRequest);
-        }
+
+        switch ($request->has('accion')) {
+            case 'agregar':
+                $this->verificarDatosAgregar($datosRequest);
+                break;
+            case 'modificar':
+                $this->verificarDatosModificar($datosRequest);
+                break;
+            case 'eliminar':
+                $this->eliminarPaqueteContieneLote($datosRequest);
+                break;
+            case 'recuperar':
+                $this->recuperarPaqueteContieneLote($datosRequest);
+                break;
+        };
         $this->cargarDatos();
         return redirect()->route('lote.paqueteContieneLote');
     }
@@ -95,7 +98,7 @@ class paqueteContieneLoteController extends Controller
         $this->modificarValores($datosRequest);
     }
 
-    public function eliminarLugarEntrega($datosRequest)
+    public function eliminarPaqueteContieneLote($datosRequest)
     {
         $id = $datosRequest['identificador'];
         $paqueteAntiguo = Paquete_Contiene_Lote::withoutTrashed()->where('id_paquete', $id)->first();
@@ -104,7 +107,7 @@ class paqueteContieneLoteController extends Controller
         }
     }
 
-    public function recuperarLugarEntrega($datosRequest)
+    public function recuperarPaqueteContieneLote($datosRequest)
     {
         $id = $datosRequest['identificador'];
         $paqueteContieneLote = Paquete_Contiene_Lote::onlyTrashed()->where('id_paquete', $id)->first();

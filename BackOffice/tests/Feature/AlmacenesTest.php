@@ -14,7 +14,7 @@ class AlmacenesTest extends TestCase
 
         $response = $this->followingRedirects()->post('/Almacenes',
         [
-            "cbxAgregar" => "on",
+            "accion" => "agregar",
             "idLugarEntrega" => "1",
         ]);
         $ultimoAlmacen= Almacenes::latest('created_at')->first();
@@ -33,7 +33,7 @@ class AlmacenesTest extends TestCase
 
         $response = $this->followingRedirects()->post('/Almacenes',
         [
-            "cbxModificar" => "on",
+            "accion" => "modificar",
             "identificador" => "42",
             "idLugarEntrega" => "1",
         ]);

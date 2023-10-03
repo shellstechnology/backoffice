@@ -30,10 +30,25 @@
        <div class="contenedorDatos">
        <form action="{{route('usuario.realizarAccion')}}" method="POST">
       @csrf
-      <input type="checkbox" name="cbxAgregar" id="cbxAgregar" onclick="comprobarCbxAgregar()" >Agregar</input>
-       <input type="checkbox" name="cbxModificar" id="cbxModificar" onclick="comprobarCbxModificar()">Modificar </input>
-       <input type="checkbox" name="cbxEliminar" id="cbxEliminar" onclick="comprobarCbxEliminar()">Eliminar </input>
-       <input type="checkbox" name="cbxRecuperar" id="cbxRecuperar" onclick="comprobarCbxRecuperar()">Recuperar </input>
+      <fieldset>
+               <legend>Selecciona una accion:</legend>
+                 <div>
+                  <input type="radio" id="agregar" name="accion" value="agregar" checked />
+                  <label for="agregar">Agregar</label>
+                 </div>
+                 <div>
+                   <input type="radio" id="modificar" name="accion" value="modificar" />
+                   <label for="dewey">Modificar</label>
+                </div>
+                <div>
+                 <input type="radio" id="eliminar" name="accion" value="eliminar" />
+                 <label for="louie">Eliminar</label>
+                </div>
+                <div>
+                 <input type="radio" id="recuperar" name="accion" value="recuperar" />
+                 <label for="louie">Recuperar</label>
+               </div >
+             </fieldset>
         <div class="campo">
           <input type="text" name="nombre" id="nombre" maxlength="50" required></input>
           <label for="nombre" >Nombre de Usuario</label>

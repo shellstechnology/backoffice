@@ -10,74 +10,106 @@ use Illuminate\Support\Facades\Validator;
 
 class lugarEntregaController extends Controller
 {
-
     public function realizarAccion(Request $request)
     {
-        $datosRequest = $request->all();
-        if ($request->has('cbxAgregar')) {
-            $this->verificarDatosAgregar($datosRequest);
+        try {
+            $datosRequest = $request->all();
+            switch ($request->has('accion')) {
+                case 'agregar':
+                    $this->verificarDatosAgregar($datosRequest);
+                    break;
+                case 'modificar':
+                    $this->verificarDatosModificar($datosRequest);
+                    break;
+                case 'eliminar':
+                    $this->eliminarLugarEntrega($datosRequest);
+                    break;
+                case 'recuperar':
+                    $this->recuperarLugarEntrega($datosRequest);
+                    break;
+            }
+            $this->cargarDatos();
+            return redirect()->route('almacen.lugarEntrega');
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: no se pudo realizar la acción';
+            Session::put('respuesta', $mensajeDeError);
         }
-        if ($request->has('cbxModificar')) {
-            $this->verificarDatosModificar($datosRequest);
-        }
-        if ($request->has('cbxEliminar')) {
-            $this->eliminarLugarEntrega($datosRequest);
-        }
-        if ($request->has('cbxRecuperar')) {
-            $this->recuperarLugarEntrega($datosRequest);
-        }
-        $this->cargarDatos();
-        return redirect()->route('almacen.lugarEntrega');
     }
+
     public function cargarDatos()
     {
-        $infoLugarEntrega = [];
-        $listaLugares=Lugares_Entrega::withTrashed()->get();
-        foreach ($listaLugares as $dato) {
-            $infoLugarEntrega[] = $this->obtenerDatosLugaresEntrega($dato);
-        }
+        try {
+            $infoLugarEntrega = [];
+            $listaLugares = Lugares_Entrega::withTrashed()->get();
+            foreach ($listaLugares as $dato) {
+                $infoLugarEntrega[] = $this->obtenerDatosLugaresEntrega($dato);
+            }
 
-        Session::put('lugaresEntrega', $infoLugarEntrega);
-        return redirect()->route('almacen.lugarEntrega');
+            Session::put('lugaresEntrega', $infoLugarEntrega);
+            return redirect()->route('almacen.lugarEntrega');
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: no se pudieron cargar los datos';
+            Session::put('respuesta', $mensajeDeError);
+        }
     }
 
     public function verificarDatosAgregar($datosRequest)
     {
-        $validador = $this->validarDatos($datosRequest);
-        if ($validador->fails()) {
-            return;
+        try {
+            $validador = $this->validarDatos($datosRequest);
+            if ($validador->fails()) {
+                return;
+            }
+            $this->crearLugarEntrega($datosRequest);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: no se pudo verificar los datos para agregar';
+            Session::put('respuesta', $mensajeDeError);
         }
-        $this->crearLugarEntrega($datosRequest);
     }
-
 
     public function verificarDatosModificar($lugarEntrega)
     {
-        $validador = $this->validarDatos($lugarEntrega);
-        if ($validador->fails()) {
-            return;
+        try {
+            $validador = $this->validarDatos($lugarEntrega);
+            if ($validador->fails()) {
+                return;
+            }
+            $this->modificarLugarEntrega($lugarEntrega);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: no se pudieron verificar los datos para modificar';
+            Session::put('respuesta', $mensajeDeError);
         }
-        $this->modificarLugarEntrega($lugarEntrega);
     }
-
 
     public function eliminarLugarEntrega($lugarEntrega)
     {
-        $id = $lugarEntrega['identificador'];
-        $lugarEntregaEliminable = Lugares_Entrega::withoutTrashed()->find($id);
-        if ($lugarEntregaEliminable) {
-          $lugarEntregaEliminable->delete();
+        try {
+            $id = $lugarEntrega['identificador'];
+            $lugarEntregaEliminable = Lugares_Entrega::withoutTrashed()->find($id);
+            if ($lugarEntregaEliminable) {
+                $lugarEntregaEliminable->delete();
+            }
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: no se pudo eliminar el lugar de entrega';
+            Session::put('respuesta', $mensajeDeError);
         }
     }
 
     public function recuperarLugarEntrega($lugarEntrega)
     {
-        $id = $lugarEntrega['identificador'];
-        $lugarEntregaRestaurable = Lugares_Entrega::onlyTrashed()->find($id);
-        if ($lugarEntregaRestaurable) {
-            $lugarEntregaRestaurable->restore();
+        try {
+            $id = $lugarEntrega['identificador'];
+            $lugarEntregaRestaurable = Lugares_Entrega::onlyTrashed()->find($id);
+            if ($lugarEntregaRestaurable) {
+                $lugarEntregaRestaurable->restore();
+            }
+            return redirect()->route('almacen.lugarEntrega');
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: no se pudo recuperar el lugar de entrega';
+            Session::put('respuesta', $mensajeDeError);
         }
     }
+
     private function obtenerDatosLugaresEntrega($lugarEntrega)
     {
         return ([
@@ -93,7 +125,6 @@ class lugarEntregaController extends Controller
 
     private function validarDatos($lugarEntrega)
     {
-
         $reglas = [
             'direccionLugar' => 'required|string|max:100',
             'latitud' => 'required|numeric|min:-90|max:90',
@@ -108,23 +139,19 @@ class lugarEntregaController extends Controller
 
     private function crearLugarEntrega($lugar)
     {
-
         $lugarEntrega = new Lugares_Entrega;
-        $lugarEntrega->Direccion = $lugar['direccion'];
-        $lugarEntrega->Latitud = $lugar['latitud'];
-        $lugarEntrega->Longitud = $lugar['longitud'];
+        $lugarEntrega->direccion = $lugar['direccion'];
+        $lugarEntrega->latitud = $lugar['latitud'];
+        $lugarEntrega->longitud = $lugar['longitud'];
         $lugarEntrega->save();
     }
 
     private function modificarLugarEntrega($lugarEntrega)
     {
-
-
         Lugares_Entrega::where('id', $lugarEntrega['identificador'])->update([
             'direccion' => $lugarEntrega['direccion'],
             'latitud' => $lugarEntrega['latitud'],
             'longitud' => $lugarEntrega['longitud'],
         ]);
     }
-
 }

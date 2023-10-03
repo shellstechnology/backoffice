@@ -17,18 +17,20 @@ class paqueteController extends Controller
     public function realizarAccion(Request $request)
     {
         $datosRequest = $request->all();
-        if ($request->has('cbxAgregar')) {
-            $this->verificarDatosAgregar($datosRequest);
-        }
-        if ($request->has('cbxModificar')) {
-            $this->verificarDatosModificar($datosRequest);
-        }
-        if ($request->has('cbxEliminar')) {
-            $this->eliminarPaquete($datosRequest);
-        }
-        if ($request->has('cbxRecuperar')) {
-            $this->recuperarPaquete($datosRequest);
-        }
+        switch ($request->has('accion')) {
+            case 'agregar':
+                $this->verificarDatosAgregar($datosRequest);
+                break;
+            case 'modificar':
+                $this->verificarDatosModificar($datosRequest);
+                break;
+            case 'eliminar':
+                $this->eliminarPaquete($datosRequest);
+                break;
+            case 'recuperar':
+                $this->recuperarPaquete($datosRequest);
+                break;
+        };
         $this->cargarDatos();
         return redirect()->route('backoffice.paquete');
 

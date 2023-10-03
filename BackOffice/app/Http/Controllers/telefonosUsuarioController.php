@@ -12,19 +12,22 @@ class telefonosUsuarioController extends Controller
 {
     public function realizarAccion(Request $request)
     {
+
         $datosRequest = $request->all();
-        if ($request->has('cbxAgregar')) {
-            $this->verificarDatosAgregar($datosRequest);
-        }
-        if ($request->has('cbxModificar')) {
-            $this->verificarDatosModificar($datosRequest);
-        }
-        if ($request->has('cbxEliminar')) {
-            $this->eliminarProducto($datosRequest);
-        }
-        if ($request->has('cbxRecuperar')) {
-            $this->recuperarProducto($datosRequest);
-        }
+        switch ($request->has('accion')) {
+            case 'agregar':
+                $this->verificarDatosAgregar($datosRequest);
+                break;
+            case 'modificar':
+                $this->verificarDatosModificar($datosRequest);
+                break;
+            case 'eliminar':
+                $this->eliminarTelefonosUsuario($datosRequest);
+                break;
+            case 'recuperar':
+                $this->recuperarTelefonosUsuario($datosRequest);
+                break;
+        };
         $this->cargarDatos();
         return redirect()->route('usuarios.telefonosUsuario');
     }
@@ -115,7 +118,7 @@ class telefonosUsuarioController extends Controller
             ]);
     }
 
-    public function eliminarProducto($datosRequest)
+    public function eliminarTelefonosUsuario($datosRequest)
     {
         $telefono = Telefonos_Usuarios::withoutTrashed()->where('telefono', $datosRequest['identificadorTelefono'])->first();
         if ($telefono) {
@@ -124,7 +127,7 @@ class telefonosUsuarioController extends Controller
 
     }
 
-    public function recuperarProducto($datosRequest)
+    public function recuperarTelefonosUsuario($datosRequest)
     {
         $telefono = Telefonos_Usuarios::onlyTrashed()->where('telefono', $datosRequest['identificadorTelefono'])->first();
         if ($telefono) {

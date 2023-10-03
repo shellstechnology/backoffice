@@ -20,19 +20,20 @@ class usuarioController extends Controller
     public function realizarAccion(Request $request)
     {
         $datosRequest = $request->all();
-        if ($request->has('cbxAgregar')) {
-            ;
-            $this->verificarDatosAgregar($datosRequest);
-        }
-        if ($request->has('cbxModificar')) {
-            $this->verificarDatosModificar($datosRequest);
-        }
-        if ($request->has('cbxEliminar')) {
-            $this->eliminar($datosRequest);
-        }
-        if ($request->has('cbxRecuperar')) {
-            $this->recuperar($datosRequest);
-        }
+        switch ($request->has('accion')) {
+            case 'agregar':
+                $this->verificarDatosAgregar($datosRequest);
+                break;
+            case 'modificar':
+                $this->verificarDatosModificar($datosRequest);
+                break;
+            case 'eliminar':
+                $this->eliminarUsuario($datosRequest);
+                break;
+            case 'recuperar':
+                $this->recuperarUsuario($datosRequest);
+                break;
+        };
         $this->cargarDatos();
         return redirect()->route('backoffice.usuarios');
 
@@ -73,7 +74,7 @@ class usuarioController extends Controller
     }
 
 
-    public function eliminar($datosRequest)
+    public function eliminarUsuario($datosRequest)
     {
         $id = $datosRequest['identificador'];
         Mail_Usuarios::where('id_usuarios', $id)->delete();
@@ -81,7 +82,7 @@ class usuarioController extends Controller
 
     }
 
-    public function recuperar($datosRequest)
+    public function recuperarUsuario($datosRequest)
     {
 
         $id = $datosRequest['identificador'];
