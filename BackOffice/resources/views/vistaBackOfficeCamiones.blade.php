@@ -38,15 +38,15 @@
                  </div>
                  <div>
                    <input type="radio" id="modificar" name="accion" value="modificar" />
-                   <label for="dewey">Modificar</label>
+                   <label for="modificar">Modificar</label>
                 </div>
                 <div>
                  <input type="radio" id="eliminar" name="accion" value="eliminar" />
-                 <label for="louie">Eliminar</label>
+                 <label for="eliminar">Eliminar</label>
                 </div>
                 <div>
                  <input type="radio" id="recuperar" name="accion" value="recuperar" />
-                 <label for="louie">Recuperar</label>
+                 <label for="recuperar">Recuperar</label>
                </div >
              </fieldset>
           <div class="contenedorDatos">

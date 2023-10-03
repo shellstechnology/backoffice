@@ -20,7 +20,8 @@ class camionesController extends Controller
     public function realizarAccion(Request $request)
     {
         $datosRequest = $request->all();
-        switch ($request->has('accion')) {
+        
+        switch ($request->input('accion')) {
             case 'agregar':
                 $this->verificarDatosAgregar($datosRequest);
                 break;
@@ -232,13 +233,12 @@ class camionesController extends Controller
         try {
             list($marca, $modelo) = explode(':', $camion['marcaModeloCamion']);
             $idModelo = Modelos::withTrashed()->where('modelo', $modelo)->first();
-            $idMarca = Marcas::withTrashed()->where('marca', $marca)->where('id_modelo', $idModelo['id'])->first();
             $estado = Estados_c::withTrashed()->where('descripcion_estado_c', $camion['estadoCamion'])->first();
             if ($camion['matricula'] != $camion['identificador']) {
-                $this->agregarNuevoCamion($camion, $idMarca, $estado);
+                $this->agregarNuevoCamion($camion, $idModelo, $estado);
             }
             Camiones::withTrashed()->where('matricula', $camion['identificador'])->update([
-                'id_marca_modelo' => $idMarca['id'],
+                'id_modelo_marca' => $idModelo['id'],
                 'id_estado_c' => $estado['id'],
                 'volumen_max_l' => $camion['volumen'],
                 'peso_max_kg' => $camion['peso']
@@ -265,12 +265,12 @@ class camionesController extends Controller
     }
 
 
-    private function agregarNuevoCamion($camion, $idMarca, $estado)
+    private function agregarNuevoCamion($camion, $idModelo, $estado)
     {
         try {
             $nuevoCamion = new Camiones;
             $nuevoCamion->matricula = $camion['matricula'];
-            $nuevoCamion->id_marca_modelo = $idMarca['id'];
+            $nuevoCamion->id_modelo_marca = $idModelo['id'];
             $nuevoCamion->id_estado_c = $estado['id'];
             $nuevoCamion->volumen_max_l = $camion['volumen'];
             $nuevoCamion->peso_max_kg = $camion['peso'];
