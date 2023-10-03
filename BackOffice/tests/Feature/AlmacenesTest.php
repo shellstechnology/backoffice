@@ -14,7 +14,7 @@ class AlmacenesTest extends TestCase
 
         $response = $this->followingRedirects()->post('/Almacenes',
         [
-            "cbxAgregar" => "on",
+            "accion" => "agregar",
             "idLugarEntrega" => "1",
         ]);
         $ultimoAlmacen= Almacenes::latest('created_at')->first();
@@ -33,7 +33,7 @@ class AlmacenesTest extends TestCase
 
         $response = $this->followingRedirects()->post('/Almacenes',
         [
-            "cbxModificar" => "on",
+            "accion" => "modificar",
             "identificador" => "42",
             "idLugarEntrega" => "1",
         ]);
@@ -48,7 +48,7 @@ class AlmacenesTest extends TestCase
 
        public function test_EliminarUnAlmacen(){
         $response = $this->followingRedirects()->post('/Almacenes',[
-            "cbxEliminar" => "on",
+            "accion" => "eliminar",
             "identificador" => "5",
 
         ]);
@@ -60,14 +60,14 @@ class AlmacenesTest extends TestCase
 
        public function test_RecuprarUnAlmacen(){
         $response1 = $this->followingRedirects()->post('/Almacenes',[
-            "cbxEliminar" => "on",
+            "accion" => "eliminar",
             "identificador" => "5",
 
         ]);
         $response1->assertStatus(200);
     
         $response2 = $this->followingRedirects()->post('/Almacenes',[
-            "cbxRecuperar" => "on",
+            "accion" => "recuperar",
             "identificador" => "5",
         ]);
       $response2->assertStatus(200);

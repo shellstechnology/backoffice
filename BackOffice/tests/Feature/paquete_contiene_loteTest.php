@@ -21,7 +21,7 @@ class paquete_contiene_loteTest extends TestCase
 
         $response = $this->followingRedirects()->post('/paquetes-lote',
         [
-            "cbxAgregar" => "on",
+            "accion" => "agregar",
             "identificador" => "42",
             "idPaquete" => "104",
             "idLote"=> "100",
@@ -39,7 +39,7 @@ class paquete_contiene_loteTest extends TestCase
 
         $response = $this->followingRedirects()->post('/paquetes-lote',
         [
-            "cbxModificar" => "on",
+            "accion" => "modificar",
             "identificador" => "42",
             "idPaquete" => "42",
             "idLote"=> "42",
@@ -54,7 +54,7 @@ class paquete_contiene_loteTest extends TestCase
 
        public function test_EliminarUnPaqueteEnUnlote(){
         $response = $this->followingRedirects()->post('/paquetes-lote',[
-            "cbxEliminar" => "on",
+            "accion" => "eliminar",
             "identificador" => "74",
             "idPaquete" => "74",
             "idLote"=> "74",
@@ -67,7 +67,7 @@ class paquete_contiene_loteTest extends TestCase
 
        public function test_RecuprarUnPaqueteEnUnLote(){
         $response1 = $this->followingRedirects()->post('/paquetes-lote',[
-            "cbxEliminar" => "on",
+            "accion" => "eliminar",
             "identificador" => "74",
             "idPaquete" => "74",
             "idLote"=> "74",
@@ -76,7 +76,7 @@ class paquete_contiene_loteTest extends TestCase
         $response1->assertStatus(200);
     
         $response2 = $this->followingRedirects()->post('/paquetes-lote',[
-            "cbxEliminar" => "on",
+            "accion" => "recuperar",
             "identificador" => "74",
             "idPaquete" => "74",
             "idLote"=> "74",

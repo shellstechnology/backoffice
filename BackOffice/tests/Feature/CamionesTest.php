@@ -20,7 +20,7 @@ class CamionesTest extends TestCase
 
         $response = $this->followingRedirects()->post('/camiones',
         [
-            "cbxAgregar" => "on",
+            "accion" => "agregar",
             "identificador" => "abcd",
             "matricula" => "abcd",
             "estadoCamion"=>"estado c listar",
@@ -42,7 +42,7 @@ class CamionesTest extends TestCase
 
         $response = $this->followingRedirects()->post('/camiones',
         [
-            "cbxModificar" => "on",
+            "accion" => "modificar",
             "identificador" => "a42a",
             "matricula" => "a42a",
             "estadoCamion"=>"estados c modificar",
@@ -60,7 +60,7 @@ class CamionesTest extends TestCase
 
        public function test_EliminarUnCamion(){
         $response = $this->followingRedirects()->post('/camiones',[
-            "cbxEliminar" => "on",
+            "accion" => "eliminar",
             "identificador" => "a47a",
             "matricula" => "a74a",
             "estadoCamion"=>"estados c eliminar",
@@ -76,7 +76,7 @@ class CamionesTest extends TestCase
 
        public function test_RecuprarUnCamion(){
         $response1 = $this->followingRedirects()->post('/camiones',[
-            "cbxEliminar" => "on",
+            "accion" => "eliminar",
             "identificador" => "a47a",
             "matricula" => "a74a",
             "estadoCamion"=>"estados c eliminar",
@@ -88,7 +88,7 @@ class CamionesTest extends TestCase
         $response1->assertStatus(200);
     
         $response2 = $this->followingRedirects()->post('/camiones',[
-            "cbxEliminar" => "on",
+            "accion" => "recuperar",
             "identificador" => "a47a",
             "matricula" => "a74a",
             "estadoCamion"=>"estados c eliminar",
