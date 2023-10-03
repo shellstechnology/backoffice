@@ -19,7 +19,7 @@ class PaquetesTest extends TestCase
 
         $response = $this->followingRedirects()->post('/paquetes',
         [
-            "cbxAgregar" => "on",
+            "accion" => "agregar",
             "identificador" => "99",
             "nombrePaquete" => "inbuscable",
             "dia"=> "4",
@@ -46,7 +46,7 @@ class PaquetesTest extends TestCase
     
         $response = $this->followingRedirects()->post('/paquetes',
         [
-            "cbxModificar" => "on",
+            "accion" => "modificar",
             "identificador" => "42",
             "nombrePaquete" => "paquete a modificar",
             "dia"=> "4",
@@ -71,7 +71,7 @@ class PaquetesTest extends TestCase
 
        public function test_EliminarUnPaquete(){
         $response = $this->followingRedirects()->post('/paquetes',[
-            "cbxEliminar" => "on",
+            "accion" => "eliminar",
             "identificador" => "74",
             "nombrePaquete" => "paquete a eliminar",
             "dia"=> "4",
@@ -93,7 +93,7 @@ class PaquetesTest extends TestCase
       
        public function test_RecuperarUnPaquete(){
         $response1 = $this->followingRedirects()->post('/paquetes',[
-            "cbxEliminar" => "on",
+            "accion" => "eliminar",
             "identificador" => "74",
             "nombrePaquete" => "paquete a eliminar",
             "dia"=> "4",
@@ -111,7 +111,7 @@ class PaquetesTest extends TestCase
         $response1->assertStatus(200);
     
         $response2 = $this->followingRedirects()->post('/paquetes',[
-            "cbxRecuperar" => "on",
+            "accion" => "recuperar",
             "identificador" => "74",
             "nombrePaquete" => "paquete a eliminar",
             "dia"=> "4",
@@ -124,6 +124,7 @@ class PaquetesTest extends TestCase
             "nombreDestinatario"=> "pseudoshell",
             "idProducto" =>"47",
             "volumen"=>"9.9",
+            "peso"=> "9.9",
         ]);
       $response2->assertStatus(200);
        }

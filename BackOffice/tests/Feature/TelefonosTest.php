@@ -18,7 +18,7 @@ class TelefonosTest extends TestCase
 
     $response = $this->followingRedirects()->post('/telefonos',
     [
-        "cbxAgregar" => "on",
+        "accion" => "agregar",
         "datoUsuario" => "42",
         "telefono" => "telnuevo"
     ]);
@@ -34,7 +34,7 @@ class TelefonosTest extends TestCase
 
     $response = $this->followingRedirects()->post('/telefonos',
     [
-        "cbxModificar" => "on",
+        "accion" => "modificar",
         "identificadorId" => "42",
         "identificadorTelefono" =>"tel mod",
         "datoUsuario" => "42",
@@ -49,7 +49,7 @@ class TelefonosTest extends TestCase
 
    public function test_EliminarUnTelefono(){
     $response = $this->followingRedirects()->post('/telefonos',[
-        "cbxEliminar" => "on",
+        "accion" => "eliminar",
         "datoUsuario" => "74",
         "identificadorId" => "74",
         "identificadorTelefono" =>"tel del",
@@ -61,7 +61,7 @@ class TelefonosTest extends TestCase
 
    public function test_RecuprarUnTelefono(){
     $response1 = $this->followingRedirects()->post('/telefonos',[
-        "cbxEliminar" => "on",
+        "accion" => "eliminar",
         "datoUsuario" => "74",
         "identificadorId" => "74",
         "identificadorTelefono" =>"tel del",
@@ -70,7 +70,7 @@ class TelefonosTest extends TestCase
     $response1->assertStatus(200);
 
     $response2 = $this->followingRedirects()->post('/telefonos',[
-        "cbxRecuperar" => "on",
+        "accion" => "recuperar",
         "datoUsuario" => "74",
         "identificadorId" => "74",
         "identificadorTelefono" =>"tel del",
