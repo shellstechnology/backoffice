@@ -17,18 +17,20 @@ class paqueteController extends Controller
     public function realizarAccion(Request $request)
     {
         $datosRequest = $request->all();
-        if ($request->has('cbxAgregar')) {
-            $this->agregar($datosRequest);
-        }
-        if ($request->has('cbxModificar')) {
-            $this->modificar($datosRequest);
-        }
-        if ($request->has('cbxEliminar')) {
-            $this->eliminar($datosRequest);
-        }
-        if ($request->has('cbxRecuperar')) {
-            $this->recuperar($datosRequest);
-        }
+        switch ($request->has('accion')) {
+            case 'agregar':
+                $this->verificarDatosAgregar($datosRequest);
+                break;
+            case 'modificar':
+                $this->verificarDatosModificar($datosRequest);
+                break;
+            case 'eliminar':
+                $this->eliminarPaquete($datosRequest);
+                break;
+            case 'recuperar':
+                $this->recuperarPaquete($datosRequest);
+                break;
+        };
         $this->cargarDatos();
         return redirect()->route('backoffice.paquete');
 
@@ -47,7 +49,7 @@ class paqueteController extends Controller
         $datoEstadoPaquete = Estados_p::withoutTrashed()->get();
         $estadoPaquete = [];
         foreach ($datoPaquete as $dato) {
-            $infoPaquete[] = $this->definirPaquete($dato);
+            $infoPaquete[] = $this->obtenerPaquete($dato);
         }
         foreach ($datoCaracteristica as $dato) {
             $descripcionCaracteristica[] = $dato['descripcion_caracteristica'];
@@ -55,8 +57,8 @@ class paqueteController extends Controller
         foreach($datoEstadoPaquete as $dato){
             $estadoPaquete[]=$dato['descripcion_estado_p'];
         }
-        $idLugaresEntrega = $this->definirIdsClase($datoLugarEntrega);
-        $idProductos = $this->definirIdsClase($datoProducto);
+        $idLugaresEntrega = $this->obtenerIdsClase($datoLugarEntrega);
+        $idProductos = $this->obtenerIdsClase($datoProducto);
         Session::put('descripcionCaracteristica', $descripcionCaracteristica);
         Session::put('idProductos', $idProductos);
         Session::put('idLugaresEntrega', $idLugaresEntrega);
@@ -65,7 +67,7 @@ class paqueteController extends Controller
         return redirect()->route('backoffice.paquete');
     }
 
-    public function agregar($datosRequest)
+    public function verificarDatosAgregar($datosRequest)
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
@@ -73,7 +75,7 @@ class paqueteController extends Controller
         }
         $this->crearPaquete($datosRequest);
     }
-    public function modificar($datosRequest)
+    public function verificarDatosModificar($datosRequest)
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
@@ -82,7 +84,7 @@ class paqueteController extends Controller
         $this->modificarPaquete($datosRequest);
 
     }
-    public function eliminar($datosRequest)
+    public function eliminarPaquete($datosRequest)
     {
         $id = $datosRequest['identificador'];
         $paquete = Paquetes::withoutTrashed()->where('id', $id)->first();
@@ -92,7 +94,7 @@ class paqueteController extends Controller
         }
     }
 
-    public function recuperar($datosRequest)
+    public function recuperarPaquete($datosRequest)
     {
         $id = $datosRequest['identificador'];
         $paquete = Paquetes::onlyTrashed()->where('id', $id)->first();
@@ -101,7 +103,7 @@ class paqueteController extends Controller
         }
     }
 
-    private function definirPaquete($paquete)
+    private function obtenerPaquete($paquete)
     {
         $lugarEntrega = Lugares_Entrega::withTrashed()->where('id', $paquete['id_lugar_entrega'])->first();
         $caracteristica = Caracteristicas::withTrashed()->where('id', $paquete['id_caracteristica_paquete'])->first();
@@ -130,7 +132,7 @@ class paqueteController extends Controller
         }
     }
 
-    private function definirIdsClase($datoClase)
+    private function obtenerIdsClase($datoClase)
     {
         $datoId = [];
         foreach ($datoClase as $dato) {

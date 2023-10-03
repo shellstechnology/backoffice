@@ -12,87 +12,101 @@ use App\Models\Modelos;
 use App\Models\Usuarios;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
-
 
 class camionesController extends Controller
 {
     public function realizarAccion(Request $request)
     {
         $datosRequest = $request->all();
-        if ($request->has('cbxAgregar')) {
-            $this->agregar($datosRequest);
+        
+        switch ($request->input('accion')) {
+            case 'agregar':
+                $this->verificarDatosAgregar($datosRequest);
+                break;
+            case 'modificar':
+                $this->verificarDatosModificar($datosRequest);
+                break;
+            case 'eliminar':
+                $this->eliminarCamion($datosRequest);
+                break;
+            case 'recuperar':
+                $this->recuperarCamion($datosRequest);
+                break;
         }
-        if ($request->has('cbxModificar')) {
-            $this->modificar($datosRequest);
-        }
-        if ($request->has('cbxEliminar')) {
-            $this->eliminar($datosRequest);
-        }
-        if ($request->has('cbxRecuperar')) {
-            $this->recuperar($datosRequest);
-        }
-        $this->cargarDatos();
+        $this->cargarDatos(); 
         return redirect()->route('backoffice.camiones');
     }
 
+  
     public function cargarDatos()
     {
-        $datosCamion = [];
-        $listaEstados = [];
-        $listaMarcasModelo = [];
-        $listaChoferes = [];
-        $camiones = Camiones::withTrashed()->get();
-        $estados = Estados_c::withoutTrashed()->get();
-        $marcasModelo = Marcas::withoutTrashed()->get();
-        $choferes = Choferes::withoutTrashed()->get();
-        foreach ($camiones as $camion) {
-            $datosCamion[] = $this->obtenerDatosCamion($camion);
+        try {
+            $datosCamion = [];
+            $listaEstados = [];
+            $listaMarcasModelo = [];
+            $listaChoferes = [];
+            $camiones = Camiones::withTrashed()->get();
+            $estados = Estados_c::withoutTrashed()->get();
+            $marcasModelo = Modelos::withoutTrashed()->get();
+            $choferes = Choferes::withoutTrashed()->get();
+            foreach ($camiones as $camion) {
+                $datosCamion[] = $this->obtenerDatosCamion($camion);
+            }
+            foreach ($estados as $estado) {
+                $listaEstados[] = $estado['descripcion_estado_c'];
+            }
+            foreach ($marcasModelo as $modeloMarca) {
+                $listaMarcasModelo[] = $this->obtenerModeloMarca($modeloMarca);
+            }
+            foreach ($choferes as $chofer) {
+                $listaChoferes[] = $this->obtenerChoferes($chofer);
+            }
+            Session::put('camiones', $datosCamion);
+            Session::put('listaEstado', $listaEstados);
+            Session::put('listaMarcaModelo', $listaMarcasModelo);
+            Session::put('listaChoferes', $listaChoferes);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error al cargar los datos';
+            Session::put('respuesta', $mensajeDeError);
         }
-        foreach ($estados as $estado) {
-            $listaEstados[] = $estado['descripcion_estado_c'];
-        }
-        foreach ($marcasModelo as $marcaModelo) {
-            $listaMarcasModelo[] = $this->obtenerMarcasModelo($marcaModelo);
-        }
-        foreach ($choferes as $chofer) {
-            $listaChoferes[] = $this->obtenerChoferes($chofer);
-        }
-        Session::put('camiones', $datosCamion);
-        Session::put('listaEstado', $listaEstados);
-        Session::put('listaMarcaModelo', $listaMarcasModelo);
-        Session::put('listaChoferes', $listaChoferes);
         return redirect()->route('backoffice.camiones');
     }
+
 
     private function obtenerDatosCamion($camion)
     {
-        $marca = Marcas::withTrashed()->where('id', $camion['id_marca_modelo'])->first();
-        $modelo = Modelos::withTrashed()->where('id', $marca['id_modelo'])->first();
-        $marcaModelo = ($marca['marca'] . ':' . $modelo['modelo']);
-        $idChofer = Chofer_Conduce_Camion::withTrashed()->where('matricula_camion', $camion['matricula'])->first();
-        $estado = Estados_c::withTrashed()->withTrashed()->where('id', $camion['id_estado_c'])->first();
-        $chofer = Usuarios::withTrashed()->where('id', $idChofer['id_chofer'])->first();
-        return ([
-            'Matricula' => $camion['matricula'],
-            'Marca y Modelo' => $marcaModelo,
-            'Estado' => $estado['descripcion_estado_c'],
-            'Chofer' => $chofer['nombre_de_usuario'],
-            'Volumen Maximo' => $camion['volumen_max_l'],
-            'Peso Maximo' => $camion['peso_max_kg'],
-            'created_at' => $camion['created_at'],
-            'updated_at' => $camion['updated_at'],
-            'deleted_at' => $camion['deleted_at']
-        ]);
+        try {
+            $modelo = Modelos::withTrashed()->where('id', $camion['id_modelo_marca'])->first();
+            $marca = Marcas::withTrashed()->where('id', $modelo['id_marca'])->first();
+            $marcaModelo = ($marca['marca'] . ':' . $modelo['modelo']);
+            $idChofer = Chofer_Conduce_Camion::withTrashed()->where('matricula_camion', $camion['matricula'])->first();
+            $estado = Estados_c::withTrashed()->withTrashed()->where('id', $camion['id_estado_c'])->first();
+            $chofer = Usuarios::withTrashed()->where('id', $idChofer['id_chofer'])->first();
+            return ([
+                'Matricula' => $camion['matricula'],
+                'Marca y Modelo' => $marcaModelo,
+                'Estado' => $estado['descripcion_estado_c'],
+                'Chofer' => $chofer['nombre_de_usuario'],
+                'Volumen Maximo' => $camion['volumen_max_l'],
+                'Peso Maximo' => $camion['peso_max_kg'],
+                'created_at' => $camion['created_at'],
+                'updated_at' => $camion['updated_at'],
+                'deleted_at' => $camion['deleted_at']
+            ]);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error Inesperado: no se pudo cargar los datos de uno de los camiones';
+            Session::put('respuesta', $mensajeDeError);
+        }
     }
 
-    private function obtenerMarcasModelo($marcaModelo)
+    private function obtenerModeloMarca($modeloMarca)
     {
-        $modelo = Modelos::withTrashed()->where('id', $marcaModelo['id_modelo'])->first();
-        return ($marcaModelo['marca'] . ':' . $modelo['modelo']);
+        $marca = Marcas::withTrashed()->where('id', $modeloMarca['id_marca'])->first();
+        return ($marca['marca']. ':'.$modeloMarca['modelo'] );
     }
+
 
     private function obtenerChoferes($chofer)
     {
@@ -100,134 +114,201 @@ class camionesController extends Controller
         return $usuario['nombre_de_usuario'];
     }
 
-    public function agregar($datosRequest)
+
+    public function verificarDatosAgregar($datosRequest)
     {
-        $validador = $this->validarDatos($datosRequest);
-        if ($validador->fails()) {
-            return;
+        try {
+            $validador = $this->validarDatos($datosRequest);
+            if ($validador->fails()) {
+                $errores = $validador->getMessageBag();
+                Session::put('respuesta', json_encode($errores->messages()));
+                return;
+            }
+            $this->agregarCamion($datosRequest);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error al verificar y agregar los datos';
+            Session::put('respuesta', $mensajeDeError);
         }
-        $this->crearCamion($datosRequest);
     }
 
+ 
     private function validarDatos($camion)
     {
-        $reglas = [
-            'Matricula' => 'required|string|max:10',
-            'Marca Modelo'=>'required|string|max:101',
-            'Chofer'=>'required|string|max:50',
-            'Estado'=>'required|string|max:100',
-            'Volumen' => 'required|numeric|min:0|max:99999',
-            'Peso' => 'required|numeric|min:0|max:99999',
-        ];
-        return Validator::make([
-            'Matricula' => $camion['matricula'],
-            'Marca Modelo'=>$camion['marcaModeloCamion'],
-            'Chofer'=>$camion['chofer'],
-            'Estado'=>$camion['estadoCamion'],
-            'Volumen' => $camion['volumen'],
-            'Peso' => $camion['peso'],
-        ], $reglas);
+            $reglas = [
+                'Matricula' => 'required|string|max:10',
+                'Modelo Marca' => 'required|string|max:101',
+                'Chofer' => 'required|string|max:50',
+                'Estado' => 'required|string|max:100',
+                'Volumen' => 'required|numeric|min:0|max:99999',
+                'Peso' => 'required|numeric|min:0|max:99999',
+            ];
+            $messages = [
+                'Matricula.required' => 'Es necesario ingresar una matrícula',
+                'Matricula.string' => 'La matrícula debe ser una cadena de texto',
+                'Matricula.max' => 'La matrícula no debe exceder los 10 caracteres',
+            
+                'Modelo Marca.required' => 'Es necesario ingresar la marca y modelo del camión',
+                'Modelo Marca.string' => 'La marca y modelo del camión deben ser una cadena de texto',
+                'Modelo Marca.max' => 'La marca y modelo del camión no deben exceder los 101 caracteres',
+            
+                'Chofer.required' => 'Es necesario ingresar el nombre del chofer',
+                'Chofer.string' => 'El nombre del chofer debe ser una cadena de texto',
+                'Chofer.max' => 'El nombre del chofer no debe exceder los 50 caracteres',
+            
+                'Estado.required' => 'Es necesario ingresar el estado del camión',
+                'Estado.string' => 'El estado del camión debe ser una cadena de texto',
+                'Estado.max' => 'El estado del camión no debe exceder los 100 caracteres',
+            
+                'Volumen.required' => 'Es necesario ingresar el volumen del camión',
+                'Volumen.numeric' => 'El volumen del camión debe ser un número',
+                'Volumen.min' => 'El volumen del camión no debe ser menor que 0',
+                'Volumen.max' => 'El volumen del camión no debe exceder los 99999',
+            
+                'Peso.required' => 'Es necesario ingresar el peso del camión',
+                'Peso.numeric' => 'El peso del camión debe ser un número',
+                'Peso.min' => 'El peso del camión no debe ser menor que 0',
+                'Peso.max' => 'El peso del camión no debe exceder los 99999',
+            ];
+            
+
+            return Validator::make([
+                'Matricula' => $camion['matricula'],
+                'Modelo Marca' => $camion['marcaModeloCamion'],
+                'Chofer' => $camion['chofer'],
+                'Estado' => $camion['estadoCamion'],
+                'Volumen' => $camion['volumen'],
+                'Peso' => $camion['peso'],
+            ], $reglas, $messages);
     }
 
-    private function crearCamion($camion)
+    private function agregarCamion($camion)
     {
-        $choferExistente=Chofer_Conduce_Camion::withoutTrashed()->where('matricula_camion',$camion['matricula'])->first();
-        if($choferExistente!=null){
-            return;
-        }
-        $nuevoCamion = new Camiones;
-        list($marca, $modelo) = explode(':', $camion['marcaModeloCamion']);
-        $idModelo = Modelos::withTrashed()->where('modelo', $modelo)->first();
-        $idMarca = Marcas::withTrashed()->where('marca', $marca)->where('id_modelo', $idModelo['id'])->first();
-        $idUsuario = Usuarios::withTrashed()->where('nombre_de_usuario', $camion['chofer'])->first();
-        $estado = Estados_c::withTrashed()->where('descripcion_estado_c', $camion['estadoCamion'])->first();
-        $nuevoCamion->matricula = $camion['matricula'];
-        $nuevoCamion->id_marca_modelo = $idMarca['id'];
-        $nuevoCamion->id_estado_c = $estado['id'];
-        $nuevoCamion->volumen_max_l = $camion['volumen'];
-        $nuevoCamion->peso_max_kg = $camion['peso'];
-        $nuevoCamion->save();
+        try {
+            $choferExistente = Chofer_Conduce_Camion::withoutTrashed()->where('matricula_camion', $camion['matricula'])->first();
+            if ($choferExistente != null) {
+                return;
+            }
+            $nuevoCamion = new Camiones;
+            list($marca, $modelo) = explode(':', $camion['marcaModeloCamion']);
+            $idModelo = Modelos::withTrashed()->where('modelo', $modelo)->first();
+            $idUsuario = Usuarios::withTrashed()->where('nombre_de_usuario', $camion['chofer'])->first();
+            $estado = Estados_c::withTrashed()->where('descripcion_estado_c', $camion['estadoCamion'])->first();
+            $nuevoCamion->matricula = $camion['matricula'];
+            $nuevoCamion->id_modelo_marca = $idModelo['id'];
+            $nuevoCamion->id_estado_c = $estado['id'];
+            $nuevoCamion->volumen_max_l = $camion['volumen'];
+            $nuevoCamion->peso_max_kg = $camion['peso'];
+            $nuevoCamion->save();
 
-        $choferCoduceCamion = new Chofer_Conduce_Camion;
-        $choferCoduceCamion->id_chofer = $idUsuario['id'];
-        $choferCoduceCamion->matricula_camion = $nuevoCamion->getKey();
-        $choferCoduceCamion->save();
+            $choferCoduceCamion = new Chofer_Conduce_Camion;
+            $choferCoduceCamion->id_chofer = $idUsuario['id'];
+            $choferCoduceCamion->matricula_camion = $nuevoCamion->getKey();
+            $choferCoduceCamion->save();
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error,no se pudo agregar el camion';
+            Session::put('respuesta', $mensajeDeError);
+        }
     }
 
-    public function modificar($datosRequest)
+
+    public function verificarDatosModificar($datosRequest)
     {
-        $validador = $this->validarDatos($datosRequest);
-        if ($validador->fails()) {
-           return;
+        try {
+            $validador = $this->validarDatos($datosRequest);
+            if ($validador->fails()) {
+                $errores = $validador->getMessageBag();
+                Session::put('respuesta', json_encode($errores->messages()));
+                return;
+            }
+            $this->modificarCamion($datosRequest);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error,no se pudieron validar los datos';
+            Session::put('respuesta', $mensajeDeError);
         }
-        $this->modificarCamion($datosRequest);
-
     }
 
+  
     private function modificarCamion($camion)
     {
-       
+        try {
+            list($marca, $modelo) = explode(':', $camion['marcaModeloCamion']);
+            $idModelo = Modelos::withTrashed()->where('modelo', $modelo)->first();
+            $estado = Estados_c::withTrashed()->where('descripcion_estado_c', $camion['estadoCamion'])->first();
+            if ($camion['matricula'] != $camion['identificador']) {
+                $this->agregarNuevoCamion($camion, $idModelo, $estado);
+            }
+            Camiones::withTrashed()->where('matricula', $camion['identificador'])->update([
+                'id_modelo_marca' => $idModelo['id'],
+                'id_estado_c' => $estado['id'],
+                'volumen_max_l' => $camion['volumen'],
+                'peso_max_kg' => $camion['peso']
 
-        list($marca, $modelo) = explode(':', $camion['marcaModeloCamion']);
-        $idModelo = Modelos::withTrashed()->where('modelo', $modelo)->first();
-        $idMarca = Marcas::withTrashed()->where('marca', $marca)->where('id_modelo', $idModelo['id'])->first();
-        $estado = Estados_c::withTrashed()->where('descripcion_estado_c', $camion['estadoCamion'])->first();
-        if($camion['matricula']!=$camion['identificador']){
-            $this->crearNuevoCamion($camion,$idMarca,$estado);
-        }
-        Camiones::withTrashed()->where('matricula',$camion['identificador'])->update([
-            'id_marca_modelo'=>$idMarca['id'],
-            'id_estado_c'=>$estado['id'],
-            'volumen_max_l'=>$camion['volumen'],
-            'peso_max_kg'=>$camion['peso']
-        
-        ]);
-        Camion_Lleva_Lote::withTrashed()->where('matricula', $camion['identificador'])->update([
-            'matricula' => $camion['matricula']
-        ]);
-        Chofer_Conduce_Camion::withTrashed()->where('matricula_camion', $camion['identificador'])->update([
-            'matricula_camion' => $camion['matricula']
-        ]);
-        $viejoCamion = Camiones::withTrashed()->where('matricula', $camion['identificador'])->first();
-        if (!is_null($viejoCamion['created_at'])) {
-            Camiones::withTrashed()->where('matricula', $camion['matricula'])->update([
-                'created_at' => $viejoCamion['created_at']
             ]);
+            Camion_Lleva_Lote::withTrashed()->where('matricula', $camion['identificador'])->update([
+                'matricula' => $camion['matricula']
+            ]);
+            Chofer_Conduce_Camion::withTrashed()->where('matricula_camion', $camion['identificador'])->update([
+                'matricula_camion' => $camion['matricula']
+            ]);
+            $viejoCamion = Camiones::withTrashed()->where('matricula', $camion['identificador'])->first();
+            if (!is_null($viejoCamion['created_at'])) {
+                Camiones::withTrashed()->where('matricula', $camion['matricula'])->update([
+                    'created_at' => $viejoCamion['created_at']
+                ]);
+            }
+            if ($camion['matricula'] != $camion['identificador'])
+                Camiones::withTrashed()->where('matricula', $camion['identificador'])->forceDelete();
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error,no se pudo modificar el camion';
+            Session::put('respuesta', $mensajeDeError);
         }
-        if($camion['matricula']!=$camion['identificador'])
-        Camiones::withTrashed()->where('matricula', $camion['identificador'])->forceDelete();
-    }
-
-    private function crearNuevoCamion($camion,$idMarca,$estado)
-    {
-        $nuevoCamion = new Camiones;
-        $nuevoCamion->matricula = $camion['matricula'];
-        $nuevoCamion->id_marca_modelo = $idMarca['id'];
-        $nuevoCamion->id_estado_c = $estado['id'];
-        $nuevoCamion->volumen_max_l = $camion['volumen'];
-        $nuevoCamion->peso_max_kg = $camion['peso'];
-        $nuevoCamion->save();
     }
 
 
-    public function eliminar($datosRequest)
+    private function agregarNuevoCamion($camion, $idModelo, $estado)
     {
-        $id = $datosRequest['identificador'];
-        $camiones = Camiones::withTrashed()->find($id);
-        if ($camiones) {
-            Chofer_Conduce_Camion::withTrashed()->where('matricula_camion', $camiones['matricula'])->delete();
-            $camiones->delete();
+        try {
+            $nuevoCamion = new Camiones;
+            $nuevoCamion->matricula = $camion['matricula'];
+            $nuevoCamion->id_modelo_marca = $idModelo['id'];
+            $nuevoCamion->id_estado_c = $estado['id'];
+            $nuevoCamion->volumen_max_l = $camion['volumen'];
+            $nuevoCamion->peso_max_kg = $camion['peso'];
+            $nuevoCamion->save();
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error,no se pudo agregar el camion';
+            Session::put('respuesta', $mensajeDeError);
         }
-
     }
 
-    public function recuperar($datosRequest)
+    public function eliminarCamion($datosRequest)
     {
-        $id = $datosRequest['identificador'];
-        $camiones = Camiones::onlyTrashed()->find($id);
-        if ($camiones) {
-            $camiones->restore();
-            Chofer_Conduce_Camion::onlyTrashed()->where('matricula_camion', $camiones['matricula'])->restore();
+        try {
+            $id = $datosRequest['identificador'];
+            $camiones = Camiones::withTrashed()->find($id);
+            if ($camiones) {
+                Chofer_Conduce_Camion::withTrashed()->where('matricula_camion', $camiones['matricula'])->delete();
+                $camiones->delete();
+            }
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error,no se pudo eliminar el camion';
+            Session::put('respuesta', $mensajeDeError);
+        }
+    }
+
+
+    public function recuperarCamion($datosRequest)
+    {
+        try {
+            $id = $datosRequest['identificador'];
+            $camiones = Camiones::onlyTrashed()->find($id);
+            if ($camiones) {
+                $camiones->restore();
+                Chofer_Conduce_Camion::onlyTrashed()->where('matricula_camion', $camiones['matricula'])->restore();
+            }
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error,no se pudo recuperar el camion';
+            Session::put('respuesta', $mensajeDeError);
         }
     }
 }

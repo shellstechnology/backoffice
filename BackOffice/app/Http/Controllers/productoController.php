@@ -12,20 +12,22 @@ use Illuminate\Support\Facades\Validator;
 class productoController extends Controller
 {
     public function realizarAccion(Request $request)
-    {
+    {        
         $datosRequest = $request->all();
-        if ($request->has('cbxAgregar')) {
-            $this->agregar($datosRequest);
-        }
-        if ($request->has('cbxModificar')) {
-            $this->modificar($datosRequest);
-        }
-        if ($request->has('cbxEliminar')) {
-            $this->eliminar($datosRequest);
-        }
-        if ($request->has('cbxRecuperar')) {
-            $this->recuperar($datosRequest);
-        }
+        switch ($request->has('accion')) {
+            case 'agregar':
+                $this->verificarDatosAgregar($datosRequest);
+                break;
+            case 'modificar':
+                $this->verificarDatosModificar($datosRequest);
+                break;
+            case 'eliminar':
+                $this->eliminarProducto($datosRequest);
+                break;
+            case 'recuperar':
+                $this->recuperarProducto($datosRequest);
+                break;
+        };
         $this->cargarDatos();
         return redirect()->route('backoffice.producto');
     }
@@ -36,16 +38,16 @@ class productoController extends Controller
         $infoMonedas = [];
         if ($datoProducto) {
             foreach ($datoProducto as $dato) {
-                $infoProducto[] = $this->definirProducto($dato);
+                $infoProducto[] = $this->obtenerProducto($dato);
             }
         }
-        $infoMonedas = $this->definirMonedas();
+        $infoMonedas = $this->obtenerMonedas();
         Session::put('monedas', $infoMonedas);
         Session::put('producto', $infoProducto);
         return redirect()->route('backoffice.producto');
     }
 
-    public function agregar($datosRequest)
+    public function verificarDatosAgregar($datosRequest)
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
@@ -54,7 +56,7 @@ class productoController extends Controller
         $this->crearProducto($datosRequest);
     }
 
-    public function modificar($datosRequest)
+    public function verificarDatosModificar($datosRequest)
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
@@ -63,7 +65,7 @@ class productoController extends Controller
         $this->modificarProducto($datosRequest);
     }
 
-    public function eliminar($datosRequest)
+    public function eliminarProducto($datosRequest)
     {
         $producto = Producto::withoutTrashed()->where('id', $datosRequest['identificador'])->first();
         if ($producto) {
@@ -71,7 +73,7 @@ class productoController extends Controller
         }
     }
 
-    public function recuperar($datosRequest)
+    public function recuperarProducto($datosRequest)
     {
         $producto = Producto::onlyTrashed()->where('id', $datosRequest['identificador'])->first();
         if ($producto) {
@@ -79,7 +81,7 @@ class productoController extends Controller
         }
     }
 
-    private function definirProducto($producto)
+    private function obtenerProducto($producto)
     {
         $moneda = Moneda::withTrashed()->where('id', $producto['id_moneda'])->first();
         return ([
@@ -95,7 +97,7 @@ class productoController extends Controller
 
     }
 
-    private function definirMonedas()
+    private function obtenerMonedas()
     {
         $infoMonedas = [];
         $monedas = moneda::withTrashed()->get();

@@ -12,19 +12,22 @@ class telefonosUsuarioController extends Controller
 {
     public function realizarAccion(Request $request)
     {
+
         $datosRequest = $request->all();
-        if ($request->has('cbxAgregar')) {
-            $this->agregar($datosRequest);
-        }
-        if ($request->has('cbxModificar')) {
-            $this->modificar($datosRequest);
-        }
-        if ($request->has('cbxEliminar')) {
-            $this->eliminar($datosRequest);
-        }
-        if ($request->has('cbxRecuperar')) {
-            $this->recuperar($datosRequest);
-        }
+        switch ($request->has('accion')) {
+            case 'agregar':
+                $this->verificarDatosAgregar($datosRequest);
+                break;
+            case 'modificar':
+                $this->verificarDatosModificar($datosRequest);
+                break;
+            case 'eliminar':
+                $this->eliminarTelefonosUsuario($datosRequest);
+                break;
+            case 'recuperar':
+                $this->recuperarTelefonosUsuario($datosRequest);
+                break;
+        };
         $this->cargarDatos();
         return redirect()->route('usuarios.telefonosUsuario');
     }
@@ -36,7 +39,7 @@ class telefonosUsuarioController extends Controller
         foreach ($listaTelefonos as $datoTelefono) {
             $usuario = Usuarios::withTrashed()->where('id', $datoTelefono['id_usuarios'])->get();
             foreach ($usuario as $datoUsuario) {
-                $infoTelefonos[] = $this->definirDatosTelefonos($datoTelefono, $datoUsuario);
+                $infoTelefonos[] = $this->obtenerDatosTelefonos($datoTelefono, $datoUsuario);
             }
         }
         $infoUsuarios = [];
@@ -50,7 +53,7 @@ class telefonosUsuarioController extends Controller
         return redirect()->route('usuarios.telefonosUsuario');
     }
 
-    private function definirDatosTelefonos($datoTelefono, $datoUsuario)
+    private function obtenerDatosTelefonos($datoTelefono, $datoUsuario)
     {
         return ([
             'Id del Usuario' => $datoUsuario['id'],
@@ -67,7 +70,7 @@ class telefonosUsuarioController extends Controller
         return $usuario['id'];
     }
 
-    public function agregar($datosRequest)
+    public function verificarDatosAgregar($datosRequest)
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
@@ -96,7 +99,7 @@ class telefonosUsuarioController extends Controller
         $telefono->save();
     }
 
-    public function modificar($datosRequest)
+    public function verificarDatosModificar($datosRequest)
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
@@ -115,7 +118,7 @@ class telefonosUsuarioController extends Controller
             ]);
     }
 
-    public function eliminar($datosRequest)
+    public function eliminarTelefonosUsuario($datosRequest)
     {
         $telefono = Telefonos_Usuarios::withoutTrashed()->where('telefono', $datosRequest['identificadorTelefono'])->first();
         if ($telefono) {
@@ -124,7 +127,7 @@ class telefonosUsuarioController extends Controller
 
     }
 
-    public function recuperar($datosRequest)
+    public function recuperarTelefonosUsuario($datosRequest)
     {
         $telefono = Telefonos_Usuarios::onlyTrashed()->where('telefono', $datosRequest['identificadorTelefono'])->first();
         if ($telefono) {

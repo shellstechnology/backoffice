@@ -16,18 +16,21 @@ class paqueteContieneLoteController extends Controller
     public function realizarAccion(Request $request)
     {
         $datosRequest = $request->all();
-        if ($request->has('cbxAgregar')) {
-            $this->agregar($datosRequest);
-        }
-        if ($request->has('cbxModificar')) {
-            $this->modificar($datosRequest);
-        }
-        if ($request->has('cbxEliminar')) {
-            $this->eliminar($datosRequest);
-        }
-        if ($request->has('cbxRecuperar')) {
-            $this->recuperar($datosRequest);
-        }
+
+        switch ($request->has('accion')) {
+            case 'agregar':
+                $this->verificarDatosAgregar($datosRequest);
+                break;
+            case 'modificar':
+                $this->verificarDatosModificar($datosRequest);
+                break;
+            case 'eliminar':
+                $this->eliminarPaqueteContieneLote($datosRequest);
+                break;
+            case 'recuperar':
+                $this->recuperarPaqueteContieneLote($datosRequest);
+                break;
+        };
         $this->cargarDatos();
         return redirect()->route('lote.paqueteContieneLote');
     }
@@ -39,7 +42,7 @@ class paqueteContieneLoteController extends Controller
         $idPaquete = [];
         $idLote = [];
         foreach ($datosPaqueteContieneLote as $paqueteContieneLote) {
-            $infoPaqueteContieneLote[] = $this->definirPaquete($paqueteContieneLote);
+            $infoPaqueteContieneLote[] = $this->obtenerPaquete($paqueteContieneLote);
         }
         $lugarAlmacen = Almacenes::withoutTrashed()->get();
         foreach ($lugarAlmacen as $datoLugar) {
@@ -60,7 +63,7 @@ class paqueteContieneLoteController extends Controller
         return redirect()->route('lote.paqueteContieneLote');
     }
 
-    public function agregar($datosRequest)
+    public function verificarDatosAgregar($datosRequest)
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
@@ -86,7 +89,7 @@ class paqueteContieneLoteController extends Controller
         ], $reglas);
     }
 
-    public function modificar($datosRequest)
+    public function verificarDatosModificar($datosRequest)
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
@@ -95,7 +98,7 @@ class paqueteContieneLoteController extends Controller
         $this->modificarValores($datosRequest);
     }
 
-    public function eliminar($datosRequest)
+    public function eliminarPaqueteContieneLote($datosRequest)
     {
         $id = $datosRequest['identificador'];
         $paqueteAntiguo = Paquete_Contiene_Lote::withoutTrashed()->where('id_paquete', $id)->first();
@@ -104,7 +107,7 @@ class paqueteContieneLoteController extends Controller
         }
     }
 
-    public function recuperar($datosRequest)
+    public function recuperarPaqueteContieneLote($datosRequest)
     {
         $id = $datosRequest['identificador'];
         $paqueteContieneLote = Paquete_Contiene_Lote::onlyTrashed()->where('id_paquete', $id)->first();
@@ -114,7 +117,7 @@ class paqueteContieneLoteController extends Controller
         }
     }
 
-    private function definirPaquete($paqueteContieneLote)
+    private function obtenerPaquete($paqueteContieneLote)
     {
         $datosPaquete = Paquetes::withTrashed()->where('id', $paqueteContieneLote['id_paquete'])->first();
         $infoPaquete = [
