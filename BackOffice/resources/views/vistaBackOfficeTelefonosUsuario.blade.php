@@ -8,7 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{asset('js/funciones.js')}}"> </script>
 </head>
-@include('header')
+
   <body>
   <div class="barraDeNavegacion">
     <a href="{{ route('backoffice') }}" class="item">Menu Principal</a>
@@ -53,7 +53,7 @@
           <x-select-usuario-component/>
          </div>
        <div class="campo">
-           <input type="text" id="telefono" name="telefono" onpaste="return false" required></input>
+           <input type="text" id="telefono" name="telefono" onpaste="return false"  ></input>
            <label for="latitud" >Numero de telefono</label>
         </div>
           <div class="contenedorDatos">
@@ -71,5 +71,5 @@
    </div>
 </div>
   </body>
-  @include('footer')
+  
 </html>

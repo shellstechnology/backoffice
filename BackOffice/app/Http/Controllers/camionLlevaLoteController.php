@@ -13,28 +13,23 @@ class camionLlevaLoteController extends Controller
 {
     public function realizarAccion(Request $request)
     {
-        try {
-            $datosRequest = $request->all();
-            switch ($request->has('accion')) {
-                case 'agregar':
-                    $this->verificarDatosAgregar($datosRequest);
-                    break;
-                case 'modificar':
-                    $this->verificarDatosModificar($datosRequest);
-                    break;
-                case 'eliminar':
-                    $this->eliminarCamionLlevaLote($datosRequest);
-                    break;
-                case 'recuperar':
-                    $this->recuperarCamionLlevaLote($datosRequest);
-                    break;
-            }
-            $this->cargarDatos();
-            return redirect()->route('camion.camionLlevaLote');
-        } catch (\Exception $e) {
-            $mensajeDeError = 'Error: no se pudo realizar la acción';
-            Session::put('respuesta', $mensajeDeError);
+        $datosRequest = $request->all();
+        switch ($request->input('accion')) {
+            case 'agregar':
+                $this->verificarDatosAgregar($datosRequest);
+                break;
+            case 'modificar':
+                $this->verificarDatosModificar($datosRequest);
+                break;
+            case 'eliminar':
+                $this->eliminarCamionLlevaLote($datosRequest);
+                break;
+            case 'recuperar':
+                $this->recuperarCamionLlevaLote($datosRequest);
+                break;
         }
+        $this->cargarDatos();
+        return redirect()->route('camion.camionLlevaLote');
     }
 
     public function cargarDatos()
@@ -58,27 +53,29 @@ class camionLlevaLoteController extends Controller
             Session::put('matriculaCamiones', $matriculaCamion);
             Session::put('idLotes', $idLote);
             Session::put('camionLlevaLote', $infoCamionLlevaLote);
-            return redirect()->route('camion.camionLlevaLote');
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: no se pudieron cargar los datos';
-            Session::put('respuesta', $mensajeDeError);
+            Session::put('respuesta', $e->getMessage());
         }
+        return redirect()->route('camion.camionLlevaLote');
     }
 
     public function verificarDatosAgregar($datosRequest)
     {
+        $validador = $this->validarDatos($datosRequest);
+        if ($validador->fails()) {
+            $errores = $validador->getMessageBag();
+            $patron = '"';
+            $resultado = str_replace($patron, '', json_encode($errores->messages()));
+            Session::put('respuesta', $resultado);
+            return;
+        }
         try {
-            $validador = $this->validarDatos($datosRequest);
-            if ($validador->fails()) {
-                return;
-            }
             $camionLlevaLoteExistente = Camion_Lleva_Lote::where('id_lote', $datosRequest['idLote'])->first();
             if (!$camionLlevaLoteExistente) {
                 $this->crearCamionLlevaLote($datosRequest);
             }
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: no se pudieron verificar los datos para agregar';
-            Session::put('respuesta', $mensajeDeError);
+            Session::put('respuesta', $e->getMessage());
         }
     }
 
@@ -88,23 +85,34 @@ class camionLlevaLoteController extends Controller
             'Id Lote' => 'required|integer',
             'Matricula' => 'required|string|max:10',
         ];
+        $messages = [
+            'Id Lote.required' => 'Es necesario ingresar el ID del lote',
+            'Id Lote.integer' => 'El ID del lote debe ser un número entero',
+            'Matricula.required' => 'Es necesario ingresar la matrícula del camión',
+            'Matricula.string' => 'La matrícula del camión debe ser una cadena de texto',
+            'Matricula.max' => 'La matrícula del camión no debe exceder los 10 caracteres',
+        ];
+
         return Validator::make([
             'Id Lote' => $camionLlevaLote['idLote'],
             'Matricula' => $camionLlevaLote['idCamion'],
-        ], $reglas);
+        ], $reglas, $messages);
     }
 
     public function verificarDatosModificar($datosRequest)
     {
+        $validador = $this->validarDatos($datosRequest);
+        if ($validador->fails()) {
+            $errores = $validador->getMessageBag();
+            $patron = '"';
+            $resultado = str_replace($patron, '', json_encode($errores->messages()));
+            Session::put('respuesta', $resultado);
+            return;
+        }
         try {
-            $validador = $this->validarDatos($datosRequest);
-            if ($validador->fails()) {
-                return;
-            }
             $this->modificarCamionLlevaLote($datosRequest);
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: no se pudieron verificar los datos para modificar';
-            Session::put('respuesta', $mensajeDeError);
+            Session::put('respuesta', $e->getMessage());
         }
     }
 
@@ -117,8 +125,7 @@ class camionLlevaLoteController extends Controller
                 $camionLlevaLoteAntiguo->delete();
             }
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: no se pudo eliminar el camión que lleva el lote';
-            Session::put('respuesta', $mensajeDeError);
+            Session::put('respuesta', $e->getMessage());
         }
     }
 
@@ -131,8 +138,7 @@ class camionLlevaLoteController extends Controller
                 $camionLlevaLote->restore();
             }
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: no se pudo recuperar el camión que lleva el lote';
-            Session::put('respuesta', $mensajeDeError);
+            Session::put('respuesta', $e->getMessage());
         }
     }
 
@@ -150,12 +156,20 @@ class camionLlevaLoteController extends Controller
 
     private function crearCamionLlevaLote($camionLlevaLote)
     {
-        $id = $camionLlevaLote['idLote'];
-        $matricula = $camionLlevaLote['idCamion'];
-        $camionLlevaLote = new Camion_Lleva_Lote;
-        $camionLlevaLote->id_lote = $id;
-        $camionLlevaLote->matricula = $matricula;
-        $camionLlevaLote->save();
+        try {
+            $id = $camionLlevaLote['idLote'];
+            $matricula = $camionLlevaLote['idCamion'];
+            try {
+                $camionLlevaLote = new Camion_Lleva_Lote;
+                $camionLlevaLote->id_lote = $id;
+                $camionLlevaLote->matricula = $matricula;
+                $camionLlevaLote->save();
+            } catch (\Exception $e) {
+                Session::put('respuesta', $e->getMessage());
+            }
+        } catch (\Exception $e) {
+            Session::put('respuesta', $e->getMessage());
+        }
     }
 
     private function modificarCamionLlevaLote($camionLlevaLote)
@@ -166,8 +180,7 @@ class camionLlevaLoteController extends Controller
                 'matricula' => $camionLlevaLote['idCamion']
             ]);
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: no se pudo modificar el camión que lleva el lote';
-            Session::put('respuesta', $mensajeDeError);
+            Session::put('respuesta', $e->getMessage());
         }
     }
 }

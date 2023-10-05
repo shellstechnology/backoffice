@@ -9,6 +9,7 @@ use App\Models\Administradores;
 use App\Models\Almaceneros;
 use App\Models\Choferes;
 use App\Models\Clientes;
+use App\Models\Telefonos_Usuarios;
 use App\Models\Usuarios;
 use App\Models\Mail_Usuarios;
 
@@ -20,7 +21,7 @@ class UsuariosTest extends TestCase
 
         $response = $this->followingRedirects()->post('/usuarios',
         [
-            "cbxAgregar" => "on",
+            "accion" => "agregar",
             "identificador" => "444",
             "nombre" => "multiusos",
             "contrasenia" =>"4",
@@ -51,7 +52,7 @@ class UsuariosTest extends TestCase
     
         $response = $this->followingRedirects()->post('/usuarios',
         [
-            "cbxModificar" => "on",
+            "accion" => "modificar",
             "identificador" => "42",
             "nombre" => "usuario a modificar",
             "contrasenia" =>"bb",
@@ -74,7 +75,7 @@ class UsuariosTest extends TestCase
        
        public function test_EliminarUnUsuario(){
         $response = $this->followingRedirects()->post('/usuarios',[
-            "cbxEliminar" => "on",
+            "accion" => "eliminar",
             "identificador" => "74",
             "nombre" => "usuario a eliminar",
             "contrasenia" =>"cc",
@@ -90,7 +91,7 @@ class UsuariosTest extends TestCase
 
        public function test_RecuperarUnUsuario(){
         $response1 = $this->followingRedirects()->post('/usuarios',[
-            "cbxEliminar" => "on",
+            "accion" => "eliminar",
             "identificador" => "74",
             "nombre" => "usuario a eliminar",
             "contrasenia" =>"cc",
@@ -103,7 +104,7 @@ class UsuariosTest extends TestCase
         $response1->assertStatus(200);
     
         $response2 = $this->followingRedirects()->post('/usuarios',[
-            "cbxRecuperar" => "on",
+            "accion" => "recuperar",
             "identificador" => "74",
             "nombre" => "usuario a eliminar",
             "contrasenia" =>"cc",

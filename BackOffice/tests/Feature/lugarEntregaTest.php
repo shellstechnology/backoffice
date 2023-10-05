@@ -14,7 +14,7 @@ class lugarEntregaTest extends TestCase
  
      $response = $this->followingRedirects()->post('/destinos',
      [
-         "cbxAgregar" => "on",
+        "accion" => "agregar",
          "identificador" => "6",
          "direccion" => "destino agregado",
          "latitud" => "40",
@@ -32,7 +32,7 @@ class lugarEntregaTest extends TestCase
 
         $response = $this->followingRedirects()->post('/destinos',
         [
-            "cbxModificar" => "on",
+            "accion" => "modificar",
             "identificador" => "4",
             "direccion" => "almacen 42 modificar",
             "latitud" => "42",
@@ -47,7 +47,7 @@ class lugarEntregaTest extends TestCase
        }
        public function test_EliminarUnLugarDeEntrega(){
         $response = $this->followingRedirects()->post('/destinos',[
-            "cbxEliminar" => "on",
+            "accion" => "eliminar",
             "identificador" => "5",
             "direccion" => "almacen 74 eliminar",
             "latitud" => "74",
@@ -60,7 +60,7 @@ class lugarEntregaTest extends TestCase
 
        public function test_RecuprarUnLugarDeEntrega(){
         $response1 = $this->followingRedirects()->post('/destinos',[
-            "cbxEliminar" => "on",
+            "accion" => "eliminar",
             "identificador" => "5",
             "direccion" => "almacen 74 eliminar",
             "latitud" => "74",
@@ -69,7 +69,7 @@ class lugarEntregaTest extends TestCase
         $response1->assertStatus(200);
     
         $response2 = $this->followingRedirects()->post('/destinos',[
-            "cbxRecuperar" => "on",
+            "accion" => "recuperar",
             "identificador" => "5",
             "direccion" => "almacen 74 eliminar",
             "latitud" => "74",

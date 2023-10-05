@@ -26,8 +26,7 @@ class almacenController extends Controller
                 Session::put('idLugaresEntrega', $idLugaresEntrega);
                 Session::put('almacenes', $datosAlmacenes);
             } catch (\Exception $e) {
-                $mensajeDeError = 'Error,no se pudieron cargar los datos';
-                Session::put('respuesta', $mensajeDeError);
+                Session::put('respuesta', $e->getMessage());
             }
             return redirect()->route('backoffice.almacen');
         }
@@ -60,13 +59,15 @@ class almacenController extends Controller
                 $validador = $this->validarDatos($datosRequest);
                 if ($validador->fails()) {
                     $errores = $validador->getMessageBag();
-                    Session::put('respuesta', json_encode($errores->messages()));
+                    $patron = '"';
+                    $resultado = str_replace($patron, '', json_encode($errores->messages()));
+                    Session::put('respuesta', $resultado);
                     return;
                 }
                 $this->crearAlmacen($datosRequest);
+
             } catch (\Exception $e) {
-                $mensajeDeError = 'Error,no se pudieron validar los datos';
-                Session::put('respuesta', $mensajeDeError);
+                Session::put('respuesta', $e->getMessage());
             }
         }
     }
@@ -80,8 +81,7 @@ class almacenController extends Controller
                 }
                 return $datoId;
             } catch (\Exception $e) {
-                $mensajeDeError = 'Error,no se pudieron cargar los datos:No se pudo obtener los datos de un lugar entrega ';
-                Session::put('respuesta', $mensajeDeError);
+                Session::put('respuesta', $e->getMessage());
             }
         }
     }
@@ -91,6 +91,10 @@ class almacenController extends Controller
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
+            $errores = $validador->getMessageBag();
+            $patron = '"';
+            $resultado = str_replace($patron, '', json_encode($errores->messages()));
+            Session::put('respuesta', $resultado);
             return;
         }
         $this->modificarAlmacen($datosRequest);
@@ -100,16 +104,15 @@ class almacenController extends Controller
     public function eliminarAlmacen($datosRequest)
     { {
             try {
-                $id = $datosRequest['identifiddcador'];
+                $id = $datosRequest['identificador'];
                 $almacen = Almacenes::withoutTrashed()->find($id);
                 if ($almacen) {
                     $almacen->delete();
                 }
                 $mensajeConfirmacion = 'Almacen eliminado exitosamente';
                 Session::put('respuesta', $mensajeConfirmacion);
-            } catch (\Exception) {
-                $mensajeDeError = 'Error,no se pudo eliminar el almacen';
-                Session::put('respuesta', $mensajeDeError);
+            } catch (\Exception $e) {
+                Session::put('respuesta', $e->getMessage());
             }
         }
     }
@@ -126,8 +129,7 @@ class almacenController extends Controller
                 Session::put('respuesta', $mensajeConfirmacion);
 
             } catch (\Exception $e) {
-                $mensajeDeError = 'Error:no se pudo restaurar el almacen';
-                Session::put('respuesta', $mensajeDeError);
+                Session::put('respuesta', $e);
             }
         }
     }
@@ -146,31 +148,26 @@ class almacenController extends Controller
                     'updated_at' => $almacen['updated_at'],
                     'deleted_at' => $almacen['deleted_at'],
                 ];
-            } catch (\Exception) {
-                $mensajeDeError = 'Error: No se pudieron cargar los datos del producto ' . $almacen['id'];
-                Session::put('respuesta', $mensajeDeError);
+            } catch (\Exception $e) {
+                Session::put('respuesta', $e->getMessage());
             }
         }
     }
 
     private function validarDatos($almacen)
-    { {
-            try {
-                $reglas = [
-                    'lugar' => 'required|numeric',
-                ];
-                $messages = [
-                    'lugar.required' => 'Es necesario que ingreses el Id de un Lugar',
-                    'lugar.numeric' => 'El Id del Lugar debe ser un Numero'
-                ];
-                return Validator::make([
-                    'lugar' => $almacen['idLugarEntrega'],
-                ], $reglas, $messages);
-            } catch (\Exception $e) {
-                $mensajeDeError = 'Algo salio mal al intentar validar los datos';
-                Session::put('respuestaDetallada', $mensajeDeError);
-            }
-        }
+    {
+        $reglas = [
+            'lugar' => 'required|numeric',
+        ];
+        $messages = [
+            'lugar.required' => 'Es necesario que ingreses el Id de un Lugar',
+            'lugar.numeric' => 'El Id del Lugar debe ser un Numero'
+        ];
+        return Validator::make([
+            'lugar' => $almacen['idLugarEntrega'],
+        ], $reglas, $messages);
+
+
     }
 
     private function crearAlmacen($almacen)
@@ -182,8 +179,7 @@ class almacenController extends Controller
                 $mensajeConfirmacion = 'Almacen creado exitosamente';
                 Session::put('respuesta', $mensajeConfirmacion);
             } catch (\Exception $e) {
-                $mensajeDeError = 'Error:no se pudo crear el almacen';
-                Session::put('respuesta', $mensajeDeError);
+                Session::put('respuesta', $e->getMessage());
             }
         }
     }
@@ -197,8 +193,7 @@ class almacenController extends Controller
                 $mensajeConfirmacion = 'Almacen modificado exitosamente';
                 Session::put('respuesta', $mensajeConfirmacion);
             } catch (\Exception $e) {
-                $mensajeDeError = 'Error:no se pudo modificar el almacen';
-                Session::put('respuesta', $mensajeDeError);
+                Session::put('respuesta', $e->getMessage());
             }
         }
     }

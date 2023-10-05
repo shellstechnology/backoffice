@@ -14,7 +14,7 @@ class telefonosUsuarioController extends Controller
     {
 
         $datosRequest = $request->all();
-        switch ($request->has('accion')) {
+        switch ($request->input('accion')) {
             case 'agregar':
                 $this->verificarDatosAgregar($datosRequest);
                 break;
@@ -27,56 +27,77 @@ class telefonosUsuarioController extends Controller
             case 'recuperar':
                 $this->recuperarTelefonosUsuario($datosRequest);
                 break;
-        };
+        }
+        ;
         $this->cargarDatos();
         return redirect()->route('usuarios.telefonosUsuario');
     }
 
     public function cargarDatos()
     {
-        $infoTelefonos = [];
-        $listaTelefonos = Telefonos_Usuarios::withTrashed()->get();
-        foreach ($listaTelefonos as $datoTelefono) {
-            $usuario = Usuarios::withTrashed()->where('id', $datoTelefono['id_usuarios'])->get();
-            foreach ($usuario as $datoUsuario) {
-                $infoTelefonos[] = $this->obtenerDatosTelefonos($datoTelefono, $datoUsuario);
+        try {
+            $infoTelefonos = [];
+            $listaTelefonos = Telefonos_Usuarios::withTrashed()->get();
+            foreach ($listaTelefonos as $datoTelefono) {
+                $usuario = Usuarios::withTrashed()->where('id', $datoTelefono['id_usuarios'])->get();
+                foreach ($usuario as $datoUsuario) {
+                    $infoTelefonos[] = $this->obtenerDatosTelefonos($datoTelefono, $datoUsuario);
+                }
             }
-        }
-        $infoUsuarios = [];
-        $listaUsuarios = Usuarios::withoutTrashed()->get();
-        foreach ($listaUsuarios as $usuario) {
-            $infoUsuarios[] = $this->obtenerDatosUsuario($usuario);
+            $infoUsuarios = [];
+            $listaUsuarios = Usuarios::withoutTrashed()->get();
+            foreach ($listaUsuarios as $usuario) {
+                $infoUsuarios[] = $this->obtenerDatosUsuario($usuario);
 
+            }
+            Session::put('idUsuarios', $infoUsuarios);
+            Session::put('telefonosUsuario', $infoTelefonos);
+            return redirect()->route('usuarios.telefonosUsuario');
+        } catch (\Exception $e) {
+            Session::put('respuesta', $e->getMessage());
         }
-        Session::put('idUsuarios', $infoUsuarios);
-        Session::put('telefonosUsuario', $infoTelefonos);
-        return redirect()->route('usuarios.telefonosUsuario');
     }
 
     private function obtenerDatosTelefonos($datoTelefono, $datoUsuario)
     {
-        return ([
-            'Id del Usuario' => $datoUsuario['id'],
-            'Nombre de Usuario' => $datoUsuario['nombre_de_usuario'],
-            'Telefono' => $datoTelefono['telefono'],
-            'created_at' => $datoTelefono['created_at'],
-            'updated_at' => $datoTelefono['updated_at'],
-            'deleted_at' => $datoTelefono['deleted_at']
-        ]);
+        try {
+            return ([
+                'Id del Usuario' => $datoUsuario['id'],
+                'Nombre de Usuario' => $datoUsuario['nombre_de_usuario'],
+                'Telefono' => $datoTelefono['telefono'],
+                'created_at' => $datoTelefono['created_at'],
+                'updated_at' => $datoTelefono['updated_at'],
+                'deleted_at' => $datoTelefono['deleted_at']
+            ]);
+        } catch (\Exception $e) {
+            Session::put('respuesta', $e->getMessage());
+        }
     }
 
     private function obtenerDatosUsuario($usuario)
     {
-        return $usuario['id'];
+        try {
+            return $usuario['id'];
+        } catch (\Exception $e) {
+            Session::put('respuesta', $e->getMessage());
+        }
     }
 
     public function verificarDatosAgregar($datosRequest)
     {
-        $validador = $this->validarDatos($datosRequest);
-        if ($validador->fails()) {
-            $errores = $validador->getMessageBag();
+        try {
+            $validador = $this->validarDatos($datosRequest);
+            if ($validador->fails()) {
+                $errores = $validador->getMessageBag();
+                $patron = '"';
+                $resultado = str_replace($patron, '', json_encode($errores->messages()));
+                Session::put('respuesta', $resultado);
+                return;
+            }
+            $this->crearTelefonoUsuario($datosRequest);
+        } catch (\Exception $e) {
+            Session::put('respuesta', $e->getMessage());
         }
-        $this->crearTelefonoUsuario($datosRequest);
     }
 
     private function validarDatos($usuario)
@@ -93,45 +114,68 @@ class telefonosUsuarioController extends Controller
 
     private function crearTelefonoUsuario($datosTelefono)
     {
-        $telefono = new Telefonos_Usuarios;
-        $telefono->id_usuarios = $datosTelefono['datoUsuario'];
-        $telefono->telefono = $datosTelefono['telefono'];
-        $telefono->save();
+        try {
+            $telefono = new Telefonos_Usuarios;
+            $telefono->id_usuarios = $datosTelefono['datoUsuario'];
+            $telefono->telefono = $datosTelefono['telefono'];
+            $telefono->save();
+        } catch (\Exception $e) {
+            Session::put('respuesta', $e->getMessage());
+        }
     }
 
     public function verificarDatosModificar($datosRequest)
     {
-        $validador = $this->validarDatos($datosRequest);
-        if ($validador->fails()) {
-            $errores = $validador->getMessageBag();
+        try {
+            $validador = $this->validarDatos($datosRequest);
+            if ($validador->fails()) {
+                $errores = $validador->getMessageBag();
+                $patron = '"';
+                $resultado = str_replace($patron, '', json_encode($errores->messages()));
+                Session::put('respuesta', $resultado);
+                return;
+            }
+            $this->modificarTelefonoUsuario($datosRequest);
+        } catch (\Exception $e) {
+            Session::put('respuesta', $e->getMessage());
         }
-        $this->modificarTelefonoUsuario($datosRequest);
     }
 
     private function modificarTelefonoUsuario($datosTelefono)
     {
-        Telefonos_Usuarios::withTrashed()->where('id_usuarios', $datosTelefono['identificadorId'])
-            ->where('telefono', $datosTelefono['identificadorTelefono'])
-            ->update([
-                'id_usuarios' => $datosTelefono['datoUsuario'],
-                'telefono' => $datosTelefono['telefono']
-            ]);
+        try {
+            Telefonos_Usuarios::withTrashed()->where('id_usuarios', $datosTelefono['identificadorId'])
+                ->where('telefono', $datosTelefono['identificadorTelefono'])
+                ->update([
+                    'id_usuarios' => $datosTelefono['datoUsuario'],
+                    'telefono' => $datosTelefono['telefono']
+                ]);
+        } catch (\Exception $e) {
+            Session::put('respuesta', $e->getMessage());
+        }
     }
 
     public function eliminarTelefonosUsuario($datosRequest)
     {
-        $telefono = Telefonos_Usuarios::withoutTrashed()->where('telefono', $datosRequest['identificadorTelefono'])->first();
-        if ($telefono) {
-            $telefono->delete();
+        try {
+            $telefono = Telefonos_Usuarios::withoutTrashed()->where('telefono', $datosRequest['identificadorTelefono'])->first();
+            if ($telefono) {
+                $telefono->delete();
+            }
+        } catch (\Exception $e) {
+            Session::put('respuesta', $e->getMessage());
         }
-
     }
 
     public function recuperarTelefonosUsuario($datosRequest)
     {
-        $telefono = Telefonos_Usuarios::onlyTrashed()->where('telefono', $datosRequest['identificadorTelefono'])->first();
-        if ($telefono) {
-            $telefono->restore();
+        try {
+            $telefono = Telefonos_Usuarios::onlyTrashed()->where('telefono', $datosRequest['identificadorTelefono'])->first();
+            if ($telefono) {
+                $telefono->restore();
+            }
+        } catch (\Exception $e) {
+            Session::put('respuesta', $e->getMessage());
         }
     }
 

@@ -5,8 +5,14 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\Models\Camion_Lleva_Lote;
 use App\Models\Camiones;
 use App\Models\Chofer_Conduce_Camion;
+use App\Models\Choferes;
+use App\Models\Estados_c;
+use App\Models\Marcas;
+use App\Models\Modelos;
+use App\Models\Usuarios;
 
 class CamionesTest extends TestCase
 {
@@ -14,7 +20,7 @@ class CamionesTest extends TestCase
 
         $response = $this->followingRedirects()->post('/camiones',
         [
-            "cbxAgregar" => "on",
+            "accion" => "agregar",
             "identificador" => "abcd",
             "matricula" => "abcd",
             "estadoCamion"=>"estado c listar",
@@ -36,7 +42,7 @@ class CamionesTest extends TestCase
 
         $response = $this->followingRedirects()->post('/camiones',
         [
-            "cbxModificar" => "on",
+            "accion" => "modificar",
             "identificador" => "a42a",
             "matricula" => "a42a",
             "estadoCamion"=>"estados c modificar",
@@ -54,7 +60,7 @@ class CamionesTest extends TestCase
 
        public function test_EliminarUnCamion(){
         $response = $this->followingRedirects()->post('/camiones',[
-            "cbxEliminar" => "on",
+            "accion" => "eliminar",
             "identificador" => "a47a",
             "matricula" => "a74a",
             "estadoCamion"=>"estados c eliminar",
@@ -70,7 +76,7 @@ class CamionesTest extends TestCase
 
        public function test_RecuprarUnCamion(){
         $response1 = $this->followingRedirects()->post('/camiones',[
-            "cbxEliminar" => "on",
+            "accion" => "eliminar",
             "identificador" => "a47a",
             "matricula" => "a74a",
             "estadoCamion"=>"estados c eliminar",
@@ -82,7 +88,7 @@ class CamionesTest extends TestCase
         $response1->assertStatus(200);
     
         $response2 = $this->followingRedirects()->post('/camiones',[
-            "cbxEliminar" => "on",
+            "accion" => "recuperar",
             "identificador" => "a47a",
             "matricula" => "a74a",
             "estadoCamion"=>"estados c eliminar",

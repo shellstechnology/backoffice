@@ -8,7 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{asset('js/funciones.js')}}"> </script>
 </head>
-@include('header')
+
 <body>
   <div class="barraDeNavegacion">
   <a href="{{ route('backoffice') }}" class="item">Menu Principal</a>
@@ -65,12 +65,12 @@
           </div>
           <div class="campo">
           <input type="text" id="volumen" name="volumen" onkeydown="filtro(event)" 
-                pattern="[0-9]*[.,]?[0-9]+" maxlength="9" required>
+                pattern="[0-9]*[.,]?[0-9]+" maxlength="9">
           <label for="volumen" >Volumen(L)</label>
       </div>
       <div class="campo">
       <input type="text" id="peso" name="peso" onkeydown="filtro(event)" 
-                pattern="[0-9]*[.,]?[0-9]+" maxlength="9" required>
+                pattern="[0-9]*[.,]?[0-9]+" maxlength="9">
           <label for="peso" >Peso(Kg)</label>
 </div>
           <div class="campo">
@@ -91,5 +91,5 @@
     <x-mensaje-respuesta-component/>
   </body>
   
-  @include('footer')
+  
 </html>

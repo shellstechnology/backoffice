@@ -6,6 +6,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Camion_Lleva_Lote;
+use App\Models\Camiones;
+use App\Models\Lotes;
 
 class CamionLlevaLoteTest extends TestCase
 {
@@ -13,7 +15,7 @@ class CamionLlevaLoteTest extends TestCase
 
         $response = $this->followingRedirects()->post('/camion-lote',
         [
-            "cbxAgregar" => "on",
+            "accion" => "agregar",
             "identificador" => "20",
             "idCamion" => "a20a",
             "idLote"=>"20"
@@ -30,7 +32,7 @@ class CamionLlevaLoteTest extends TestCase
 
         $response = $this->followingRedirects()->post('/camion-lote',
         [
-            "cbxModificar" => "on",
+            "accion" => "modificar",
             "identificador" => "42",
             "idCamion" => "a42a",
             "idLote"=>"42"
@@ -44,7 +46,7 @@ class CamionLlevaLoteTest extends TestCase
        
        public function test_EliminarUnCamionEnLote(){
         $response = $this->followingRedirects()->post('/camion-lote',[
-            "cbxEliminar" => "on",
+            "accion" => "eliminar",
             "identificador" => "47",
             "idCamion" => "a47a",
             "idLote"=>"47"
@@ -56,7 +58,7 @@ class CamionLlevaLoteTest extends TestCase
 
        public function test_RecuprarUnLoteEnCamion(){
         $response1 = $this->followingRedirects()->post('/camion-lote',[
-            "cbxEliminar" => "on",
+            "accion" => "eliminar",
             "identificador" => "47",
             "idCamion" => "a47a",
             "idLote"=>"47"
@@ -64,7 +66,7 @@ class CamionLlevaLoteTest extends TestCase
         $response1->assertStatus(200);
     
         $response2 = $this->followingRedirects()->post('/camion-lote',[
-            "cbxEliminar" => "on",
+            "accion" => "recuperar",
             "identificador" => "47",
             "idCamion" => "a47a",
             "idLote"=>"47"

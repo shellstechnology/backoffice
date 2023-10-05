@@ -5,7 +5,9 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\Models\Moneda;
 use App\Models\Producto;
+use App\Http\Controllers\Controller;
 
 class ProductosTest extends TestCase
 {
@@ -19,7 +21,7 @@ class ProductosTest extends TestCase
 
         $response = $this->followingRedirects()->post('/productos',
         [
-            "cbxAgregar" => "on",
+            "accion" => "agregar",
             "identificador" => "444",
             "nombre" => "productonuevo",
             "stock" => "96",
@@ -38,7 +40,7 @@ class ProductosTest extends TestCase
     
         $response = $this->followingRedirects()->post('/productos',
         [
-            "cbxModificar" => "on",
+            "accion" => "modificar",
             "identificador" => "42",
             "nombre" => "proyecto hector",
             "stock" => "1",
@@ -54,7 +56,7 @@ class ProductosTest extends TestCase
     
        public function test_EliminarUnProducto(){
         $response = $this->followingRedirects()->post('/productos',[
-            "cbxEliminar" => "on",
+            "accion" => "eliminar",
             "identificador" => "74",
             "nombre"=> "proyecto 2",
             "stock" => "1",
@@ -67,7 +69,7 @@ class ProductosTest extends TestCase
     
        public function test_RecuperarUnProductos(){
         $response1 = $this->followingRedirects()->post('/productos',[
-            "cbxEliminar" => "on",
+            "accion" => "eliminar",
             "identificador" => "74",
            "nombre" => "proyecto 2",
            "stock" => "1",
@@ -77,7 +79,7 @@ class ProductosTest extends TestCase
         $response1->assertStatus(200);
     
         $response2 = $this->followingRedirects()->post('/productos',[
-            "cbxRecuperar" => "on",
+            "accion" => "recuperar",
             "identificador" => "74",
             "nombre" => "proyecto 2",
             "stock" => "1",
