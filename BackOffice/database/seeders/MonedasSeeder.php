@@ -13,6 +13,16 @@ class MonedasSeeder extends Seeder
      *
      * @return void
      */
-    public function run(){}
+    public function run(){
+        \App\Models\Moneda::factory(1)->create([
+            "moneda" => "pesos uruguayos",
+        ]);
+        \App\Models\Moneda::factory(1)->create([
+            "moneda" => "dolares",
+        ]);
+        \App\Models\Moneda::factory(1)->create([
+            "moneda" => "reales",
+        ]);
+    }
   
 }

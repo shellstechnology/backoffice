@@ -41,5 +41,26 @@ class PaqueteContieneLoteSeeder extends Seeder
             "id_lote" => "74",
             "id_almacen" => "74",
         ]);
+        \App\Models\Paquete_Contiene_Lote::factory(1)->create([
+            "id_paquete" => "100",
+            "id_lote" => "100",
+            "id_almacen" => "47",
+        ]);
+        \App\Models\Paquete_Contiene_Lote::factory(1)->create([
+            "id_paquete" => "101",
+            "id_lote" => "100",
+            "id_almacen" => "47",
+        ]);
+        \App\Models\Paquete_Contiene_Lote::factory(1)->create([
+            "id_paquete" => "102",
+            "id_lote" => "100",
+            "id_almacen" => "47",
+        ]);
+        \App\Models\Paquete_Contiene_Lote::factory(1)->create([
+            "id_paquete" => "103",
+            "id_lote" => "100",
+            "id_almacen" => "47",
+        ]);
+
     }
 }
