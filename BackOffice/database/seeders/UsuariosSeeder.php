@@ -21,7 +21,7 @@ class UsuariosSeeder extends Seeder
         ]);
         \App\Models\Usuarios::factory(1)->create([
             "id" => "20",
-            "nombre_de_usuario"=>"choferpreba",
+            "nombre_de_usuario"=>"choferprueba",
             "contrasenia" => "dd",
         ]);
         \App\Models\Usuarios::factory(1)->create([
