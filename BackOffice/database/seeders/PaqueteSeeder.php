@@ -71,5 +71,65 @@ class PaqueteSeeder extends Seeder
             "nombre_destinatario" => "pseudoshell",
             "nombre_remitente" => "shell al cuadrado"
         ]);
+        \App\Models\Paquetes::factory(1)->create([
+            "id" => "100",
+            "nombre" => "quesos cremosos",
+            "volumen_l" => "100.2",
+            "peso_kg" => "100.1", 
+            "id_estado_p" => "1",
+            "id_caracteristica_paquete" => "1",
+            "id_producto" => "47",
+            "id_lugar_entrega" => "1",
+            "nombre_destinatario" => "super de la esquina",
+            "nombre_remitente" => "fiambreria gorillaz"
+        ]);
+        \App\Models\Paquetes::factory(1)->create([
+            "id" => "101",
+            "nombre" => "pan artesanal",
+            "volumen_l" => "100.1",
+            "peso_kg" => "100.1", 
+            "id_estado_p" => "1",
+            "id_caracteristica_paquete" => "1",
+            "id_producto" => "11",
+            "id_lugar_entrega" => "1",
+            "nombre_destinatario" => "super de la esquina",
+            "nombre_remitente" => "fiambreria gorillaz"
+        ]);
+        \App\Models\Paquetes::factory(1)->create([
+            "id" => "102",
+            "nombre" => "Jamon la constancia",
+            "volumen_l" => "100",
+            "peso_kg" => "100", 
+            "id_estado_p" => "1",
+            "id_caracteristica_paquete" => "1",
+            "id_producto" => "12",
+            "id_lugar_entrega" => "1",
+            "nombre_destinatario" => "super de la esquina",
+            "nombre_remitente" => "fiambreria gorillaz"
+        ]);
+        \App\Models\Paquetes::factory(1)->create([
+            "id" => "103",
+            "nombre" => "tomate fresco",
+            "volumen_l" => "100",
+            "peso_kg" => "100", 
+            "id_estado_p" => "1",
+            "id_caracteristica_paquete" => "1",
+            "id_producto" => "13",
+            "id_lugar_entrega" => "1",
+            "nombre_destinatario" => "super de la esquina",
+            "nombre_remitente" => "fiambreria gorillaz"
+        ]);
+        \App\Models\Paquetes::factory(1)->create([
+            "id" => "104",
+            "nombre" => "paquete para lote",
+            "volumen_l" => "100",
+            "peso_kg" => "100", 
+            "id_estado_p" => "1",
+            "id_caracteristica_paquete" => "1",
+            "id_producto" => "42",
+            "id_lugar_entrega" => "1",
+            "nombre_destinatario" => "nadie",
+            "nombre_remitente" => "nadie"
+        ]);
     }
 }
