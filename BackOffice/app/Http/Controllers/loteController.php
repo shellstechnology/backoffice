@@ -12,15 +12,18 @@ class loteController extends Controller
     public function realizarAccion(Request $request)
     {
         $datosRequest = $request->all();
-        if ($request->has('cbxAgregar')) {
-            $this->verificarDatosAgregar();
+        switch ($request->input('accion')) {
+            case 'agregar':
+                $this->verificarDatosAgregar();
+                break;
+            case 'eliminar':
+                $this->eliminarLote($datosRequest);
+                break;
+            case 'recuperar':
+                $this->recuperarLote($datosRequest);
+                break;
         }
-        if ($request->has('cbxeliminarCamionLlevaLote')) {
-            $this->eliminarLote($datosRequest);
-        }
-        if ($request->has('cbxRecuperar')) {
-            $this->recuperarLote($datosRequest);
-        }
+        ;
         $this->cargarDatos();
         return redirect()->route('backoffice.lote');
     }

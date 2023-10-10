@@ -204,6 +204,8 @@ class camionesController extends Controller
             $choferCoduceCamion->id_chofer = $idUsuario['id'];
             $choferCoduceCamion->matricula_camion = $nuevoCamion->getKey();
             $choferCoduceCamion->save();
+            $mensajeConfirmacion = 'Camion agregado exitosamente';
+            Session::put('respuesta', $mensajeConfirmacion);
         } catch (\Exception $e) {
             $mensajeDeError = 'Error,no se pudo agregar el camion';
             Session::put('respuesta', $mensajeDeError);
@@ -258,6 +260,9 @@ class camionesController extends Controller
             }
             if ($camion['matricula'] != $camion['identificador'])
                 Camiones::withTrashed()->where('matricula', $camion['identificador'])->forceDelete();
+
+                $mensajeConfirmacion = 'Camion modificado exitosamente';
+                Session::put('respuesta', $mensajeConfirmacion);
         } catch (\Exception $e) {
             $mensajeDeError = 'Error,no se pudo modificar el camion';
             Session::put('respuesta', $mensajeDeError);
@@ -290,6 +295,8 @@ class camionesController extends Controller
                 Chofer_Conduce_Camion::withTrashed()->where('matricula_camion', $camiones['matricula'])->delete();
                 $camiones->delete();
             }
+            $mensajeConfirmacion = 'Camion eliminado exitosamente';
+            Session::put('respuesta', $mensajeConfirmacion);
         } catch (\Exception $e) {
             $mensajeDeError = 'Error,no se pudo eliminar el camion';
             Session::put('respuesta', $mensajeDeError);
@@ -306,6 +313,8 @@ class camionesController extends Controller
                 $camiones->restore();
                 Chofer_Conduce_Camion::onlyTrashed()->where('matricula_camion', $camiones['matricula'])->restore();
             }
+            $mensajeConfirmacion = 'Camion recuperado exitosamente';
+            Session::put('respuesta', $mensajeConfirmacion);
         } catch (\Exception $e) {
             $mensajeDeError = 'Error,no se pudo recuperar el camion';
             Session::put('respuesta', $mensajeDeError);
