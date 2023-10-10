@@ -50,6 +50,34 @@ class ProductoSeeder extends Seeder
                 "stock" => "1",
                 "id_moneda" => "1",
             ]);
+            \App\Models\Producto::factory(1)->create([
+                "id" => "10",
+                "nombre" => "quesos cremosos",
+                "precio" => "60",
+                "stock" => "100",
+                "id_moneda" => "1",
+            ]);
+            \App\Models\Producto::factory(1)->create([
+                "id" => "11",
+                "nombre" => "pan artesanal",
+                "precio" => "100",
+                "stock" => "20",
+                "id_moneda" => "1",
+            ]);
+            \App\Models\Producto::factory(1)->create([
+                "id" => "12",
+                "nombre" => "Jamon la constancia",
+                "precio" => "700",
+                "stock" => "5",
+                "id_moneda" => "1",
+            ]);
+            \App\Models\Producto::factory(1)->create([
+                "id" => "13",
+                "nombre" => "tomate fresco",
+                "precio" => "60",
+                "stock" => "100",
+                "id_moneda" => "1",
+            ]);
         }
     }
 }

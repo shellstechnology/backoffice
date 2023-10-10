@@ -8,7 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{asset('js/funciones.js')}}"> </script>
 </head>
-
+@include('header')
   <body>
   <div class="barraDeNavegacion">
   <a href="{{ route('backoffice') }}" class="item">Menu Principal</a>
@@ -50,17 +50,17 @@
              </fieldset>
         <div class="contenedorDatos">
           <div class="campo">
-            <input type="text" id="direccion" name="direccion" maxlength="100"></input>
+            <input type="text" id="direccion" name="direccion" maxlength="100" required></input>
            <label for="direccion" >Direccion</label>
          </div>
          <div class="campo">
             <input type="text" id="latitud" name="latitud" onkeydown="filtro(event)" 
-                pattern="[0-9]*[.,]?[0-9]+" maxlength="16">
+                pattern="[0-9]*[.,]?[0-9]+" maxlength="16" required>
           <label for="latitud" >Latitud</label>
             </div>
             <div class="campo">
             <input type="text" id="longitud" name="longitud" onkeydown="filtro(event)" 
-                pattern="[0-9]*[.,]?[0-9]+" maxlength="16">
+                pattern="[0-9]*[.,]?[0-9]+" maxlength="16" required>
           <label for="longitud" >Longitud</label>
           </div>
           <div class="contenedorDatos">
@@ -77,5 +77,5 @@
    </div>
 </div>
   </body>
-  
+  @include('footer')
 </html>

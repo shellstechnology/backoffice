@@ -48,5 +48,10 @@ class LotesSeeder extends Seeder
             "volumen_l" => "20",
             "peso_kg" => "20",
         ]);
+        \App\Models\Lotes::factory(1)->create([
+            "id" => "100",
+            "volumen_l" => "10",
+            "peso_kg" => "10",
+        ]);
     }
 }

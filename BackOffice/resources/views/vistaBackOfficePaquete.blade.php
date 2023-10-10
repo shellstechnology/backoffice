@@ -8,7 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{asset('js/funciones.js')}}"> </script>
 </head>
-
+@include('header')
 <body>
 <div class="barraDeNavegacion">
     <a href="{{ route('backoffice') }}" class="item">Menu Principal</a>
@@ -66,11 +66,11 @@
       <x-select-caracteristica-paquete-component/>
       </div>
       <div class="campo">
-          <input type="text" name="nombreRemitente" id="nombreRemitente" maxlength="40"  ></input>
+          <input type="text" name="nombreRemitente" id="nombreRemitente" maxlength="40" required></input>
           <label for="nombreRemitente" >Nombre Remitente</label>
       </div>
       <div class="campo">
-          <input type="text" name="nombreDestinatario" id="nombreDestinatario" maxlength="40"  ></input>
+          <input type="text" name="nombreDestinatario" id="nombreDestinatario" maxlength="40" required></input>
           <label for="nombreDestinatario" >Nombre Destinatario</label>
       </div>
       <div class="campo">
@@ -78,12 +78,12 @@
       </div>
       <div class="campo">
           <input type="text" id="volumen" name="volumen" onkeydown="filtro(event)" 
-                pattern="[0-9]*[.,]?[0-9]+" maxlength="10"  >
+                pattern="[0-9]*[.,]?[0-9]+" maxlength="10" required>
           <label for="volumen" >Volumen(L)</label>
       </div>
       <div class="campo">
       <input type="text" id="peso" name="peso" onkeydown="filtro(event)" 
-                pattern="[0-9]*[.,]?[0-9]+" maxlength="10"  >
+                pattern="[0-9]*[.,]?[0-9]+" maxlength="10" required>
           <label for="peso" >Peso(Kg)</label>
 </div>
 <input type="hidden" name="identificador" id="identificador"></input>
@@ -98,5 +98,5 @@
     </div>
   </div>
 </body>
-
+@include('footer')
 </html>

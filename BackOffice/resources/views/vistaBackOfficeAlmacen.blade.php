@@ -9,7 +9,7 @@
      <script src="{{asset('js/funciones.js')}}"> </script>
 
   </head>
-  
+  @include('header')
   <body>
      <div class="barraDeNavegacion">
      <a href="{{ route('backoffice') }}" class="item">Menu Principal</a>
@@ -68,5 +68,5 @@
 </div>
 <x-mensaje-respuesta-component/>
   </body>
-  
+  @include('footer')
 </html>
