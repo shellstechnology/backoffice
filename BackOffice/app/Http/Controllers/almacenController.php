@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
-
 class almacenController extends Controller
 {
 
@@ -50,7 +49,6 @@ class almacenController extends Controller
                 break;
         }
         ;
-        $this->cargarDatos();
         return redirect()->route('backoffice.almacen');
     }
 
@@ -107,6 +105,7 @@ class almacenController extends Controller
                 }
                 $mensajeConfirmacion = 'Almacen eliminado exitosamente';
                 Session::put('respuesta', $mensajeConfirmacion);
+                $this->cargarDatos();
             } catch (\Exception) {
                 $mensajeDeError = 'Error,no se pudo eliminar el almacen';
                 Session::put('respuesta', $mensajeDeError);
@@ -124,6 +123,7 @@ class almacenController extends Controller
                 }
                 $mensajeConfirmacion = 'Almacen restaurado exitosamente';
                 Session::put('respuesta', $mensajeConfirmacion);
+                $this->cargarDatos();
 
             } catch (\Exception $e) {
                 $mensajeDeError = 'Error:no se pudo restaurar el almacen';
@@ -181,6 +181,7 @@ class almacenController extends Controller
                 $nuevaAlmacen->save();
                 $mensajeConfirmacion = 'Almacen creado exitosamente';
                 Session::put('respuesta', $mensajeConfirmacion);
+                $this->cargarDatos();
             } catch (\Exception $e) {
                 $mensajeDeError = 'Error:no se pudo crear el almacen';
                 Session::put('respuesta', $mensajeDeError);
@@ -196,6 +197,7 @@ class almacenController extends Controller
                 ]);
                 $mensajeConfirmacion = 'Almacen modificado exitosamente';
                 Session::put('respuesta', $mensajeConfirmacion);
+                $this->cargarDatos();
             } catch (\Exception $e) {
                 $mensajeDeError = 'Error:no se pudo modificar el almacen';
                 Session::put('respuesta', $mensajeDeError);

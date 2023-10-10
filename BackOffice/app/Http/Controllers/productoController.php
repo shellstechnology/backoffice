@@ -14,7 +14,7 @@ class productoController extends Controller
     public function realizarAccion(Request $request)
     {        
         $datosRequest = $request->all();
-        switch ($request->has('accion')) {
+        switch ($request->input('accion')) {
             case 'agregar':
                 $this->verificarDatosAgregar($datosRequest);
                 break;
