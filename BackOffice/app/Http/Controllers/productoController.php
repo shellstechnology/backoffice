@@ -2,113 +2,155 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Moneda;
 use App\Models\Producto;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 class productoController extends Controller
 {
+    public function realizarAccion(Request $request)
+    {        
+        $datosRequest = $request->all();
+        switch ($request->input('accion')) {
+            case 'agregar':
+                $this->verificarDatosAgregar($datosRequest);
+                break;
+            case 'modificar':
+                $this->verificarDatosModificar($datosRequest);
+                break;
+            case 'eliminar':
+                $this->eliminarProducto($datosRequest);
+                break;
+            case 'recuperar':
+                $this->recuperarProducto($datosRequest);
+                break;
+        };
+        $this->cargarDatos();
+        return redirect()->route('backoffice.producto');
+    }
     public function cargarDatos()
     {
         $datoProducto = Producto::withTrashed()->get();
-        return response()->json($datoProducto);
-    }
-
-    public function agregar(Request $request)
-    { {
-            try {
-                $datosRequest = $request->all();
-                $reglas = [
-                    'Nombre' => 'required|string|max:20',
-                    'Precio' => 'required|integer|min:1|max:9999999',
-                    'TipoMoneda' => 'required|string|max:3',
-                    'Stock' => 'required|integer|min:0|max:9999999',
-                ];
-                $validador = Validator::make([
-                    'Nombre' => $datosRequest[0],
-                    'Precio' => $datosRequest[1],
-                    'TipoMoneda' => $datosRequest[2],
-                    'Stock' => $datosRequest[3]
-                ], $reglas);
-
-                if ($validador->fails()) {
-                    $errores = $validador->getMessageBag();
-                    return response()->json(['error:' => $errores], 422);
-                }
-                $producto = new Producto;
-                $producto->Nombre = $datosRequest[0];
-                $producto->Precio = $datosRequest[1];
-                $producto->TipoMoneda = $datosRequest[2];
-                $producto->Stock = $datosRequest[3];
-                $producto->save();
-                return response()->json("SI");
-            } catch (\Exception $e) {
-                return response()->json(['Error al ingresar el paquete'], 500);
-
+        $infoProducto = [];
+        $infoMonedas = [];
+        if ($datoProducto) {
+            foreach ($datoProducto as $dato) {
+                $infoProducto[] = $this->obtenerProducto($dato);
             }
         }
+        $infoMonedas = $this->obtenerMonedas();
+        Session::put('monedas', $infoMonedas);
+        Session::put('producto', $infoProducto);
+        return redirect()->route('backoffice.producto');
     }
 
-    public function modificar(Request $request)
-    { {
-            try {
-                $datosRequest = $request->all();
-                $reglas = [
-                    'nombre' => 'required|string|max:20',
-                    'precio' => 'required|integer|min:1|max:9999999',
-                    'tipoMoneda' => 'required|string|max:3',
-                    'stock' => 'required|integer|min:0|max:9999999',
-                ];
-                $validador = Validator::make([
-                    'nombre' => $datosRequest[1],
-                    'precio' => $datosRequest[2],
-                    'tipoMoneda' => $datosRequest[3],
-                    'stock' => $datosRequest[4]
-                ], $reglas);
-                if ($validador->fails()) {
-                    $errores = $validador->getMessageBag();
-                    return response()->json(['error:' => $errores], 422);
-                }
-                Producto::where('id', $datosRequest[0])->update([
-                    'Nombre' => $datosRequest[1],
-                    'Precio' => $datosRequest[2],
-                    'TipoMoneda' => $datosRequest[3],
-                    'Stock' => $datosRequest[4],
-                ]);
-                return response()->json("Producto modificado correctamente");
-            } catch (\Exception $e) {
-                return response()->json(['Error al modificar el producto'], 500);
-            }
-        }
-    }
-
-    public function eliminar(Request $request)
+    public function verificarDatosAgregar($datosRequest)
     {
-        $id = $request->get('identificador'); {
-            try {
-                Producto::where('id', $id)->delete();
-                return response()->json(['Producto eliminado correctamente']);
-            } catch (\Exception $e) {
-                return response()->json(['Error al eliminar el producto'], 500);
-            }
+        $validador = $this->validarDatos($datosRequest);
+        if ($validador->fails()) {
+            return;
         }
+        $this->crearProducto($datosRequest);
     }
 
-    public function recuperar(Request $request)
+    public function verificarDatosModificar($datosRequest)
     {
-        $id = $request->get('identificador');
-        $producto = Producto::withTrashed()->find($id);
+        $validador = $this->validarDatos($datosRequest);
+        if ($validador->fails()) {
+            return;
+        }
+        $this->modificarProducto($datosRequest);
+    }
+
+    public function eliminarProducto($datosRequest)
+    {
+        $producto = Producto::withoutTrashed()->where('id', $datosRequest['identificador'])->first();
         if ($producto) {
-            try {
-                Producto::where('id', $id)->restore();
-                return response()->json(['El producto a sido restaurado']);
-            } catch (\Exception $e) {
-                return response()->json(['Error al restaurar el producto'], 500);
-            }
-        } else {
-            return response()->json(['El producto no puede ser recuperado porque ya existe']);
+            $producto->delete();
         }
     }
 
+    public function recuperarProducto($datosRequest)
+    {
+        $producto = Producto::onlyTrashed()->where('id', $datosRequest['identificador'])->first();
+        if ($producto) {
+            $producto->restore();
+        }
+    }
+
+    private function obtenerProducto($producto)
+    {
+        $moneda = Moneda::withTrashed()->where('id', $producto['id_moneda'])->first();
+        return ([
+            'Id' => $producto['id'],
+            'Nombre' => $producto['nombre'],
+            'Stock' => $producto['stock'],
+            'Precio' => $producto['precio'],
+            'Moneda' => $moneda['moneda'],
+            'created_at' => $producto['created_at'],
+            'updated_at' => $producto['updated_at'],
+            'deleted_at' => $producto['deleted_at']
+        ]);
+
+    }
+
+    private function obtenerMonedas()
+    {
+        $infoMonedas = [];
+        $monedas = moneda::withTrashed()->get();
+        if ($monedas) {
+            foreach ($monedas as $datoMoneda) {
+                $infoMonedas[] = $datoMoneda['moneda'];
+            }
+        }
+        return $infoMonedas;
+    }
+
+    private function validarDatos($producto)
+    {
+        $reglas = [
+            'Nombre' => 'required|string|max:50',
+            'Precio' => 'required|integer|min:1|max:99999999',
+            'Moneda' => 'required|string|max:30',
+            'Stock' => 'required|integer|min:0|max:999999',
+        ];
+        return Validator::make([
+            'Nombre' => $producto['nombre'],
+            'Precio' => $producto['precio'],
+            'Moneda' => $producto['tipoMoneda'],
+            'Stock' => $producto['stock'],
+        ], $reglas);
+    }
+
+    private function crearProducto($producto)
+    {
+        $moneda = $this->obtenerMoneda($producto['tipoMoneda']);
+        $nuevoProducto = new Producto;
+        $nuevoProducto->nombre = $producto['nombre'];
+        $nuevoProducto->precio = $producto['precio'];
+        $nuevoProducto->id_moneda = $moneda;
+        $nuevoProducto->stock = $producto['stock'];
+        $nuevoProducto->save();
+    }
+
+    private function obtenerMoneda($producto)
+    {
+        $datosMoneda = Moneda::withTrashed()->where('moneda', $producto)->first();
+        $moneda = $datosMoneda['id'];
+        return $moneda;
+    }
+
+    private function modificarProducto($producto)
+    {
+        $moneda = $this->obtenerMoneda($producto['tipoMoneda']);
+        Producto::where('id', $producto['identificador'])->update([
+            'nombre' => $producto['nombre'],
+            'precio' => $producto['precio'],
+            'id_moneda' => $moneda,
+            'stock' => $producto['stock'],
+        ]);
+    }
 }

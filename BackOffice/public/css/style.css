@@ -13,7 +13,12 @@ body {
 }
 
 .barraDeNavegacion {
+<<<<<<< HEAD
     background-color: var(--colorBody);
+=======
+    background-color: var(--colorClaro1);
+    margin-top: 10px;
+>>>>>>> 122f52c10f8cc85aed1e76066cf82b26c9c38683
     margin-left: 10%;
     width: 80%;
     height: 50px;
@@ -37,13 +42,35 @@ body {
     text-align: center;
 }
 
+<<<<<<< HEAD
 .container {
+=======
+.itemSeleccionado{
+    flex:1;
+    padding-top: 15px;
+    margin-left: 3px;
+    margin-right: 3px;
+    background-color: var(--colorFuerte);
+    border: 2px black solid;
+    text-align: center;
+}
+
+.container{
+>>>>>>> 122f52c10f8cc85aed1e76066cf82b26c9c38683
     margin-top: 20px;
     display: flex;
     flex-wrap: wrap;
     max-height: 70%;
 }
 
+<<<<<<< HEAD
+=======
+a {
+    color: black; /* Cambia el color del texto a negro */
+    text-decoration: none; /* Elimina el subrayado */
+  }
+  
+>>>>>>> 122f52c10f8cc85aed1e76066cf82b26c9c38683
 /*********************************************************************/
 
 #contenedorTabla {
@@ -59,6 +86,7 @@ body {
 }
 
 table {
+<<<<<<< HEAD
     table-layout: fixed;
 }
 
@@ -67,6 +95,37 @@ table td {
     width: 10%;
     padding: 10px;
     text-align: left;
+=======
+    border-collapse: separate; 
+    border-spacing: 2px; 
+    width: 100%; 
+}
+
+table th, table td {
+    border: 1px solid black;
+    padding: 8px; 
+}
+
+table tr {
+    border-top: 2px solid black; 
+    border-bottom: 2px solid black; 
+}
+
+table tr:first-child {
+    border-top: none; 
+}
+
+table tr:last-child {
+    border-bottom: none;
+}
+
+table td:first-child {
+    border-left: none; 
+}
+
+table td:last-child {
+    border-right: none;
+>>>>>>> 122f52c10f8cc85aed1e76066cf82b26c9c38683
 }
 
 /*********************************************************************/
@@ -75,12 +134,23 @@ table td {
     flex: 0 0 300px;
     background-color: var(--colorCajaDatos);
     margin-left: 2%;
-    width: 300px;
+    width: 290px;
 }
 
 .contenedorDatos {
     display: block;
 }
+<<<<<<< HEAD
+=======
+input{
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+input[type="number"]{
+    width: 100px;
+    display: inline;
+    margin-top: 15px;
+>>>>>>> 122f52c10f8cc85aed1e76066cf82b26c9c38683
 
 input {
     margin-top: 15px;
@@ -119,3 +189,35 @@ button:hover {
 .campo {
     display: block;
 }
+
+.enlaceCajaUsuario{
+    float: right;
+}
+.cajaUsuario {
+    width: 50px;
+    height: 50px;
+    border: 2px solid black;
+    position: relative;
+    background-color: var(--colorFuerte);
+  }
+  
+  .head {
+    width: 25px;
+    height: 25px;
+    background-color: black;
+    border-radius: 50%;
+    position: absolute;
+    top: 5px;
+    left: 13px;
+  }
+  
+  .body {
+    width: 32px;
+    height: 25px;
+    background-color: black;
+    border-top-left-radius: 100%;
+    border-top-right-radius: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 10px;
+  }

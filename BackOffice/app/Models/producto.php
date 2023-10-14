@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 class Producto extends Model
 {
-    protected $table = 'producto';
+    protected $table = 'productos';
     use HasFactory;
     use SoftDeletes;
     use ValidatesRequests;
