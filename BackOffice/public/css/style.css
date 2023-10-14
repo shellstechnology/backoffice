@@ -1,37 +1,40 @@
 :root {
-    --blanco:#FFFFFF;
-    --colorPalido: #D4E9F7;
-    --colorClaro1: #A6C8E4;
-    --ColorClaro2:#FFF9D6;
-    --colorFuerte: #7092B8;
+    --blanco: #FFFFFF;
+    --colorBody: #7EB1BC;
+    --colorInput: #1F8BCA;
+    --colorTexto: black;
+    --colorBotones: #E9C493;
+    --colorCajaDatos: #506248;
 }
 
 body {
-    background-color: var(--colorPalido);
+    background-color: var(--colorBody);
     background-repeat: no-repeat;
-
 }
 
 .barraDeNavegacion {
+<<<<<<< HEAD
+    background-color: var(--colorBody);
+=======
     background-color: var(--colorClaro1);
     margin-top: 10px;
+>>>>>>> 122f52c10f8cc85aed1e76066cf82b26c9c38683
     margin-left: 10%;
     width: 80%;
     height: 50px;
     display: flex;
     justify-content: space-between;
-    
 }
 
-.cuerpo{
-    background-color:var(--ColorClaro2);
-   flex: 1;
-   min-width: 0;
-   max-height: 60%;
+.cuerpo {
+    background-color: var(--colorBody);
+    flex: 1;
+    min-width: 0;
+    max-height: 60%;
 }
 
-.item{
-    flex:1;
+.item {
+    flex: 1;
     padding-top: 15px;
     margin-left: 3px;
     margin-right: 3px;
@@ -39,6 +42,9 @@ body {
     text-align: center;
 }
 
+<<<<<<< HEAD
+.container {
+=======
 .itemSeleccionado{
     flex:1;
     padding-top: 15px;
@@ -50,23 +56,27 @@ body {
 }
 
 .container{
+>>>>>>> 122f52c10f8cc85aed1e76066cf82b26c9c38683
     margin-top: 20px;
     display: flex;
     flex-wrap: wrap;
     max-height: 70%;
 }
 
+<<<<<<< HEAD
+=======
 a {
     color: black; /* Cambia el color del texto a negro */
     text-decoration: none; /* Elimina el subrayado */
   }
   
+>>>>>>> 122f52c10f8cc85aed1e76066cf82b26c9c38683
 /*********************************************************************/
 
-#contenedorTabla{
-    flex:1;
+#contenedorTabla {
+    flex: 1;
     width: auto;
-    background-color: var(--colorPalido);
+    background-color: var(--colorBody);
     border: solid black 2px;
     margin-top: 20px;
     margin-left: 3%;
@@ -76,6 +86,16 @@ a {
 }
 
 table {
+<<<<<<< HEAD
+    table-layout: fixed;
+}
+
+table th,
+table td {
+    width: 10%;
+    padding: 10px;
+    text-align: left;
+=======
     border-collapse: separate; 
     border-spacing: 2px; 
     width: 100%; 
@@ -105,20 +125,23 @@ table td:first-child {
 
 table td:last-child {
     border-right: none;
+>>>>>>> 122f52c10f8cc85aed1e76066cf82b26c9c38683
 }
 
 /*********************************************************************/
 
-.cajaDatos{
-    flex:0 0 300px;
-    margin-top: 20px;
-    background-color: var(--colorFuerte);
+.cajaDatos {
+    flex: 0 0 300px;
+    background-color: var(--colorCajaDatos);
     margin-left: 2%;
     width: 290px;
 }
-.contenedorDatos{
+
+.contenedorDatos {
     display: block;
 }
+<<<<<<< HEAD
+=======
 input{
     margin-top: 5px;
     margin-bottom: 5px;
@@ -127,17 +150,43 @@ input[type="number"]{
     width: 100px;
     display: inline;
     margin-top: 15px;
+>>>>>>> 122f52c10f8cc85aed1e76066cf82b26c9c38683
 
+input {
+    margin-top: 15px;
+    margin-left: 10px;
+    width: 250px;
+    height: 20px;
+    background-color: var(--colorInput);
+    border: none;
 }
-input[type="text"]{
+
+input::placeholder {
+    color: var(--colorTexto);
+}
+
+input[type="checkbox"] {
+    width: 10px;
     display: inline;
     margin-top: 15px;
+}
 
-}
-button{
+button {
     display: inline;
+    margin-left: 6px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: var(--colorTexto);
+    background-color: var(--colorBotones);
+    border: none;
 }
-.campo{
+
+button:hover {
+    background-color: #E9C400;
+    cursor: pointer;
+}
+
+.campo {
     display: block;
 }
 
