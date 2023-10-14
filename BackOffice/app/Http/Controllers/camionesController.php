@@ -20,7 +20,6 @@ class camionesController extends Controller
     public function realizarAccion(Request $request)
     {
         $datosRequest = $request->all();
-        
         switch ($request->input('accion')) {
             case 'agregar':
                 $this->verificarDatosAgregar($datosRequest);
@@ -35,7 +34,6 @@ class camionesController extends Controller
                 $this->recuperarCamion($datosRequest);
                 break;
         }
-        $this->cargarDatos(); 
         return redirect()->route('backoffice.camiones');
     }
 
@@ -126,7 +124,7 @@ class camionesController extends Controller
             }
             $this->agregarCamion($datosRequest);
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error al verificar y agregar los datos';
+            $mensajeDeError = 'Error:Debe ingresar datos para realizar esta accion';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -206,6 +204,7 @@ class camionesController extends Controller
             $choferCoduceCamion->save();
             $mensajeConfirmacion = 'Camion agregado exitosamente';
             Session::put('respuesta', $mensajeConfirmacion);
+            $this->cargarDatos(); 
         } catch (\Exception $e) {
             $mensajeDeError = 'Error,no se pudo agregar el camion';
             Session::put('respuesta', $mensajeDeError);
@@ -224,7 +223,7 @@ class camionesController extends Controller
             }
             $this->modificarCamion($datosRequest);
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error,no se pudieron validar los datos';
+            $mensajeDeError = 'Error:Debe ingresar datos para realizar esta accion';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -263,6 +262,7 @@ class camionesController extends Controller
 
                 $mensajeConfirmacion = 'Camion modificado exitosamente';
                 Session::put('respuesta', $mensajeConfirmacion);
+                $this->cargarDatos(); 
         } catch (\Exception $e) {
             $mensajeDeError = 'Error,no se pudo modificar el camion';
             Session::put('respuesta', $mensajeDeError);
@@ -297,6 +297,7 @@ class camionesController extends Controller
             }
             $mensajeConfirmacion = 'Camion eliminado exitosamente';
             Session::put('respuesta', $mensajeConfirmacion);
+            $this->cargarDatos(); 
         } catch (\Exception $e) {
             $mensajeDeError = 'Error,no se pudo eliminar el camion';
             Session::put('respuesta', $mensajeDeError);
@@ -315,6 +316,7 @@ class camionesController extends Controller
             }
             $mensajeConfirmacion = 'Camion recuperado exitosamente';
             Session::put('respuesta', $mensajeConfirmacion);
+            $this->cargarDatos(); 
         } catch (\Exception $e) {
             $mensajeDeError = 'Error,no se pudo recuperar el camion';
             Session::put('respuesta', $mensajeDeError);

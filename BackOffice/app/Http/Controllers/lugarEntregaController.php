@@ -62,7 +62,7 @@ class lugarEntregaController extends Controller
             }
             $this->crearLugarEntrega($datosRequest);
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: no se pudo verificar los datos para agregar';
+            $mensajeDeError = 'Error:Debe ingresar datos para realizar esta accion';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -76,7 +76,7 @@ class lugarEntregaController extends Controller
             }
             $this->modificarLugarEntrega($lugarEntrega);
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: no se pudieron verificar los datos para modificar';
+            $mensajeDeError = 'Error:Debe ingresar datos para realizar esta accion';
             Session::put('respuesta', $mensajeDeError);
         }
     }

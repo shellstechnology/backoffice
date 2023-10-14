@@ -30,7 +30,8 @@ class paqueteContieneLoteController extends Controller
             case 'recuperar':
                 $this->recuperarPaqueteContieneLote($datosRequest);
                 break;
-        };
+        }
+        ;
         $this->cargarDatos();
         return redirect()->route('lote.paqueteContieneLote');
     }
@@ -65,25 +66,30 @@ class paqueteContieneLoteController extends Controller
 
     public function verificarDatosAgregar($datosRequest)
     {
-        $validador = $this->validarDatos($datosRequest);
-        if ($validador->fails()) {
-            return;
-        }
-        $paqueteExistente = Paquete_Contiene_Lote::where('id_paquete', $datosRequest['idPaquete'])->first();
-        if (!$paqueteExistente) {
-            $this->crearPaqueteContieneLote($datosRequest);
+        try {
+            $validador = $this->validarDatos($datosRequest);
+            if ($validador->fails()) {
+                return;
+            }
+            $paqueteExistente = Paquete_Contiene_Lote::where('id_paquete', $datosRequest['idPaquete'])->first();
+            if (!$paqueteExistente) {
+                $this->crearPaqueteContieneLote($datosRequest);
+            }
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:Debe ingresar datos para realizar esta accion';
+            Session::put('respuesta', $mensajeDeError);
         }
     }
 
     private function validarDatos($producto)
     {
         $reglas = [
-            'idPaquete'=>'required|integer',
+            'idPaquete' => 'required|integer',
             'idLote' => 'required|integer',
             'idAlmacen' => 'required|integer',
         ];
         return Validator::make([
-            'idPaquete'=>$producto['idPaquete'],
+            'idPaquete' => $producto['idPaquete'],
             'idLote' => $producto['idLote'],
             'idAlmacen' => $producto['idAlmacen'],
         ], $reglas);
@@ -91,11 +97,16 @@ class paqueteContieneLoteController extends Controller
 
     public function verificarDatosModificar($datosRequest)
     {
-        $validador = $this->validarDatos($datosRequest);
-        if ($validador->fails()) {
-            return;
+        try {
+            $validador = $this->validarDatos($datosRequest);
+            if ($validador->fails()) {
+                return;
+            }
+            $this->modificarValores($datosRequest);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:Debe ingresar datos para realizar esta accion';
+            Session::put('respuesta', $mensajeDeError);
         }
-        $this->modificarValores($datosRequest);
     }
 
     public function eliminarPaqueteContieneLote($datosRequest)
@@ -141,6 +152,9 @@ class paqueteContieneLoteController extends Controller
         $paqueteContieneLote->id_lote = $paquete['idLote'];
         $paqueteContieneLote->id_almacen = $paquete['idAlmacen'];
         $paqueteContieneLote->save();
+        $mensajeConfirmacion = 'Camion agregado exitosamente';
+        Session::put('respuesta', $mensajeConfirmacion);
+        $this->cargarDatos(); 
     }
 
 
@@ -151,8 +165,8 @@ class paqueteContieneLoteController extends Controller
         $peso = $valores['peso_kg'] + $lote['peso_kg'];
         $volumen = $valores['volumen_l'] + $lote['volumen_l'];
         Lotes::withTrashed()->where('id', $paquete['idLote'])->update([
-            'peso_kg'=>$peso,
-            'volumen_l'=>$volumen,
+            'peso_kg' => $peso,
+            'volumen_l' => $volumen,
 
         ]);
     }

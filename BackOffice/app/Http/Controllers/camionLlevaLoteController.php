@@ -100,7 +100,7 @@ class camionLlevaLoteController extends Controller
                 $this->crearCamionLlevaLote($datosRequest);
             }
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: no se pudo verificar los datos para agregar';
+            $mensajeDeError = 'Error:Debe ingresar datos para realizar esta accion';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -136,7 +136,7 @@ class camionLlevaLoteController extends Controller
         try {
             $this->modificarCamionLlevaLote($datosRequest);
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: no se pudo verificar los datos para modificar';
+            $mensajeDeError = 'Error:Debe ingresar datos para realizar esta accion';
             Session::put('respuesta', $mensajeDeError);
         }
     }

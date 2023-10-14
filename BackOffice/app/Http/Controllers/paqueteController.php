@@ -30,7 +30,8 @@ class paqueteController extends Controller
             case 'recuperar':
                 $this->recuperarPaquete($datosRequest);
                 break;
-        };
+        }
+        ;
         $this->cargarDatos();
         return redirect()->route('backoffice.paquete');
 
@@ -54,8 +55,8 @@ class paqueteController extends Controller
         foreach ($datoCaracteristica as $dato) {
             $descripcionCaracteristica[] = $dato['descripcion_caracteristica'];
         }
-        foreach($datoEstadoPaquete as $dato){
-            $estadoPaquete[]=$dato['descripcion_estado_p'];
+        foreach ($datoEstadoPaquete as $dato) {
+            $estadoPaquete[] = $dato['descripcion_estado_p'];
         }
         $idLugaresEntrega = $this->obtenerIdsClase($datoLugarEntrega);
         $idProductos = $this->obtenerIdsClase($datoProducto);
@@ -71,17 +72,22 @@ class paqueteController extends Controller
     {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
-           return;
+            return;
         }
         $this->crearPaquete($datosRequest);
     }
     public function verificarDatosModificar($datosRequest)
     {
-        $validador = $this->validarDatos($datosRequest);
-        if ($validador->fails()) {
-            return;
+        try {
+            $validador = $this->validarDatos($datosRequest);
+            if ($validador->fails()) {
+                return;
+            }
+            $this->modificarPaquete($datosRequest);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:Debe ingresar datos para realizar esta accion';
+            Session::put('respuesta', $mensajeDeError);
         }
-        $this->modificarPaquete($datosRequest);
 
     }
     public function eliminarPaquete($datosRequest)
@@ -107,7 +113,7 @@ class paqueteController extends Controller
     {
         $lugarEntrega = Lugares_Entrega::withTrashed()->where('id', $paquete['id_lugar_entrega'])->first();
         $caracteristica = Caracteristicas::withTrashed()->where('id', $paquete['id_caracteristica_paquete'])->first();
-        $estado=Estados_p::withTrashed()->where('id',$paquete['id_estado_p'])->first();
+        $estado = Estados_p::withTrashed()->where('id', $paquete['id_estado_p'])->first();
         $producto = Producto::withTrashed()->where('id', $paquete['id_producto'])->first();
         if ($producto && $lugarEntrega && $caracteristica) {
             return (
@@ -117,7 +123,7 @@ class paqueteController extends Controller
                     'Fecha de Entrega' => $paquete['fecha_de_entrega'],
                     'Id Lugar Entrega' => $lugarEntrega['id'],
                     'Direccion' => $lugarEntrega['direccion'],
-                    'Estado'=>$estado['descripcion_estado_p'],
+                    'Estado' => $estado['descripcion_estado_p'],
                     'Caracteristicas' => $caracteristica['descripcion_caracteristica'],
                     'Nombre del Remitente' => $paquete['nombre_remitente'],
                     'Nombre del Destinatario' => $paquete['nombre_destinatario'],
@@ -144,30 +150,30 @@ class paqueteController extends Controller
     private function validarDatos($paquete)
     {
         $reglas = [
-            'nombrePaquete'=>'required|string|max:50',
-            'dia'=>'required|numeric|min:1|max:31',
-            'mes'=>'required|numeric|min:1|max:12|',
-            'anio'=>'required|numeric|min:2023|max:2050',
-            'idLugarEntrega'=>'required|numeric',
-            'estadoPaquete'=>'required|string|max:100',
+            'nombrePaquete' => 'required|string|max:50',
+            'dia' => 'required|numeric|min:1|max:31',
+            'mes' => 'required|numeric|min:1|max:12|',
+            'anio' => 'required|numeric|min:2023|max:2050',
+            'idLugarEntrega' => 'required|numeric',
+            'estadoPaquete' => 'required|string|max:100',
             'caracteristica' => 'required|string|max:100',
             'nombreRemitente' => 'required|string|max:40',
             'nombreDestinatario' => 'required|string|max:40',
-            'idProducto'=>'required|integer',
+            'idProducto' => 'required|integer',
             'volumen' => 'required|numeric|min:1|max:99999',
             'peso' => 'required|numeric|min:1|max:99999',
         ];
         return Validator::make([
-            'nombrePaquete'=>$paquete['nombrePaquete'],
-            'dia'=>$paquete['dia'],
-            'mes'=>$paquete['mes'],
-            'anio'=>$paquete['anio'],
-            'idLugarEntrega'=>$paquete['idLugarEntrega'],
-            'estadoPaquete'=>$paquete['estadoPaquete'],
-            'nombreRemitente'=>$paquete['nombreRemitente'],
-            'nombreDestinatario'=>$paquete['nombreDestinatario'],
+            'nombrePaquete' => $paquete['nombrePaquete'],
+            'dia' => $paquete['dia'],
+            'mes' => $paquete['mes'],
+            'anio' => $paquete['anio'],
+            'idLugarEntrega' => $paquete['idLugarEntrega'],
+            'estadoPaquete' => $paquete['estadoPaquete'],
+            'nombreRemitente' => $paquete['nombreRemitente'],
+            'nombreDestinatario' => $paquete['nombreDestinatario'],
             'caracteristica' => $paquete['caracteristica'],
-            'idProducto'=>$paquete['idProducto'],
+            'idProducto' => $paquete['idProducto'],
             'volumen' => $paquete['volumen'],
             'peso' => $paquete['peso']
         ], $reglas);
@@ -176,7 +182,7 @@ class paqueteController extends Controller
     private function crearPaquete($paquete)
     {
         $caracteristica = $this->obtenerIdCaracteristica($paquete);
-        $estado=$this->obtenerIdEstado($paquete);
+        $estado = $this->obtenerIdEstado($paquete);
         $dia = $paquete['dia'];
         $mes = $paquete['mes'];
         $anio = $paquete['anio'];
@@ -185,7 +191,7 @@ class paqueteController extends Controller
         $nuevoPaquete->fecha_de_entrega = $fechaEntrega;
         $nuevoPaquete->id_lugar_entrega = $paquete['idLugarEntrega'];
         $nuevoPaquete->nombre = $paquete['nombrePaquete'];
-        $nuevoPaquete->id_estado_p=$estado;
+        $nuevoPaquete->id_estado_p = $estado;
         $nuevoPaquete->id_caracteristica_paquete = $caracteristica;
         $nuevoPaquete->nombre_remitente = $paquete['nombreRemitente'];
         $nuevoPaquete->nombre_destinatario = $paquete['nombreDestinatario'];
@@ -193,24 +199,25 @@ class paqueteController extends Controller
         $nuevoPaquete->volumen_l = $paquete['volumen'];
         $nuevoPaquete->peso_kg = $paquete['peso'];
         $nuevoPaquete->save();
+
     }
 
     private function modificarPaquete($paquete)
     {
 
         $caracteristica = $this->obtenerIdCaracteristica($paquete);
-        $estado=$this->obtenerIdEstado($paquete);
+        $estado = $this->obtenerIdEstado($paquete);
         $dia = $paquete['dia'];
         $mes = $paquete['mes'];
         $anio = $paquete['anio'];
         $fechaEntrega = sprintf('%04d-%02d-%02d', $anio, $mes, $dia);
         Paquetes::where('id', $paquete['identificador'])->update([
-            'nombre'=>$paquete['nombrePaquete'],
+            'nombre' => $paquete['nombrePaquete'],
             'fecha_de_entrega' => $fechaEntrega,
             'nombre_remitente' => $paquete['nombreRemitente'],
-            'id_lugar_entrega'=>$paquete['idLugarEntrega'],
+            'id_lugar_entrega' => $paquete['idLugarEntrega'],
             'nombre_destinatario' => $paquete['nombreDestinatario'],
-            'id_estado_p'=>$estado,
+            'id_estado_p' => $estado,
             'id_caracteristica_paquete' => $caracteristica,
             'id_producto' => $paquete['idProducto'],
             'volumen_l' => $paquete['volumen'],
@@ -224,8 +231,9 @@ class paqueteController extends Controller
         return $caracteristica['id'];
     }
 
-    private function obtenerIdEstado($paquete){
-        $estado = Estados_p::withTrashed()->where('descripcion_estado_p',$paquete['estadoPaquete'])->first();
+    private function obtenerIdEstado($paquete)
+    {
+        $estado = Estados_p::withTrashed()->where('descripcion_estado_p', $paquete['estadoPaquete'])->first();
         return $estado['id'];
     }
 }

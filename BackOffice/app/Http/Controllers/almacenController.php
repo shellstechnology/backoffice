@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Almacenes;
 use App\Models\Lugares_Entrega;
+use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+
 class almacenController extends Controller
 {
 
@@ -63,7 +65,7 @@ class almacenController extends Controller
                 }
                 $this->crearAlmacen($datosRequest);
             } catch (\Exception $e) {
-                $mensajeDeError = 'Error,no se pudieron validar los datos';
+                $mensajeDeError = 'Error:Debe ingresar datos para realizar esta accion';
                 Session::put('respuesta', $mensajeDeError);
             }
         }
@@ -87,11 +89,18 @@ class almacenController extends Controller
 
     public function verificarDatosAModificar($datosRequest)
     {
-        $validador = $this->validarDatos($datosRequest);
-        if ($validador->fails()) {
-            return;
+        try {
+            $validador = $this->validarDatos($datosRequest);
+            if ($validador->fails()) {
+                $errores = $validador->getMessageBag();
+                Session::put('respuesta', json_encode($errores->messages()));
+                return;
+            }
+            $this->modificarAlmacen($datosRequest);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:Debe ingresar datos para realizar esta accion';
+            Session::put('respuesta', $mensajeDeError);
         }
-        $this->modificarAlmacen($datosRequest);
 
     }
 

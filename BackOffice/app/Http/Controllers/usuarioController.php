@@ -33,7 +33,8 @@ class usuarioController extends Controller
             case 'recuperar':
                 $this->recuperarUsuario($datosRequest);
                 break;
-        };
+        }
+        ;
         $this->cargarDatos();
         return redirect()->route('backoffice.usuarios');
 
@@ -55,22 +56,31 @@ class usuarioController extends Controller
 
     public function verificarDatosAgregar($datosRequest)
     {
-        $validador = $this->validarDatos($datosRequest);
-        if ($validador->fails()) {
-            return;
+        try {
+            $validador = $this->validarDatos($datosRequest);
+            if ($validador->fails()) {
+                return;
+            }
+            $this->crearUsuario($datosRequest);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:Debe ingresar datos para realizar esta accion';
+            Session::put('respuesta', $mensajeDeError);
         }
-        $this->crearUsuario($datosRequest);
 
     }
 
     public function verificarDatosModificar($datosRequest)
     {
-
-        $validador = $this->validarDatos($datosRequest);
-        if ($validador->fails()) {
-            return;
+        try {
+            $validador = $this->validarDatos($datosRequest);
+            if ($validador->fails()) {
+                return;
+            }
+            $this->modificarUsuario($datosRequest);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:Debe ingresar datos para realizar esta accion';
+            Session::put('respuesta', $mensajeDeError);
         }
-        $this->modificarUsuario($datosRequest);
     }
 
 
@@ -159,7 +169,7 @@ class usuarioController extends Controller
             'nombreUsuario' => 'required|string|max:50',
             'contrasenia' => 'required|string|max:25',
             'mail' => 'required|email|max:50',
-            
+
         ];
         return Validator::make([
             'nombreUsuario' => $usuario['nombre'],
@@ -170,16 +180,16 @@ class usuarioController extends Controller
     }
     private function crearUsuario($datosUsuario)
     {
-        $checkboxSeleccionada=$this->verificarCheckboxTipoUsuario($datosUsuario);
-        if($checkboxSeleccionada!=true){
+        $checkboxSeleccionada = $this->verificarCheckboxTipoUsuario($datosUsuario);
+        if ($checkboxSeleccionada != true) {
             return;
         }
-        $mailExistente=Mail_Usuarios::withTrashed()->where('mail',$datosUsuario['mail'])->first();
-        $contraseniaExistente=Usuarios::withTrashed()->where('contrasenia',$datosUsuario['contrasenia'])->first();
-        if($mailExistente!=null){
+        $mailExistente = Mail_Usuarios::withTrashed()->where('mail', $datosUsuario['mail'])->first();
+        $contraseniaExistente = Usuarios::withTrashed()->where('contrasenia', $datosUsuario['contrasenia'])->first();
+        if ($mailExistente != null) {
             return;
         }
-        if($contraseniaExistente!=null){
+        if ($contraseniaExistente != null) {
             return;
         }
 
@@ -225,8 +235,8 @@ class usuarioController extends Controller
 
     private function modificarUsuario($datosUsuario)
     {
-        $checkboxSeleccionada=$this->verificarCheckboxTipoUsuario($datosUsuario);
-        if($checkboxSeleccionada!=true){
+        $checkboxSeleccionada = $this->verificarCheckboxTipoUsuario($datosUsuario);
+        if ($checkboxSeleccionada != true) {
             return;
         }
         Usuarios::withTrashed()->where('Id', $datosUsuario['identificador'])->update([
@@ -352,7 +362,8 @@ class usuarioController extends Controller
         }
     }
 
-    private function verificarCheckboxTipoUsuario($datosUsuario) {
+    private function verificarCheckboxTipoUsuario($datosUsuario)
+    {
         $checkboxes = ['usuarioAdministrador', 'usuarioAlmacenero', 'usuarioChofer', 'usuarioCliente'];
         foreach ($checkboxes as $checkbox) {
             if (isset($datosUsuario[$checkbox]) && $datosUsuario[$checkbox] === 'on') {
@@ -361,5 +372,5 @@ class usuarioController extends Controller
         }
         return false;
     }
-    
+
 }

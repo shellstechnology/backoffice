@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 class productoController extends Controller
 {
     public function realizarAccion(Request $request)
-    {        
+    {
         $datosRequest = $request->all();
         switch ($request->input('accion')) {
             case 'agregar':
@@ -27,7 +27,8 @@ class productoController extends Controller
             case 'recuperar':
                 $this->recuperarProducto($datosRequest);
                 break;
-        };
+        }
+        ;
         $this->cargarDatos();
         return redirect()->route('backoffice.producto');
     }
@@ -49,20 +50,30 @@ class productoController extends Controller
 
     public function verificarDatosAgregar($datosRequest)
     {
-        $validador = $this->validarDatos($datosRequest);
-        if ($validador->fails()) {
-            return;
+        try {
+            $validador = $this->validarDatos($datosRequest);
+            if ($validador->fails()) {
+                return;
+            }
+            $this->crearProducto($datosRequest);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:Debe ingresar datos para realizar esta accion';
+            Session::put('respuesta', $mensajeDeError);
         }
-        $this->crearProducto($datosRequest);
     }
 
     public function verificarDatosModificar($datosRequest)
     {
-        $validador = $this->validarDatos($datosRequest);
-        if ($validador->fails()) {
-            return;
+        try {
+            $validador = $this->validarDatos($datosRequest);
+            if ($validador->fails()) {
+                return;
+            }
+            $this->modificarProducto($datosRequest);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:Debe ingresar datos para realizar esta accion';
+            Session::put('respuesta', $mensajeDeError);
         }
-        $this->modificarProducto($datosRequest);
     }
 
     public function eliminarProducto($datosRequest)

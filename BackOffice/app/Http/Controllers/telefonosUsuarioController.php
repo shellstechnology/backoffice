@@ -27,7 +27,8 @@ class telefonosUsuarioController extends Controller
             case 'recuperar':
                 $this->recuperarTelefonosUsuario($datosRequest);
                 break;
-        };
+        }
+        ;
         $this->cargarDatos();
         return redirect()->route('usuarios.telefonosUsuario');
     }
@@ -72,11 +73,16 @@ class telefonosUsuarioController extends Controller
 
     public function verificarDatosAgregar($datosRequest)
     {
-        $validador = $this->validarDatos($datosRequest);
-        if ($validador->fails()) {
-            $errores = $validador->getMessageBag();
+        try {
+            $validador = $this->validarDatos($datosRequest);
+            if ($validador->fails()) {
+                $errores = $validador->getMessageBag();
+            }
+            $this->crearTelefonoUsuario($datosRequest);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:Debe ingresar datos para realizar esta accion';
+            Session::put('respuesta', $mensajeDeError);
         }
-        $this->crearTelefonoUsuario($datosRequest);
     }
 
     private function validarDatos($usuario)
@@ -101,11 +107,16 @@ class telefonosUsuarioController extends Controller
 
     public function verificarDatosModificar($datosRequest)
     {
-        $validador = $this->validarDatos($datosRequest);
-        if ($validador->fails()) {
-            $errores = $validador->getMessageBag();
+        try {
+            $validador = $this->validarDatos($datosRequest);
+            if ($validador->fails()) {
+                $errores = $validador->getMessageBag();
+            }
+            $this->modificarTelefonoUsuario($datosRequest);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:Debe ingresar datos para realizar esta accion';
+            Session::put('respuesta', $mensajeDeError);
         }
-        $this->modificarTelefonoUsuario($datosRequest);
     }
 
     private function modificarTelefonoUsuario($datosTelefono)
