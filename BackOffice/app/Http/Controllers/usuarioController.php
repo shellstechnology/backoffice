@@ -34,23 +34,26 @@ class usuarioController extends Controller
                 $this->recuperarUsuario($datosRequest);
                 break;
         }
-        ;
-        $this->cargarDatos();
         return redirect()->route('backoffice.usuarios');
 
     }
     public function cargarDatos()
     {
-        $datoUsuario = Usuarios::withTrashed()->get();
-        $infoUsuario = [];
-        if ($datoUsuario) {
-            foreach ($datoUsuario as $dato) {
-                $infoUsuario[] = $this->obtenerUsuarios($dato);
+        try {
+            $datoUsuario = Usuarios::withTrashed()->get();
+            $infoUsuario = [];
+            if ($datoUsuario) {
+                foreach ($datoUsuario as $dato) {
+                    $infoUsuario[] = $this->obtenerUsuarios($dato);
+                }
             }
-        }
 
-        Session::put('usuarios', $infoUsuario);
-        return redirect()->route('backoffice.usuarios');
+            Session::put('usuarios', $infoUsuario);
+            return redirect()->route('backoffice.usuarios');
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: no se pudieron cargar los datos';
+            Session::put('respuesta', $mensajeDeError);
+        }
 
     }
 
@@ -59,6 +62,8 @@ class usuarioController extends Controller
         try {
             $validador = $this->validarDatos($datosRequest);
             if ($validador->fails()) {
+                $errores = $validador->getMessageBag();
+                Session::put('respuesta', json_encode($errores->messages()));
                 return;
             }
             $this->crearUsuario($datosRequest);
@@ -74,6 +79,8 @@ class usuarioController extends Controller
         try {
             $validador = $this->validarDatos($datosRequest);
             if ($validador->fails()) {
+                $errores = $validador->getMessageBag();
+                Session::put('respuesta', json_encode($errores->messages()));
                 return;
             }
             $this->modificarUsuario($datosRequest);
@@ -86,80 +93,114 @@ class usuarioController extends Controller
 
     public function eliminarUsuario($datosRequest)
     {
-        $id = $datosRequest['identificador'];
-        Mail_Usuarios::where('id_usuarios', $id)->delete();
-        Usuarios::where('id', $id)->delete();
+        try {
+            $id = $datosRequest['identificador'];
+            Mail_Usuarios::where('id_usuarios', $id)->delete();
+            Usuarios::where('id', $id)->delete();
+            $mensajeConfirmacion = 'Usuario eliminado exitosamente';
+            Session::put('respuesta', $mensajeConfirmacion);
+            $this->cargarDatos();
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
+        }
 
     }
 
     public function recuperarUsuario($datosRequest)
     {
-
-        $id = $datosRequest['identificador'];
-        $producto = Usuarios::onlyTrashed()->find($id);
-        if ($producto) {
-            Usuarios::where('id', $id)->restore();
-            Mail_Usuarios::where('id_usuarios', $id)->restore();
-            return response()->json(['Usuario restaurado correctamente']);
+        try {
+            $id = $datosRequest['identificador'];
+            $usuario = Usuarios::onlyTrashed()->where('id',$id)->first();
+            if ($usuario) {
+                Usuarios::where('id', $id)->restore();
+                Mail_Usuarios::where('id_usuarios', $id)->restore();
+                $mensajeConfirmacion = 'Usuario restaurado exitosamente';
+                Session::put('respuesta', $mensajeConfirmacion);
+            }
+            $this->cargarDatos();
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
         }
     }
 
     private function obtenerUsuarios($usuario)
     {
-        $mail = $this->obtenerMails($usuario);
-        $telefono = $this->obtenerTelefonos($usuario);
-        $tipoUsuario = $this->obtenerTipoUsuario($usuario);
-        return ([
-            'Id Usuario' => $usuario['id'],
-            'Nombre de Usuario' => $usuario['nombre_de_usuario'],
-            'contrasenia' => $usuario['contrasenia'],
-            'Mail' => $mail,
-            'Telefono/s' => $telefono,
-            'Tipo de Usuario' => $tipoUsuario,
-            'created_at' => $usuario['created_at'],
-            'updated_at' => $usuario['updated_at'],
-            'deleted_at' => $usuario['deleted_at']
-        ]);
+        try {
+            $mail = $this->obtenerMails($usuario);
+            $telefono = $this->obtenerTelefonos($usuario);
+            $tipoUsuario = $this->obtenerTipoUsuario($usuario);
+            return ([
+                'Id Usuario' => $usuario['id'],
+                'Nombre de Usuario' => $usuario['nombre_de_usuario'],
+                'contrasenia' => $usuario['contrasenia'],
+                'Mail' => $mail,
+                'Telefono/s' => $telefono,
+                'Tipo de Usuario' => $tipoUsuario,
+                'created_at' => $usuario['created_at'],
+                'updated_at' => $usuario['updated_at'],
+                'deleted_at' => $usuario['deleted_at']
+            ]);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
+        }
     }
 
     private function obtenerMails($usuario)
     {
-        $mail = Mail_Usuarios::withTrashed()->where('id_usuarios', $usuario['id'])->first();
-        return $mail['mail'];
+        try {
+            $mail = Mail_Usuarios::withTrashed()->where('id_usuarios', $usuario['id'])->first();
+            return $mail['mail'];
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
+        }
     }
 
     private function obtenerTelefonos($usuario)
     {
-        $listaTelefonos = [];
-        $telefonos = Telefonos_Usuarios::withTrashed()->where('id_usuarios', $usuario['id'])->get();
-        foreach ($telefonos as $telefono) {
-            $listaTelefonos[] = $telefono['telefono'];
+        try {
+            $listaTelefonos = [];
+            $telefonos = Telefonos_Usuarios::withTrashed()->where('id_usuarios', $usuario['id'])->get();
+            foreach ($telefonos as $telefono) {
+                $listaTelefonos[] = $telefono['telefono'];
+            }
+            return implode('/', $listaTelefonos);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
         }
-        return implode('/', $listaTelefonos);
     }
 
     private function obtenerTipoUsuario($usuario)
     {
-        $tiposUsuario = [];
-        $administrador = Administradores::withoutTrashed()->where('id_usuarios', $usuario['id'])->first();
-        $almacenero = Almaceneros::withoutTrashed()->where('id_usuarios', $usuario['id'])->first();
-        $chofer = Choferes::withoutTrashed()->where('id_usuarios', $usuario['id'])->first();
-        $cliente = Clientes::withoutTrashed()->where('id_usuarios', $usuario['id'])->first();
+        try {
+            $tiposUsuario = [];
+            $administrador = Administradores::withoutTrashed()->where('id_usuarios', $usuario['id'])->first();
+            $almacenero = Almaceneros::withoutTrashed()->where('id_usuarios', $usuario['id'])->first();
+            $chofer = Choferes::withoutTrashed()->where('id_usuarios', $usuario['id'])->first();
+            $cliente = Clientes::withoutTrashed()->where('id_usuarios', $usuario['id'])->first();
 
-        if ($administrador) {
-            $tiposUsuario[] = 'Administrador';
-        }
-        if ($almacenero) {
-            $tiposUsuario[] = 'Almacenero';
-        }
-        if ($chofer) {
-            $tiposUsuario[] = 'Chofer';
-        }
-        if ($cliente) {
-            $tiposUsuario[] = 'Cliente';
-        }
+            if ($administrador) {
+                $tiposUsuario[] = 'Administrador';
+            }
+            if ($almacenero) {
+                $tiposUsuario[] = 'Almacenero';
+            }
+            if ($chofer) {
+                $tiposUsuario[] = 'Chofer';
+            }
+            if ($cliente) {
+                $tiposUsuario[] = 'Cliente';
+            }
 
-        return implode('/', $tiposUsuario);
+            return implode('/', $tiposUsuario);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
+        }
     }
 
 
@@ -180,197 +221,261 @@ class usuarioController extends Controller
     }
     private function crearUsuario($datosUsuario)
     {
-        $checkboxSeleccionada = $this->verificarCheckboxTipoUsuario($datosUsuario);
-        if ($checkboxSeleccionada != true) {
-            return;
-        }
-        $mailExistente = Mail_Usuarios::withTrashed()->where('mail', $datosUsuario['mail'])->first();
-        $contraseniaExistente = Usuarios::withTrashed()->where('contrasenia', $datosUsuario['contrasenia'])->first();
-        if ($mailExistente != null) {
-            return;
-        }
-        if ($contraseniaExistente != null) {
-            return;
-        }
+        try {
+            $checkboxSeleccionada = $this->verificarCheckboxTipoUsuario($datosUsuario);
+            if ($checkboxSeleccionada != true) {
+                return;
+            }
+            $mailExistente = Mail_Usuarios::withTrashed()->where('mail', $datosUsuario['mail'])->first();
+            $contraseniaExistente = Usuarios::withTrashed()->where('contrasenia', $datosUsuario['contrasenia'])->first();
+            if ($mailExistente != null) {
+                return;
+            }
+            if ($contraseniaExistente != null) {
+                return;
+            }
 
-        $usuario = new Usuarios;
-        $usuario->nombre_de_usuario = $datosUsuario['nombre'];
-        $usuario->contrasenia = $datosUsuario['contrasenia'];
-        $usuario->save();
-        $idUsuario = $usuario->getKey();
-        $this->crearMailUsuario($datosUsuario, $idUsuario);
-        $this->establecerTipoUsuario($datosUsuario, $idUsuario);
+            $usuario = new Usuarios;
+            $usuario->nombre_de_usuario = $datosUsuario['nombre'];
+            $usuario->contrasenia = $datosUsuario['contrasenia'];
+            $usuario->save();
+            $idUsuario = $usuario->getKey();
+            $this->crearMailUsuario($datosUsuario, $idUsuario);
+            $this->establecerTipoUsuario($datosUsuario, $idUsuario);
+            $mensajeConfirmacion = 'Usuario creado exitosamente';
+            Session::put('respuesta', $mensajeConfirmacion);
+            $this->cargarDatos();
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
+        }
     }
     private function crearMailUsuario($usuario, $idUsuario)
     {
-        $mailUsuario = new Mail_Usuarios;
-        $mailUsuario->id_usuarios = $idUsuario;
-        $mailUsuario->mail = $usuario['mail'];
-        $mailUsuario->save();
+        try {
+            $mailUsuario = new Mail_Usuarios;
+            $mailUsuario->id_usuarios = $idUsuario;
+            $mailUsuario->mail = $usuario['mail'];
+            $mailUsuario->save();
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
+        }
     }
 
     private function establecerTipoUsuario($datoUsuario, $idUsuario)
     {
-        if (isset($datoUsuario['usuarioAdministrador'])) {
-            $administrador = new Administradores;
-            $administrador->id_usuarios = $idUsuario;
-            $administrador->save();
-        }
-        if (isset($datoUsuario['usuarioAlmacenero'])) {
-            $almacenero = new Almaceneros;
-            $almacenero->id_usuarios = $idUsuario;
-            $almacenero->save();
-        }
-        if (isset($datoUsuario['usuarioChofer'])) {
-            $choferes = new Choferes;
-            $choferes->id_usuarios = $idUsuario;
-            $choferes->save();
-        }
-        if (isset($datoUsuario['usuarioCliente'])) {
-            $cliente = new Clientes;
-            $cliente->id_usuarios = $idUsuario;
-            $cliente->save();
+        try {
+            if (isset($datoUsuario['usuarioAdministrador'])) {
+                $administrador = new Administradores;
+                $administrador->id_usuarios = $idUsuario;
+                $administrador->save();
+            }
+            if (isset($datoUsuario['usuarioAlmacenero'])) {
+                $almacenero = new Almaceneros;
+                $almacenero->id_usuarios = $idUsuario;
+                $almacenero->save();
+            }
+            if (isset($datoUsuario['usuarioChofer'])) {
+                $choferes = new Choferes;
+                $choferes->id_usuarios = $idUsuario;
+                $choferes->save();
+            }
+            if (isset($datoUsuario['usuarioCliente'])) {
+                $cliente = new Clientes;
+                $cliente->id_usuarios = $idUsuario;
+                $cliente->save();
+            }
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
         }
     }
 
     private function modificarUsuario($datosUsuario)
     {
-        $checkboxSeleccionada = $this->verificarCheckboxTipoUsuario($datosUsuario);
-        if ($checkboxSeleccionada != true) {
-            return;
+        try {
+            $checkboxSeleccionada = $this->verificarCheckboxTipoUsuario($datosUsuario);
+            if ($checkboxSeleccionada != true) {
+                return;
+            }
+            Usuarios::withTrashed()->where('Id', $datosUsuario['identificador'])->update([
+                'nombre_de_usuario' => $datosUsuario['nombre'],
+                'contrasenia' => $datosUsuario['contrasenia'],
+            ]);
+            $this->modificarMailUsuario($datosUsuario);
+            $this->seleccionarTipoUsuario($datosUsuario);
+            $mensajeConfirmacion = 'Usuario modificado exitosamente';
+            Session::put('respuesta', $mensajeConfirmacion);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
         }
-        Usuarios::withTrashed()->where('Id', $datosUsuario['identificador'])->update([
-            'nombre_de_usuario' => $datosUsuario['nombre'],
-            'contrasenia' => $datosUsuario['contrasenia'],
-        ]);
-        $this->modificarMailUsuario($datosUsuario);
-        $this->seleccionarTipoUsuario($datosUsuario);
     }
     private function modificarMailUsuario($usuario)
     {
-        Mail_Usuarios::withTrashed()->where('id_usuarios', $usuario['identificador'])->update([
-            'mail' => $usuario['mail'],
-        ]);
+        try {
+            Mail_Usuarios::withTrashed()->where('id_usuarios', $usuario['identificador'])->update([
+                'mail' => $usuario['mail'],
+            ]);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
+        }
     }
 
     private function seleccionarTipoUsuario($datoUsuario)
     {
-        $administrador = null;
-        $almacenero = null;
-        $chofer = null;
-        $cliente = null;
-        if (isset($datoUsuario['usuarioAdministrador'])) {
-            $administrador = 'crear';
+        try {
+            $administrador = null;
+            $almacenero = null;
+            $chofer = null;
+            $cliente = null;
+            if (isset($datoUsuario['usuarioAdministrador'])) {
+                $administrador = 'crear';
+            }
+            if (isset($datoUsuario['usuarioAlmacenero'])) {
+                $almacenero = 'crear';
+            }
+            if (isset($datoUsuario['usuarioChofer'])) {
+                $chofer = 'crear';
+            }
+            if (isset($datoUsuario['usuarioCliente'])) {
+                $cliente = 'crear';
+            }
+            $this->modificarTipoUsuario($datoUsuario, $administrador, $almacenero, $chofer, $cliente);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
         }
-        if (isset($datoUsuario['usuarioAlmacenero'])) {
-            $almacenero = 'crear';
-        }
-        if (isset($datoUsuario['usuarioChofer'])) {
-            $chofer = 'crear';
-        }
-        if (isset($datoUsuario['usuarioCliente'])) {
-            $cliente = 'crear';
-        }
-        $this->modificarTipoUsuario($datoUsuario, $administrador, $almacenero, $chofer, $cliente);
-
     }
 
     private function modificarTipoUsuario($datoUsuario, $administrador, $almacenero, $chofer, $cliente)
     {
-        switch ($administrador) {
-            case 'crear':
-                $datoAdministardor = Administradores::withTrashed()->updateOrCreate(['id_usuarios' => $datoUsuario['identificador']]);
+        try {
+            switch ($administrador) {
+                case 'crear':
+                    $datoAdministardor = Administradores::withTrashed()->updateOrCreate(['id_usuarios' => $datoUsuario['identificador']]);
 
-                if ($datoAdministardor->trashed()) {
-                    $datoAdministardor->restore();
-                }
-                break;
-            default:
-                $this->eliminarAdministrador($datoUsuario);
+                    if ($datoAdministardor->trashed()) {
+                        $datoAdministardor->restore();
+                    }
+                    break;
+                default:
+                    $this->eliminarAdministrador($datoUsuario);
 
-        }
+            }
 
-        switch ($almacenero) {
-            case 'crear':
-                $datoAlmacenero = Almaceneros::withTrashed()->updateOrCreate(['id_usuarios' => $datoUsuario['identificador']]);
+            switch ($almacenero) {
+                case 'crear':
+                    $datoAlmacenero = Almaceneros::withTrashed()->updateOrCreate(['id_usuarios' => $datoUsuario['identificador']]);
 
-                if ($datoAlmacenero->trashed()) {
-                    $datoAlmacenero->restore();
-                }
-                break;
-            default:
-                $this->eliminarAlmacenero($datoUsuario);
+                    if ($datoAlmacenero->trashed()) {
+                        $datoAlmacenero->restore();
+                    }
+                    break;
+                default:
+                    $this->eliminarAlmacenero($datoUsuario);
 
-        }
+            }
 
-        switch ($chofer) {
-            case 'crear':
-                $datoChofer = Choferes::withTrashed()->updateOrCreate(['id_usuarios' => $datoUsuario['identificador']]);
+            switch ($chofer) {
+                case 'crear':
+                    $datoChofer = Choferes::withTrashed()->updateOrCreate(['id_usuarios' => $datoUsuario['identificador']]);
 
-                if ($datoChofer->trashed()) {
-                    $datoChofer->restore();
-                }
-                break;
-            default:
-                $this->eliminarChofer($datoUsuario);
+                    if ($datoChofer->trashed()) {
+                        $datoChofer->restore();
+                    }
+                    break;
+                default:
+                    $this->eliminarChofer($datoUsuario);
 
-        }
+            }
 
-        switch ($cliente) {
-            case 'crear':
-                $datoCliente = Clientes::withTrashed()->updateOrCreate(['id_usuarios' => $datoUsuario['identificador']]);
+            switch ($cliente) {
+                case 'crear':
+                    $datoCliente = Clientes::withTrashed()->updateOrCreate(['id_usuarios' => $datoUsuario['identificador']]);
 
-                if ($datoCliente->trashed()) {
-                    $datoCliente->restore();
-                }
-                break;
-            default:
-                $this->eliminarCliente($datoUsuario);
+                    if ($datoCliente->trashed()) {
+                        $datoCliente->restore();
+                    }
+                    break;
+                default:
+                    $this->eliminarCliente($datoUsuario);
 
+            }
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
         }
     }
 
     private function eliminarAdministrador($datoUsuario)
     {
-        $admnistrador = Administradores::withoutTrashed()->where('id_usuarios', $datoUsuario['identificador'])->first();
-        if (isset($admnistrador)) {
-            $admnistrador->delete();
+        try {
+            $admnistrador = Administradores::withoutTrashed()->where('id_usuarios', $datoUsuario['identificador'])->first();
+            if (isset($admnistrador)) {
+                $admnistrador->delete();
+            }
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
         }
     }
 
     private function eliminarAlmacenero($datoUsuario)
     {
-        $almacenero = Almaceneros::withoutTrashed()->where('id_usuarios', $datoUsuario['identificador'])->first();
-        if (isset($almacenero)) {
-            $almacenero->delete();
+        try {
+            $almacenero = Almaceneros::withoutTrashed()->where('id_usuarios', $datoUsuario['identificador'])->first();
+            if (isset($almacenero)) {
+                $almacenero->delete();
+            }
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
         }
     }
 
     private function eliminarCliente($datoUsuario)
     {
-        $cliente = Clientes::withoutTrashed()->where('id_usuarios', $datoUsuario['identificador'])->first();
-        if (isset($cliente)) {
-            $cliente->delete();
+        try {
+            $cliente = Clientes::withoutTrashed()->where('id_usuarios', $datoUsuario['identificador'])->first();
+            if (isset($cliente)) {
+                $cliente->delete();
+            }
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
         }
     }
 
     private function eliminarChofer($datoUsuario)
     {
-        $chofer = Choferes::withoutTrashed()->where('id_usuarios', $datoUsuario['identificador'])->first();
-        if (isset($chofer)) {
-            $chofer->delete();
+        try {
+            $chofer = Choferes::withoutTrashed()->where('id_usuarios', $datoUsuario['identificador'])->first();
+            if (isset($chofer)) {
+                $chofer->delete();
+            }
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
         }
     }
 
     private function verificarCheckboxTipoUsuario($datosUsuario)
     {
-        $checkboxes = ['usuarioAdministrador', 'usuarioAlmacenero', 'usuarioChofer', 'usuarioCliente'];
-        foreach ($checkboxes as $checkbox) {
-            if (isset($datosUsuario[$checkbox]) && $datosUsuario[$checkbox] === 'on') {
-                return true;
+        try {
+            $checkboxes = ['usuarioAdministrador', 'usuarioAlmacenero', 'usuarioChofer', 'usuarioCliente'];
+            foreach ($checkboxes as $checkbox) {
+                if (isset($datosUsuario[$checkbox]) && $datosUsuario[$checkbox] === 'on') {
+                    return true;
+                }
             }
+            return false;
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
         }
-        return false;
     }
 
 }

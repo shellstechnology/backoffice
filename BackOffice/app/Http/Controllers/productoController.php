@@ -27,25 +27,28 @@ class productoController extends Controller
             case 'recuperar':
                 $this->recuperarProducto($datosRequest);
                 break;
-        }
-        ;
-        $this->cargarDatos();
+        };
         return redirect()->route('backoffice.producto');
     }
     public function cargarDatos()
     {
-        $datoProducto = Producto::withTrashed()->get();
-        $infoProducto = [];
-        $infoMonedas = [];
-        if ($datoProducto) {
-            foreach ($datoProducto as $dato) {
-                $infoProducto[] = $this->obtenerProducto($dato);
+        try{
+            $datoProducto = Producto::withTrashed()->get();
+            $infoProducto = [];
+            $infoMonedas = [];
+            if ($datoProducto) {
+                foreach ($datoProducto as $dato) {
+                    $infoProducto[] = $this->obtenerProducto($dato);
+                }
             }
+            $infoMonedas = $this->obtenerMonedas();
+            Session::put('monedas', $infoMonedas);
+            Session::put('producto', $infoProducto);
+            return redirect()->route('backoffice.producto');
+        } catch (\Exception $e){
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
         }
-        $infoMonedas = $this->obtenerMonedas();
-        Session::put('monedas', $infoMonedas);
-        Session::put('producto', $infoProducto);
-        return redirect()->route('backoffice.producto');
     }
 
     public function verificarDatosAgregar($datosRequest)
@@ -53,6 +56,8 @@ class productoController extends Controller
         try {
             $validador = $this->validarDatos($datosRequest);
             if ($validador->fails()) {
+                $errores = $validador->getMessageBag();
+                Session::put('respuesta', json_encode($errores->messages()));
                 return;
             }
             $this->crearProducto($datosRequest);
@@ -67,6 +72,8 @@ class productoController extends Controller
         try {
             $validador = $this->validarDatos($datosRequest);
             if ($validador->fails()) {
+                $errores = $validador->getMessageBag();
+                Session::put('respuesta', json_encode($errores->messages()));
                 return;
             }
             $this->modificarProducto($datosRequest);
@@ -78,46 +85,72 @@ class productoController extends Controller
 
     public function eliminarProducto($datosRequest)
     {
-        $producto = Producto::withoutTrashed()->where('id', $datosRequest['identificador'])->first();
-        if ($producto) {
-            $producto->delete();
+        try{
+            $producto = Producto::withoutTrashed()->where('id', $datosRequest['identificador'])->first();
+            if ($producto) {
+                $producto->delete();
+                $mensajeConfirmacion = 'Paquete eliminado exitosamente';
+                Session::put('respuesta', $mensajeConfirmacion);
+            }
+            $this->cargarDatos();
+        } catch (\Exception $e){
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
         }
     }
 
     public function recuperarProducto($datosRequest)
     {
-        $producto = Producto::onlyTrashed()->where('id', $datosRequest['identificador'])->first();
-        if ($producto) {
-            $producto->restore();
+        try{
+            $producto = Producto::onlyTrashed()->where('id', $datosRequest['identificador'])->first();
+            if ($producto) {
+                $producto->restore();
+                $mensajeConfirmacion = 'Paquete recuperado exitosamente';
+                Session::put('respuesta', $mensajeConfirmacion);
+            }
+            $this->cargarDatos();
+        }catch (\Exception $e){
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
         }
     }
 
     private function obtenerProducto($producto)
     {
-        $moneda = Moneda::withTrashed()->where('id', $producto['id_moneda'])->first();
-        return ([
-            'Id' => $producto['id'],
-            'Nombre' => $producto['nombre'],
-            'Stock' => $producto['stock'],
-            'Precio' => $producto['precio'],
-            'Moneda' => $moneda['moneda'],
-            'created_at' => $producto['created_at'],
-            'updated_at' => $producto['updated_at'],
-            'deleted_at' => $producto['deleted_at']
-        ]);
+        try {
+            $moneda = Moneda::withTrashed()->where('id', $producto['id_moneda'])->first();
+            return ([
+                'Id' => $producto['id'],
+                'Nombre' => $producto['nombre'],
+                'Stock' => $producto['stock'],
+                'Precio' => $producto['precio'],
+                'Moneda' => $moneda['moneda'],
+                'created_at' => $producto['created_at'],
+                'updated_at' => $producto['updated_at'],
+                'deleted_at' => $producto['deleted_at']
+            ]);
+        } catch (\Exception $e){
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
+        }
 
     }
 
     private function obtenerMonedas()
     {
-        $infoMonedas = [];
-        $monedas = moneda::withTrashed()->get();
-        if ($monedas) {
-            foreach ($monedas as $datoMoneda) {
-                $infoMonedas[] = $datoMoneda['moneda'];
+        try{
+            $infoMonedas = [];
+            $monedas = moneda::withTrashed()->get();
+            if ($monedas) {
+                foreach ($monedas as $datoMoneda) {
+                    $infoMonedas[] = $datoMoneda['moneda'];
+                }
             }
+            return $infoMonedas;
+        } catch (\Exception $e){
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
         }
-        return $infoMonedas;
     }
 
     private function validarDatos($producto)
@@ -138,30 +171,51 @@ class productoController extends Controller
 
     private function crearProducto($producto)
     {
-        $moneda = $this->obtenerMoneda($producto['tipoMoneda']);
-        $nuevoProducto = new Producto;
-        $nuevoProducto->nombre = $producto['nombre'];
-        $nuevoProducto->precio = $producto['precio'];
-        $nuevoProducto->id_moneda = $moneda;
-        $nuevoProducto->stock = $producto['stock'];
-        $nuevoProducto->save();
+        try {
+            $moneda = $this->obtenerMoneda($producto['tipoMoneda']);
+            $nuevoProducto = new Producto;
+            $nuevoProducto->nombre = $producto['nombre'];
+            $nuevoProducto->precio = $producto['precio'];
+            $nuevoProducto->id_moneda = $moneda;
+            $nuevoProducto->stock = $producto['stock'];
+            $nuevoProducto->save();
+            $mensajeConfirmacion = 'Producto creado exitosamente';
+            Session::put('respuesta', $mensajeConfirmacion);
+            $this->cargarDatos();
+        } catch (\Exception $e){
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
+        }
     }
 
     private function obtenerMoneda($producto)
     {
-        $datosMoneda = Moneda::withTrashed()->where('moneda', $producto)->first();
-        $moneda = $datosMoneda['id'];
-        return $moneda;
+        try{
+            $datosMoneda = Moneda::withTrashed()->where('moneda', $producto)->first();
+            $moneda = $datosMoneda['id'];
+            return $moneda;
+        } catch (\Exception $e){
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
+        }
     }
 
     private function modificarProducto($producto)
     {
-        $moneda = $this->obtenerMoneda($producto['tipoMoneda']);
-        Producto::where('id', $producto['identificador'])->update([
-            'nombre' => $producto['nombre'],
-            'precio' => $producto['precio'],
-            'id_moneda' => $moneda,
-            'stock' => $producto['stock'],
-        ]);
+        try{
+            $moneda = $this->obtenerMoneda($producto['tipoMoneda']);
+            Producto::where('id', $producto['identificador'])->update([
+                'nombre' => $producto['nombre'],
+                'precio' => $producto['precio'],
+                'id_moneda' => $moneda,
+                'stock' => $producto['stock'],
+            ]);
+            $mensajeConfirmacion = 'Paquete recuperar exitosamente';
+            Session::put('respuesta', $mensajeConfirmacion);
+            $this->cargarDatos();
+        } catch (\Exception $e){
+            $mensajeDeError = 'Error: ';
+            Session::put('respuesta', $mensajeDeError);
+        }
     }
 }

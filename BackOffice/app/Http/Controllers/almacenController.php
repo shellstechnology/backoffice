@@ -80,7 +80,7 @@ class almacenController extends Controller
                 }
                 return $datoId;
             } catch (\Exception $e) {
-                $mensajeDeError = 'Error,no se pudieron cargar los datos:No se pudo obtener los datos de un lugar entrega ';
+                $mensajeDeError = 'Error:no se pudieron cargar los datos:No se pudo obtener los datos de un lugar entrega ';
                 Session::put('respuesta', $mensajeDeError);
             }
         }
@@ -107,7 +107,7 @@ class almacenController extends Controller
     public function eliminarAlmacen($datosRequest)
     { {
             try {
-                $id = $datosRequest['identifiddcador'];
+                $id = $datosRequest['identificador'];
                 $almacen = Almacenes::withoutTrashed()->find($id);
                 if ($almacen) {
                     $almacen->delete();
@@ -163,23 +163,18 @@ class almacenController extends Controller
     }
 
     private function validarDatos($almacen)
-    { {
-            try {
-                $reglas = [
-                    'lugar' => 'required|numeric',
-                ];
-                $messages = [
-                    'lugar.required' => 'Es necesario que ingreses el Id de un Lugar',
-                    'lugar.numeric' => 'El Id del Lugar debe ser un Numero'
-                ];
-                return Validator::make([
-                    'lugar' => $almacen['idLugarEntrega'],
-                ], $reglas, $messages);
-            } catch (\Exception $e) {
-                $mensajeDeError = 'Algo salio mal al intentar validar los datos';
-                Session::put('respuestaDetallada', $mensajeDeError);
-            }
-        }
+    {
+        $reglas = [
+            'lugar' => 'required|numeric',
+        ];
+        $messages = [
+            'lugar.required' => 'Es necesario que ingreses el Id de un Lugar',
+            'lugar.numeric' => 'El Id del Lugar debe ser un Numero'
+        ];
+        return Validator::make([
+            'lugar' => $almacen['idLugarEntrega'],
+        ], $reglas, $messages);
+
     }
 
     private function crearAlmacen($almacen)

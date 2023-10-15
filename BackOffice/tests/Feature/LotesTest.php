@@ -15,7 +15,7 @@ class LotesTest extends TestCase
 
         $response = $this->followingRedirects()->post('/lotes',
         [
-            "cbxAgregar" => "on",
+            "accion" => "agregar",
             "identificador" => "101",
 
         ]);
@@ -32,7 +32,7 @@ class LotesTest extends TestCase
 
        public function test_EliminarUnLote(){
         $response = $this->followingRedirects()->post('/lotes',[
-            "cbxEliminar" => "on",
+            "accion" => "eliminar",
             "identificador" => "74"
         ]);
         $response->assertStatus(200);
@@ -42,13 +42,13 @@ class LotesTest extends TestCase
 
        public function test_RecuprarUnLote(){
         $response1 = $this->followingRedirects()->post('/lotes',[
-            "cbxEliminar" => "on",
+            "accion" => "eliminar",
             "identificador" => "74"
         ]);
         $response1->assertStatus(200);
     
         $response2 = $this->followingRedirects()->post('/lotes',[
-            "cbxRecuperar" => "on",
+            "accion" => "recuperar",
             "identificador" => "74"
         ]);
       $response2->assertStatus(200);

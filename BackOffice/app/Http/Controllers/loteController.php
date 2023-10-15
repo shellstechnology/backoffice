@@ -22,8 +22,7 @@ class loteController extends Controller
             case 'recuperar':
                 $this->recuperarLote($datosRequest);
                 break;
-        }
-        ;
+        };
         return redirect()->route('backoffice.lote');
     }
 
