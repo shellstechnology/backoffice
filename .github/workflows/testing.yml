@@ -30,7 +30,7 @@ jobs:
       - name: Create Database
         env:
           DB_HOST: mysql
-        run: fast_tracker_db v1.3.sql
+        run: mysql -u root < fast_tracker_db v1.3.sql
       - name: Seed Database
         env:
           DB_HOST: mysql
