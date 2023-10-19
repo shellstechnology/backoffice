@@ -1,0 +1,43 @@
+name: Laravel
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  laravel-tests:
+
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_DATABASE: fast_tracker_db
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+        ports:
+          - 3306:3306
+    container:
+      image: ggmartinez/laravel:php-82
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Solucion Preventiva de Errores de Carpeta
+      run: cd Backoffice
+    - name: Copy .env
+      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+    - name: Install Dependencies
+      run: composer install 
+    - name: Generate key
+      run: php artisan key:generate
+    - name: Create Database
+      env: 
+        DB_HOST: mysql
+      run: https://raw.githubusercontent.com/shellstechnology/Database/main/fast_tracker_db%20v1.3.sql 
+    - name: Seed Database
+      env:
+        DB_HOST: mysql
+      run: php artisan seed
+    - name: Execute tests (Unit and Feature tests) via PHPUnit
+      env:  
+        DB_HOST: mysql
+      run: php artisan test
