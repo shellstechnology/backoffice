@@ -8,7 +8,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{asset('js/funciones.js')}}"> </script>
 </head>
-@include('header')
 <body>
   <div class="barraDeNavegacion">
   <a href="{{ route('backoffice') }}" class="item">Menu Principal</a>
@@ -49,12 +48,12 @@
              </fieldset>
           <div class="contenedorDatos">
             <div class="campo">
-            <input type="text" id="nombre" name="nombre" maxlength="50" required></input>
+            <input type="text" id="nombre" name="nombre" maxlength="50" ></input>
             <label for="nombreProducto" >Nombre</label>
           </div>
           <div class="campo">
             <input type="number" id="precio" name="precio" min="1" max="99999999" onkeydown="filtro(event)" 
-              oninput="limitarInput(this, 7)" onpaste="return false" required></input>
+              oninput="limitarInput(this, 7)" onpaste="return false" ></input>
             <label for="precioProducto" >Precio </label>
           </div>
           <div class="campo">
@@ -62,7 +61,7 @@
           </div>
           <div class="campo">
             <input type="number" id="stock" name="stock" min="0" max="999999" onkeydown="filtro(event)" 
-            onpaste="return false"; required></input>
+            onpaste="return false"; ></input>
             <label for="stockProducto" >Stock</label>
             <input type="hidden" name="producto"> </input>
             <input type="hidden" name="identificador" id="identificador"> </input>
@@ -79,6 +78,6 @@
        </div>
      </div>
     </div>
+    <x-mensaje-respuesta-component/>
   </body>
-  @include('footer')
 </html>

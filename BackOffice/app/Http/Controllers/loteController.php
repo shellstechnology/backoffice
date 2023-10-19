@@ -14,7 +14,7 @@ class loteController extends Controller
         $datosRequest = $request->all();
         switch ($request->input('accion')) {
             case 'agregar':
-                $this->verificarDatosAgregar();
+                $this->agregarLote();
                 break;
             case 'eliminar':
                 $this->eliminarLote($datosRequest);
@@ -22,63 +22,96 @@ class loteController extends Controller
             case 'recuperar':
                 $this->recuperarLote($datosRequest);
                 break;
-        }
-        ;
-        $this->cargarDatos();
+        };
         return redirect()->route('backoffice.lote');
     }
 
     public function cargarDatos()
     {
-        $datoLote = Lotes::withTrashed()->get();
-        $infoLote= [];
-        if ($datoLote) {
-            foreach ($datoLote as $lote) {
-                $infoLote []= $this->obtenerDatosLotes($lote);
+        try {
+            $datoLote = Lotes::withTrashed()->get();
+            $infoLote = [];
+            if ($datoLote) {
+                foreach ($datoLote as $lote) {
+                    $infoLote[] = $this->obtenerDatosLotes($lote);
+                }
+                Session::put('lotes', $infoLote);
             }
-            Session::put('lotes', $infoLote);
-            return redirect()->route('backoffice.lote');
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error,no se pudieron cargar los datos';
+            Session::put('respuesta', $mensajeDeError);
         }
+        return redirect()->route('backoffice.lote');
     }
 
-    public function verificarDatosAgregar()
+    public function agregarLote()
     {
-        $lote = new Lotes;
-        $lote->volumen_l = 0;
-        $lote->peso_kg = 0;
-        $lote->save();
+        try {
+            $lote = new Lotes;
+            $lote->volumen_l = 0;
+            $lote->peso_kg = 0;
+            $lote->save();
+            $mensajeRespuesta = 'Lote agregado correctamente';
+            Session::put('respuesta', $mensajeRespuesta);
+            $this->cargarDatos();
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error,no se pudo agregar el lote';
+            Session::put('respuesta', $mensajeDeError);
+        }
+        return redirect()->route('backoffice.lote');
     }
 
     public function eliminarLote($datosRequest)
     {
-        $id = $datosRequest['identificador'];
-        $lote = Lotes::withoutTrashed()->find($id);
-        if ($lote) {
-            Lotes::where('id', $datosRequest['identificador'])->delete();
+        try {
+            $id = $datosRequest['identificador'];
+            $lote = Lotes::withoutTrashed()->find($id);
+            if ($lote) {
+                Lotes::where('id', $datosRequest['identificador'])->delete();
+                $mensajeRespuesta = 'Lote eliminado correctamente';
+                Session::put('respuesta', $mensajeRespuesta);
+            }
+            $this->cargarDatos();
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error,no se pudo agregar el lote';
+            Session::put('respuesta', $mensajeDeError);
         }
+        return redirect()->route('backoffice.lote');
     }
 
     public function recuperarLote($datosRequest)
     {
-        $id = $datosRequest['identificador'];
-        $lote = Lotes::onlyTrashed()->find($id);
-        if ($lote) {
-            Lotes::where('id', $id)->restore();
+        try {
+            $id = $datosRequest['identificador'];
+            $lote = Lotes::onlyTrashed()->find($id);
+            if ($lote) {
+                Lotes::where('id', $id)->restore();
+                $mensajeRespuesta = 'Lote restaurado correctamente';
+                Session::put('respuesta', $mensajeRespuesta);
+            }
+            $this->cargarDatos();
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error,no se pudo agregar el lote';
+            Session::put('respuesta', $mensajeDeError);
         }
         return redirect()->route('backoffice.lote');
     }
 
     private function obtenerDatosLotes($lote)
     {
-
-        return ([
-            'Id Lote' => $lote['id'],
-            'Volumen(L)' => $lote['volumen_l'],
-            'Peso(Kg)' => $lote['peso_kg'],
-            'created_at' => $lote['created_at'],
-            'updated_at' => $lote['updated_at'],
-            'deleted_at' => $lote['deleted_at'],
-        ]);
+        try {
+            return ([
+                'Id Lote' => $lote['id'],
+                'Volumen(L)' => $lote['volumen_l'],
+                'Peso(Kg)' => $lote['peso_kg'],
+                'created_at' => $lote['created_at'],
+                'updated_at' => $lote['updated_at'],
+                'deleted_at' => $lote['deleted_at'],
+            ]);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error,no se pudieron obtener los datos de un lote';
+            Session::put('respuesta', $mensajeDeError);
+        }
 
     }
 }
