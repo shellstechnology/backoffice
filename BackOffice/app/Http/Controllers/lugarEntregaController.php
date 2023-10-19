@@ -40,11 +40,11 @@ class lugarEntregaController extends Controller
             }
 
             Session::put('lugaresEntrega', $infoLugarEntrega);
-            return redirect()->route('almacen.lugarEntrega');
         } catch (\Exception $e) {
             $mensajeDeError = 'Error: no se pudieron cargar los datos';
             Session::put('respuesta', $mensajeDeError);
         }
+        return redirect()->route('almacen.lugarEntrega');
     }
 
     public function verificarDatosAgregar($datosRequest)

@@ -52,7 +52,7 @@
           <x-select-usuario-component/>
          </div>
        <div class="campo">
-           <input type="text" id="telefono" name="telefono" onpaste="return false" required></input>
+           <input type="text" id="telefono" name="telefono" onpaste="return false" ></input>
            <label for="latitud" >Numero de telefono</label>
         </div>
           <div class="contenedorDatos">

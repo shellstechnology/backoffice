@@ -89,7 +89,7 @@ class productoController extends Controller
             $producto = Producto::withoutTrashed()->where('id', $datosRequest['identificador'])->first();
             if ($producto) {
                 $producto->delete();
-                $mensajeConfirmacion = 'Paquete eliminado exitosamente';
+                $mensajeConfirmacion = 'Producto eliminado exitosamente';
                 Session::put('respuesta', $mensajeConfirmacion);
             }
             $this->cargarDatos();
@@ -105,7 +105,7 @@ class productoController extends Controller
             $producto = Producto::onlyTrashed()->where('id', $datosRequest['identificador'])->first();
             if ($producto) {
                 $producto->restore();
-                $mensajeConfirmacion = 'Paquete recuperado exitosamente';
+                $mensajeConfirmacion = 'Producto recuperado exitosamente';
                 Session::put('respuesta', $mensajeConfirmacion);
             }
             $this->cargarDatos();
@@ -210,7 +210,7 @@ class productoController extends Controller
                 'id_moneda' => $moneda,
                 'stock' => $producto['stock'],
             ]);
-            $mensajeConfirmacion = 'Paquete recuperar exitosamente';
+            $mensajeConfirmacion = 'Producto modificado exitosamente';
             Session::put('respuesta', $mensajeConfirmacion);
             $this->cargarDatos();
         } catch (\Exception $e){

@@ -36,12 +36,12 @@ class loteController extends Controller
                     $infoLote[] = $this->obtenerDatosLotes($lote);
                 }
                 Session::put('lotes', $infoLote);
-                return redirect()->route('backoffice.lote');
             }
         } catch (\Exception $e) {
             $mensajeDeError = 'Error,no se pudieron cargar los datos';
             Session::put('respuesta', $mensajeDeError);
         }
+        return redirect()->route('backoffice.lote');
     }
 
     public function agregarLote()
@@ -51,13 +51,14 @@ class loteController extends Controller
             $lote->volumen_l = 0;
             $lote->peso_kg = 0;
             $lote->save();
-            $mensajeRespuesta = 'Almacen agregado correctamente';
+            $mensajeRespuesta = 'Lote agregado correctamente';
             Session::put('respuesta', $mensajeRespuesta);
             $this->cargarDatos();
         } catch (\Exception $e) {
             $mensajeDeError = 'Error,no se pudo agregar el lote';
             Session::put('respuesta', $mensajeDeError);
         }
+        return redirect()->route('backoffice.lote');
     }
 
     public function eliminarLote($datosRequest)
@@ -67,7 +68,7 @@ class loteController extends Controller
             $lote = Lotes::withoutTrashed()->find($id);
             if ($lote) {
                 Lotes::where('id', $datosRequest['identificador'])->delete();
-                $mensajeRespuesta = 'Almacen eliminado correctamente';
+                $mensajeRespuesta = 'Lote eliminado correctamente';
                 Session::put('respuesta', $mensajeRespuesta);
             }
             $this->cargarDatos();
@@ -75,6 +76,7 @@ class loteController extends Controller
             $mensajeDeError = 'Error,no se pudo agregar el lote';
             Session::put('respuesta', $mensajeDeError);
         }
+        return redirect()->route('backoffice.lote');
     }
 
     public function recuperarLote($datosRequest)
@@ -84,7 +86,7 @@ class loteController extends Controller
             $lote = Lotes::onlyTrashed()->find($id);
             if ($lote) {
                 Lotes::where('id', $id)->restore();
-                $mensajeRespuesta = 'Almacen restaurado correctamente';
+                $mensajeRespuesta = 'Lote restaurado correctamente';
                 Session::put('respuesta', $mensajeRespuesta);
             }
             $this->cargarDatos();
@@ -92,6 +94,7 @@ class loteController extends Controller
             $mensajeDeError = 'Error,no se pudo agregar el lote';
             Session::put('respuesta', $mensajeDeError);
         }
+        return redirect()->route('backoffice.lote');
     }
 
     private function obtenerDatosLotes($lote)

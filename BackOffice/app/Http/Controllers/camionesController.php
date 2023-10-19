@@ -250,7 +250,7 @@ private function modificarCamion($camion)
         if ($camion['matricula'] != $camion['identificador']) {
             $this->agregarNuevoCamion($camion, $idModelo, $estado);
         }
-        Camiones::withTrashed()->where('matricula', $camion['identificador'])->update([
+        Camiones::withTrashed()->where('matricula', $camion['matricula'])->update([
             'id_modelo_marca' => $idModelo['id'],
             'id_estado_c' => $estado['id'],
             'volumen_max_l' => $camion['volumen'],
@@ -270,9 +270,10 @@ private function modificarCamion($camion)
         }
         if ($camion['matricula'] != $camion['identificador'])
             Camiones::withTrashed()->where('matricula', $camion['identificador'])->forceDelete();
-
+        
             $mensajeConfirmacion = 'Camion modificado exitosamente';
             Session::put('respuesta', $mensajeConfirmacion);
+            $this->cargarDatos();
     } catch (\Exception $e) {
         $mensajeDeError = 'Error,no se pudo modificar el camion';
         Session::put('respuesta', $mensajeDeError);

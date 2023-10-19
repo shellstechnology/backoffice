@@ -49,17 +49,17 @@
              </fieldset>
         <div class="contenedorDatos">
           <div class="campo">
-            <input type="text" id="direccion" name="direccion" maxlength="100" required></input>
+            <input type="text" id="direccion" name="direccion" maxlength="100" ></input>
            <label for="direccion" >Direccion</label>
          </div>
          <div class="campo">
             <input type="text" id="latitud" name="latitud" onkeydown="filtro(event)" 
-                pattern="[0-9]*[.,]?[0-9]+" maxlength="16" required>
+                pattern="[0-9]*[.,]?[0-9]+" maxlength="16" >
           <label for="latitud" >Latitud</label>
             </div>
             <div class="campo">
             <input type="text" id="longitud" name="longitud" onkeydown="filtro(event)" 
-                pattern="[0-9]*[.,]?[0-9]+" maxlength="16" required>
+                pattern="[0-9]*[.,]?[0-9]+" maxlength="16" >
           <label for="longitud" >Longitud</label>
           </div>
           <div class="contenedorDatos">
