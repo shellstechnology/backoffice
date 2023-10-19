@@ -30,7 +30,7 @@ jobs:
       - name: Create Database
         env:
           DB_HOST: mysql
-        run: https://raw.githubusercontent.com/shellstechnology/Database/main/fast_tracker_db%20v1.3.sql
+        run: fast_tracker_db v1.3.sql
       - name: Seed Database
         env:
           DB_HOST: mysql
