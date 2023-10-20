@@ -20,7 +20,6 @@ class camionesController extends Controller
     public function realizarAccion(Request $request)
     {
         $datosRequest = $request->all();
-        
         switch ($request->input('accion')) {
             case 'agregar':
                 $this->verificarDatosAgregar($datosRequest);
@@ -35,11 +34,10 @@ class camionesController extends Controller
                 $this->recuperarCamion($datosRequest);
                 break;
         }
-        $this->cargarDatos(); 
         return redirect()->route('backoffice.camiones');
     }
 
-  
+
     public function cargarDatos()
     {
         try {
@@ -96,22 +94,32 @@ class camionesController extends Controller
                 'deleted_at' => $camion['deleted_at']
             ]);
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error Inesperado: no se pudo cargar los datos de uno de los camiones';
+            $mensajeDeError = 'Error: no se pudo cargar los datos de uno de los camiones';
             Session::put('respuesta', $mensajeDeError);
         }
     }
 
     private function obtenerModeloMarca($modeloMarca)
     {
-        $marca = Marcas::withTrashed()->where('id', $modeloMarca['id_marca'])->first();
-        return ($marca['marca']. ':'.$modeloMarca['modelo'] );
+        try {
+            $marca = Marcas::withTrashed()->where('id', $modeloMarca['id_marca'])->first();
+            return ($marca['marca'] . ':' . $modeloMarca['modelo']);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: no se pudo cargar la marca de uno de los camiones';
+            Session::put('respuesta', $mensajeDeError);
+        }
     }
 
 
     private function obtenerChoferes($chofer)
     {
-        $usuario = Usuarios::withTrashed()->where('id', $chofer['id_usuarios'])->first();
-        return $usuario['nombre_de_usuario'];
+        try {
+            $usuario = Usuarios::withTrashed()->where('id', $chofer['id_usuarios'])->first();
+            return $usuario['nombre_de_usuario'];
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error: no se pudo obtener el chofer de uno de los camiones';
+            Session::put('respuesta', $mensajeDeError);
+        }
     }
 
 
@@ -126,59 +134,59 @@ class camionesController extends Controller
             }
             $this->agregarCamion($datosRequest);
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error al verificar y agregar los datos';
+            $mensajeDeError = 'Error:Debe ingresar datos para realizar esta accion';
             Session::put('respuesta', $mensajeDeError);
         }
     }
 
- 
+
     private function validarDatos($camion)
     {
-            $reglas = [
-                'Matricula' => 'required|string|max:10',
-                'Modelo Marca' => 'required|string|max:101',
-                'Chofer' => 'required|string|max:50',
-                'Estado' => 'required|string|max:100',
-                'Volumen' => 'required|numeric|min:0|max:99999',
-                'Peso' => 'required|numeric|min:0|max:99999',
-            ];
-            $messages = [
-                'Matricula.required' => 'Es necesario ingresar una matrícula',
-                'Matricula.string' => 'La matrícula debe ser una cadena de texto',
-                'Matricula.max' => 'La matrícula no debe exceder los 10 caracteres',
-            
-                'Modelo Marca.required' => 'Es necesario ingresar la marca y modelo del camión',
-                'Modelo Marca.string' => 'La marca y modelo del camión deben ser una cadena de texto',
-                'Modelo Marca.max' => 'La marca y modelo del camión no deben exceder los 101 caracteres',
-            
-                'Chofer.required' => 'Es necesario ingresar el nombre del chofer',
-                'Chofer.string' => 'El nombre del chofer debe ser una cadena de texto',
-                'Chofer.max' => 'El nombre del chofer no debe exceder los 50 caracteres',
-            
-                'Estado.required' => 'Es necesario ingresar el estado del camión',
-                'Estado.string' => 'El estado del camión debe ser una cadena de texto',
-                'Estado.max' => 'El estado del camión no debe exceder los 100 caracteres',
-            
-                'Volumen.required' => 'Es necesario ingresar el volumen del camión',
-                'Volumen.numeric' => 'El volumen del camión debe ser un número',
-                'Volumen.min' => 'El volumen del camión no debe ser menor que 0',
-                'Volumen.max' => 'El volumen del camión no debe exceder los 99999',
-            
-                'Peso.required' => 'Es necesario ingresar el peso del camión',
-                'Peso.numeric' => 'El peso del camión debe ser un número',
-                'Peso.min' => 'El peso del camión no debe ser menor que 0',
-                'Peso.max' => 'El peso del camión no debe exceder los 99999',
-            ];
-            
+        $reglas = [
+            'Matricula' => 'required|string|max:10',
+            'Modelo Marca' => 'required|string|max:101',
+            'Chofer' => 'required|string|max:50',
+            'Estado' => 'required|string|max:100',
+            'Volumen' => 'required|numeric|min:0|max:99999',
+            'Peso' => 'required|numeric|min:0|max:99999',
+        ];
+        $messages = [
+            'Matricula.required' => 'Es necesario ingresar una matrícula',
+            'Matricula.string' => 'La matrícula debe ser una cadena de texto',
+            'Matricula.max' => 'La matrícula no debe exceder los 10 caracteres',
 
-            return Validator::make([
-                'Matricula' => $camion['matricula'],
-                'Modelo Marca' => $camion['marcaModeloCamion'],
-                'Chofer' => $camion['chofer'],
-                'Estado' => $camion['estadoCamion'],
-                'Volumen' => $camion['volumen'],
-                'Peso' => $camion['peso'],
-            ], $reglas, $messages);
+            'Modelo Marca.required' => 'Es necesario ingresar la marca y modelo del camión',
+            'Modelo Marca.string' => 'La marca y modelo del camión deben ser una cadena de texto',
+            'Modelo Marca.max' => 'La marca y modelo del camión no deben exceder los 101 caracteres',
+
+            'Chofer.required' => 'Es necesario ingresar el nombre del chofer',
+            'Chofer.string' => 'El nombre del chofer debe ser una cadena de texto',
+            'Chofer.max' => 'El nombre del chofer no debe exceder los 50 caracteres',
+
+            'Estado.required' => 'Es necesario ingresar el estado del camión',
+            'Estado.string' => 'El estado del camión debe ser una cadena de texto',
+            'Estado.max' => 'El estado del camión no debe exceder los 100 caracteres',
+
+            'Volumen.required' => 'Es necesario ingresar el volumen del camión',
+            'Volumen.numeric' => 'El volumen del camión debe ser un número',
+            'Volumen.min' => 'El volumen del camión no debe ser menor que 0',
+            'Volumen.max' => 'El volumen del camión no debe exceder los 99999',
+
+            'Peso.required' => 'Es necesario ingresar el peso del camión',
+            'Peso.numeric' => 'El peso del camión debe ser un número',
+            'Peso.min' => 'El peso del camión no debe ser menor que 0',
+            'Peso.max' => 'El peso del camión no debe exceder los 99999',
+        ];
+
+
+        return Validator::make([
+            'Matricula' => $camion['matricula'],
+            'Modelo Marca' => $camion['marcaModeloCamion'],
+            'Chofer' => $camion['chofer'],
+            'Estado' => $camion['estadoCamion'],
+            'Volumen' => $camion['volumen'],
+            'Peso' => $camion['peso'],
+        ], $reglas, $messages);
     }
 
     private function agregarCamion($camion)
@@ -206,6 +214,7 @@ class camionesController extends Controller
             $choferCoduceCamion->save();
             $mensajeConfirmacion = 'Camion agregado exitosamente';
             Session::put('respuesta', $mensajeConfirmacion);
+            $this->cargarDatos();
         } catch (\Exception $e) {
             $mensajeDeError = 'Error,no se pudo agregar el camion';
             Session::put('respuesta', $mensajeDeError);
@@ -224,50 +233,52 @@ class camionesController extends Controller
             }
             $this->modificarCamion($datosRequest);
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error,no se pudieron validar los datos';
+            $mensajeDeError = 'Error:Debe ingresar datos para realizar esta accion';
             Session::put('respuesta', $mensajeDeError);
         }
     }
+
+
 
   
-    private function modificarCamion($camion)
-    {
-        try {
-            list($marca, $modelo) = explode(':', $camion['marcaModeloCamion']);
-            $idModelo = Modelos::withTrashed()->where('modelo', $modelo)->first();
-            $estado = Estados_c::withTrashed()->where('descripcion_estado_c', $camion['estadoCamion'])->first();
-            if ($camion['matricula'] != $camion['identificador']) {
-                $this->agregarNuevoCamion($camion, $idModelo, $estado);
-            }
-            Camiones::withTrashed()->where('matricula', $camion['identificador'])->update([
-                'id_modelo_marca' => $idModelo['id'],
-                'id_estado_c' => $estado['id'],
-                'volumen_max_l' => $camion['volumen'],
-                'peso_max_kg' => $camion['peso']
-
-            ]);
-            Camion_Lleva_Lote::withTrashed()->where('matricula', $camion['identificador'])->update([
-                'matricula' => $camion['matricula']
-            ]);
-            Chofer_Conduce_Camion::withTrashed()->where('matricula_camion', $camion['identificador'])->update([
-                'matricula_camion' => $camion['matricula']
-            ]);
-            $viejoCamion = Camiones::withTrashed()->where('matricula', $camion['identificador'])->first();
-            if (!is_null($viejoCamion['created_at'])) {
-                Camiones::withTrashed()->where('matricula', $camion['matricula'])->update([
-                    'created_at' => $viejoCamion['created_at']
-                ]);
-            }
-            if ($camion['matricula'] != $camion['identificador'])
-                Camiones::withTrashed()->where('matricula', $camion['identificador'])->forceDelete();
-
-                $mensajeConfirmacion = 'Camion modificado exitosamente';
-                Session::put('respuesta', $mensajeConfirmacion);
-        } catch (\Exception $e) {
-            $mensajeDeError = 'Error,no se pudo modificar el camion';
-            Session::put('respuesta', $mensajeDeError);
+private function modificarCamion($camion)
+{
+    try {
+        list($marca, $modelo) = explode(':', $camion['marcaModeloCamion']);
+        $idModelo = Modelos::withTrashed()->where('modelo', $modelo)->first();
+        $estado = Estados_c::withTrashed()->where('descripcion_estado_c', $camion['estadoCamion'])->first();
+        if ($camion['matricula'] != $camion['identificador']) {
+            $this->agregarNuevoCamion($camion, $idModelo, $estado);
         }
+        Camiones::withTrashed()->where('matricula', $camion['matricula'])->update([
+            'id_modelo_marca' => $idModelo['id'],
+            'id_estado_c' => $estado['id'],
+            'volumen_max_l' => $camion['volumen'],
+            'peso_max_kg' => $camion['peso']
+        ]);
+        Camion_Lleva_Lote::withTrashed()->where('matricula', $camion['identificador'])->update([
+            'matricula' => $camion['matricula']
+        ]);
+        Chofer_Conduce_Camion::withTrashed()->where('matricula_camion', $camion['identificador'])->update([
+            'matricula_camion' => $camion['matricula']
+        ]);
+        $viejoCamion = Camiones::withTrashed()->where('matricula', $camion['identificador'])->first();
+        if (!is_null($viejoCamion['created_at'])) {
+            Camiones::withTrashed()->where('matricula', $camion['matricula'])->update([
+                'created_at' => $viejoCamion['created_at']
+            ]);
+        }
+        if ($camion['matricula'] != $camion['identificador'])
+            Camiones::withTrashed()->where('matricula', $camion['identificador'])->forceDelete();
+        
+            $mensajeConfirmacion = 'Camion modificado exitosamente';
+            Session::put('respuesta', $mensajeConfirmacion);
+            $this->cargarDatos();
+    } catch (\Exception $e) {
+        $mensajeDeError = 'Error,no se pudo modificar el camion';
+        Session::put('respuesta', $mensajeDeError);
     }
+}
 
 
     private function agregarNuevoCamion($camion, $idModelo, $estado)
@@ -297,8 +308,9 @@ class camionesController extends Controller
             }
             $mensajeConfirmacion = 'Camion eliminado exitosamente';
             Session::put('respuesta', $mensajeConfirmacion);
+            $this->cargarDatos();
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error,no se pudo eliminar el camion';
+            $mensajeDeError = 'Error:no se pudo eliminar el camion';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -315,8 +327,9 @@ class camionesController extends Controller
             }
             $mensajeConfirmacion = 'Camion recuperado exitosamente';
             Session::put('respuesta', $mensajeConfirmacion);
+            $this->cargarDatos();
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error,no se pudo recuperar el camion';
+            $mensajeDeError = 'Error:no se pudo recuperar el camion';
             Session::put('respuesta', $mensajeDeError);
         }
     }

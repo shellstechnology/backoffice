@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Almacenes;
 use App\Models\Lugares_Entrega;
+use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+
 class almacenController extends Controller
 {
 
@@ -63,7 +65,7 @@ class almacenController extends Controller
                 }
                 $this->crearAlmacen($datosRequest);
             } catch (\Exception $e) {
-                $mensajeDeError = 'Error,no se pudieron validar los datos';
+                $mensajeDeError = 'Error:Debe ingresar datos para realizar esta accion';
                 Session::put('respuesta', $mensajeDeError);
             }
         }
@@ -78,7 +80,7 @@ class almacenController extends Controller
                 }
                 return $datoId;
             } catch (\Exception $e) {
-                $mensajeDeError = 'Error,no se pudieron cargar los datos:No se pudo obtener los datos de un lugar entrega ';
+                $mensajeDeError = 'Error:no se pudieron cargar los datos:No se pudo obtener los datos de un lugar entrega ';
                 Session::put('respuesta', $mensajeDeError);
             }
         }
@@ -87,18 +89,25 @@ class almacenController extends Controller
 
     public function verificarDatosAModificar($datosRequest)
     {
-        $validador = $this->validarDatos($datosRequest);
-        if ($validador->fails()) {
-            return;
+        try {
+            $validador = $this->validarDatos($datosRequest);
+            if ($validador->fails()) {
+                $errores = $validador->getMessageBag();
+                Session::put('respuesta', json_encode($errores->messages()));
+                return;
+            }
+            $this->modificarAlmacen($datosRequest);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:Debe ingresar datos para realizar esta accion';
+            Session::put('respuesta', $mensajeDeError);
         }
-        $this->modificarAlmacen($datosRequest);
 
     }
 
     public function eliminarAlmacen($datosRequest)
     { {
             try {
-                $id = $datosRequest['identifiddcador'];
+                $id = $datosRequest['identificador'];
                 $almacen = Almacenes::withoutTrashed()->find($id);
                 if ($almacen) {
                     $almacen->delete();
@@ -154,23 +163,18 @@ class almacenController extends Controller
     }
 
     private function validarDatos($almacen)
-    { {
-            try {
-                $reglas = [
-                    'lugar' => 'required|numeric',
-                ];
-                $messages = [
-                    'lugar.required' => 'Es necesario que ingreses el Id de un Lugar',
-                    'lugar.numeric' => 'El Id del Lugar debe ser un Numero'
-                ];
-                return Validator::make([
-                    'lugar' => $almacen['idLugarEntrega'],
-                ], $reglas, $messages);
-            } catch (\Exception $e) {
-                $mensajeDeError = 'Algo salio mal al intentar validar los datos';
-                Session::put('respuestaDetallada', $mensajeDeError);
-            }
-        }
+    {
+        $reglas = [
+            'lugar' => 'required|numeric',
+        ];
+        $messages = [
+            'lugar.required' => 'Es necesario que ingreses el Id de un Lugar',
+            'lugar.numeric' => 'El Id del Lugar debe ser un Numero'
+        ];
+        return Validator::make([
+            'lugar' => $almacen['idLugarEntrega'],
+        ], $reglas, $messages);
+
     }
 
     private function crearAlmacen($almacen)
