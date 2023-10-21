@@ -12,6 +12,8 @@ use App\Http\Controllers\loteController;
 use App\Http\Controllers\usuarioController;
 use App\Http\Controllers\telefonosUsuarioController;
 use App\Http\Controllers\camionesController;
+use App\Http\Controllers\marcasController;
+use App\Http\Controllers\modelosController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -73,13 +75,11 @@ Route::get('paquete-lote', function(){
 
 Route::get('marca', function(){
     return view('vistaBackOfficeMarca');
-})-> name('Backoffice.marca');
 
+})-> name('backoffice.marca');
 Route::get('marca-modelo', function(){
     return view('vistaBackOfficeModelo');
 })-> name('marca.modelo');
-
-
 Route::get('/Productos', [productoController::class, 'cargarDatos'])->name('producto.cargarDatos');
 Route::post('/productos', [productoController::class, 'verificarDatosAgregar'])->name('producto.Agregar');
 Route::put('/productos', [productoController::class, 'verificarDatosModificar'])->name('producto.Modificar');
