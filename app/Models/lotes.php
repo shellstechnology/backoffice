@@ -14,4 +14,5 @@ class Lotes extends Model
     use SoftDeletes;
     use ValidatesRequests;
     public $timestamps = true;
+
 }
