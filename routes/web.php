@@ -160,4 +160,4 @@ Route::post('/marca', [marcasController::class, 'verificarDatosAAgregar'])->name
 Route::put('/marca', [marcasController::class, 'verificarDatosAModificar'])->name('marcas.Modificar');
 Route::delete('/marca', [marcasController::class, 'eliminarMarca'])->name('marcas.Eliminar');
 Route::put('/marcar', [marcasController::class, 'recuperarMarca'])->name('marcas.Recuperar');
-//hola
+//holaa
