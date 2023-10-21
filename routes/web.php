@@ -12,6 +12,8 @@ use App\Http\Controllers\loteController;
 use App\Http\Controllers\usuarioController;
 use App\Http\Controllers\telefonosUsuarioController;
 use App\Http\Controllers\camionesController;
+use App\Http\Controllers\marcasController;
+use App\Http\Controllers\modelosController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -71,6 +73,14 @@ Route::get('paquete-lote', function(){
     return view('vistaBackOfficePaqueteContieneLote');
 })-> name('lote.paqueteContieneLote');
 
+Route::get('marca', function(){
+    return view('vistaBackOfficeMarca');
+})-> name('backoffice.marca');
+
+Route::get('marca-modelo', function(){
+    return view('vistaBackOfficeModelo');
+})-> name('marca.modelo');
+
 Route::get('/Productos', [productoController::class, 'cargarDatos'])->name('producto.cargarDatos');
 Route::post('/productos', [productoController::class, 'realizarAccion'])->name('producto.realizarAccion');
 Route::post('/Productos', [productoController::class, 'recuperar'])->name('producto.recuperar');
@@ -111,3 +121,13 @@ Route::post('/Telefonos', [telefonosUsuarioController::class, 'recuperar'])->nam
 Route::get('/Camiones', [camionesController::class, 'cargarDatos'])->name('camiones.cargarDatos');
 Route::post('/camiones', [camionesController::class, 'realizarAccion'])->name('camiones.realizarAccion');
 Route::post('/Camiones', [camionesController::class, 'recuperar'])->name('camiones.recuperar');
+
+Route::get('/Marca', [marcasController::class, 'cargarDatos'])->name('marcas.cargarDatos');
+Route::post('/marca', [marcasController::class, 'realizarAccion'])->name('marcas.realizarAccion');
+Route::post('/Marca', [marcasController::class, 'recuperar'])->name('marcas.recuperar');
+
+Route::get('/Modelo', [modelosController::class, 'cargarDatos'])->name('modelos.cargarDatos');
+Route::post('/modelo', [modelosController::class, 'realizarAccion'])->name('modelos.realizarAccion');
+Route::post('/Modelo', [modelosController::class, 'recuperar'])->name('modelos.recuperar');
+
+
