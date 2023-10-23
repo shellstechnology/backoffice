@@ -33,6 +33,7 @@ class almacenController extends Controller
             return redirect()->route('backoffice.almacen');
         }
     }
+    
     public function realizarAccion(Request $request)
     {
         $datosRequest = $request->all();

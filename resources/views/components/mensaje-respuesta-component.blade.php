@@ -10,6 +10,6 @@
         });
     </script>
     @php
-        Session::put('respuesta', ''); // Esto está bien para limpiar la sesión después de mostrar el mensaje
+        Session::put('respuesta', '');
     @endphp
 @endif

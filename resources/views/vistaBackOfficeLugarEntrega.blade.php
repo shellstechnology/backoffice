@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}"> 
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{asset('js/funciones.js')}}"> </script>
+    <script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+  <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 </head>
   <body>
   <div class="barraDeNavegacion">
@@ -14,6 +20,7 @@
      <a href="{{ route('backoffice.almacen') }}" class="itemSeleccionado">Almacenes</a>
      <a href="{{ route('backoffice.camiones') }}" class="item">Camiones</a>
      <a href="{{ route('backoffice.marca') }}" class="item">Marcas(Camiones)</a>
+     <a href="{{ route('backoffice.moneda') }}" class="item">Moneda</a>
      <a href="{{ route('backoffice.paquete') }}" class="item">Paquetes</a>
      <a href="{{ route('backoffice.producto') }}" class="item">Productos</a>
      <a href="{{ route('backoffice.lote') }}" class="item">Lotes</a>
@@ -37,15 +44,15 @@
                  </div>
                  <div>
                    <input type="radio" id="modificar" name="accion" value="modificar" />
-                   <label for="dewey">Modificar</label>
+                   <label for="modificar">Modificar</label>
                 </div>
                 <div>
                  <input type="radio" id="eliminar" name="accion" value="eliminar" />
-                 <label for="louie">Eliminar</label>
+                 <label for="eliminar">Eliminar</label>
                 </div>
                 <div>
                  <input type="radio" id="recuperar" name="accion" value="recuperar" />
-                 <label for="louie">Recuperar</label>
+                 <label for="recuperar">Recuperar</label>
                </div >
              </fieldset>
         <div class="contenedorDatos">
@@ -62,6 +69,9 @@
             <input type="text" id="longitud" name="longitud" onkeydown="filtro(event)" 
                 pattern="[0-9]*[.,]?[0-9]+" maxlength="16" >
           <label for="longitud" >Longitud</label>
+          </div>
+          <div id="map">
+
           </div>
           <div class="contenedorDatos">
           <input type="hidden" name="identificador" id="identificador">

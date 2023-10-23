@@ -172,3 +172,8 @@ button{
     bottom: 0;
     left: 10px;
   }
+
+  #map {
+    height: 200px;
+    width: 200px;
+  }
