@@ -11,10 +11,12 @@ jobs:
       mysql:
         image: mysql:8
         env:
-          MYSQL_DATABSE: fast_tracker_db
+          MYSQL_DATABASE: fast_tracker_db
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_USER: laravel
+          MYSQL_PASSWORD: laravel
         ports:
-          - 3306:3306
+          - 3306/tcp
 
     steps:
       - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
@@ -30,7 +32,7 @@ jobs:
       - name: Create Database
         env:
           DB_HOST: mysql
-        run: mysql -P 3306 -u root -p fast_tracker_db < fast_tracker_db_v1.3.sql
+        run: mysql -u laravel -p fast_tracker_db < fast_tracker_db_v1.3.sql
       - name: Seed Database
         env:
           DB_HOST: mysql
