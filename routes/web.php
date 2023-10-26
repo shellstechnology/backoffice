@@ -14,6 +14,7 @@ use App\Http\Controllers\telefonosUsuarioController;
 use App\Http\Controllers\camionesController;
 use App\Http\Controllers\marcasController;
 use App\Http\Controllers\modelosController;
+use App\Http\Controllers\monedaController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -80,6 +81,9 @@ Route::get('marca', function(){
 Route::get('marca-modelo', function(){
     return view('vistaBackOfficeModelo');
 })-> name('marca.modelo');
+Route::get('moneda', function(){
+    return view('vistaBackOfficeMoneda');
+})-> name('backoffice.moneda');
 Route::get('/Productos', [productoController::class, 'cargarDatos'])->name('producto.cargarDatos');
 Route::post('/productos', [productoController::class, 'verificarDatosAgregar'])->name('producto.Agregar');
 Route::put('/productos', [productoController::class, 'verificarDatosModificar'])->name('producto.Modificar');
@@ -153,6 +157,11 @@ Route::post('/modelo', [modelosController::class, 'verificarDatosAAgregar'])->na
 Route::put('/modelo', [modelosController::class, 'verificarDatosAModificar'])->name('modelo.Modificar');
 Route::delete('/modelo', [modelosController::class, 'eliminarModelo'])->name('modelo.Eliminar');
 Route::put('/modelor', [modeloController::class, 'recuperarModelo'])->name('modelo.Recuperar');
+
+Route::get('/Moneda', [monedaController::class, 'cargarDatos'])->name('moneda.cargarDatos');
+Route::post('/moneda', [monedaController::class, 'realizarAccion'])->name('moneda.realizarAccion');
+Route::post('/Moneda', [monedaController::class, 'recuperar'])->name('moneda.recuperar');
+
 
 
 Route::get('/Marca', [marcasController::class, 'cargarDatos'])->name('marcas.cargarDatos');

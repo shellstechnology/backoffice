@@ -1,34 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+  <html lang="en">
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BackOffice:Usuario</title>
+    <title>BackOffice:Moneda</title>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}"> 
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{asset('js/funciones.js')}}"> </script>
-</head>
+  </head>
   <body>
-  <div class="barraDeNavegacion">
+    <div class="barraDeNavegacion">
     <a href="{{ route('backoffice') }}" class="item">Menu Principal</a>
      <a href="{{ route('backoffice.almacen') }}" class="item">Almacenes</a>
      <a href="{{ route('backoffice.camiones') }}" class="item">Camiones</a>
      <a href="{{ route('backoffice.marca') }}" class="item">Marcas(Camiones)</a>
-     <a href="{{ route('backoffice.moneda') }}" class="item">Moneda</a>
+     <a href="{{ route('backoffice.moneda') }}" class="itemSeleccionado">Moneda</a>
      <a href="{{ route('backoffice.paquete') }}" class="item">Paquetes</a>
      <a href="{{ route('backoffice.producto') }}" class="item">Productos</a>
      <a href="{{ route('backoffice.lote') }}" class="item">Lotes</a>
     </div>
     <div class="container">
-     <div class="cuerpo">
-     <div id="contenedorTabla">
-     <x-tabla-telefono-usuario-component/>
-     </div>
-      </div>
-      <div> 
-      <a href="{{route('backoffice.usuarios')}}"><-Usuario</a>    
-      <div class="cajaDatos"> 
-      <form action="{{route('telefonosUsuario.realizarAccion')}}" method="POST">
+      <div class="cuerpo">
+       <div id="contenedorTabla">
+       <x-tabla-moneda-component/>
+       </div>
+    </div>
+    <div> 
+     <div class="cajaDatos"> 
+        <form action="{{route('moneda.realizarAccion')}}" method="POST">
         @csrf
         <fieldset>
                <legend>Selecciona una accion:</legend>
@@ -50,27 +49,21 @@
                </div >
              </fieldset>
         <div class="contenedorDatos">
-          <div class="campo">
-          <x-select-usuario-component/>
-         </div>
-       <div class="campo">
-           <input type="text" id="telefono" name="telefono" onpaste="return false" ></input>
-           <label for="latitud" >Numero de telefono</label>
-        </div>
-          <div class="contenedorDatos">
-          <input type="hidden" name="identificadorId" id="identificadorId">
-          <input type="hidden" name="identificadorTelefono" id="identificadorTelefono">
-          <button type="submit" name="aceptar">Aceptar</button>
-        </div>
-          </form>
-       </div>
-      <form action="{{route('telefonosUsuario.cargarDatos')}}" method="GET">
+        <div class="campo">
+            <input type="text" id="nombre" name="nombre" maxlength="30" ></input>
+            <label for="nombre" >Nombre</label>
+          </div>
+         <input type="hidden" name="identificador" id="identificador">
+         <button type="submit" name="aceptar">Aceptar</button>
+      </div>
+     </form>
+       <form action="{{route('moneda.cargarDatos')}}" method="GET">
          @csrf
-         <button type="submit" name="cargar" id="cargar">Cargar Datos</button>
+         <button type="submit" name="cargar">Cargar Datos</button>
        </form>
-     </div>
-   </div>
+    </div>
+  </div>
 </div>
 <x-mensaje-respuesta-component/>
-  </body>
+</body>
 </html>

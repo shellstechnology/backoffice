@@ -76,7 +76,11 @@ class almacenController extends Controller
             try {
                 $datoId = [];
                 foreach ($datoClase as $dato) {
-                    $datoId[] = $dato['id'];
+                    $datoId[] = [
+                        'Id'=>$dato['id'],
+                        'Latitud'=>$dato['latitud'],
+                        'Longitud'=>$dato['longitud']
+                    ];
                 }
                 return $datoId;
             } catch (\Exception $e) {

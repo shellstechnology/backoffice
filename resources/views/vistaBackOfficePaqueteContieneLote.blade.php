@@ -14,6 +14,7 @@
      <a href="{{ route('backoffice.almacen') }}" class="item">Almacenes</a>
      <a href="{{ route('backoffice.camiones') }}" class="item">Camiones</a>
      <a href="{{ route('backoffice.marca') }}" class="item">Marcas(Camiones)</a>
+     <a href="{{ route('backoffice.moneda') }}" class="item">Moneda</a>
      <a href="{{ route('backoffice.paquete') }}" class="item">Paquetes</a>
      <a href="{{ route('backoffice.producto') }}" class="item">Productos</a>
      <a href="{{ route('backoffice.lote') }}" class="itemSeleccionado">Lotes</a>
@@ -37,15 +38,15 @@
                  </div>
                  <div>
                    <input type="radio" id="modificar" name="accion" value="modificar" />
-                   <label for="dewey">Modificar</label>
+                   <label for="modificar">Modificar</label>
                 </div>
                 <div>
                  <input type="radio" id="eliminar" name="accion" value="eliminar" />
-                 <label for="louie">Eliminar</label>
+                 <label for="eliminar">Eliminar</label>
                 </div>
                 <div>
                  <input type="radio" id="recuperar" name="accion" value="recuperar" />
-                 <label for="louie">Recuperar</label>
+                 <label for="recuperar">Recuperar</label>
                </div >
              </fieldset>
        
