@@ -14,7 +14,7 @@
      <a href="{{ route('backoffice.almacen') }}" class="item">Almacenes</a>
      <a href="{{ route('backoffice.camiones') }}" class="itemSeleccionado">Camiones</a>
      <a href="{{ route('backoffice.marca') }}" class="item">Marcas(Camiones)</a>
-     <a href="{{ route('backoffice.moneda') }}" class="item">Moneda</a>
+          <a href="{{ route('backoffice.moneda') }}" class="item">Moneda</a>
      <a href="{{ route('backoffice.paquete') }}" class="item">Paquetes</a>
      <a href="{{ route('backoffice.producto') }}" class="item">Productos</a>
      <a href="{{ route('backoffice.lote') }}" class="item">Lotes</a>

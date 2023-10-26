@@ -78,14 +78,13 @@ Route::get('marca', function(){
     return view('vistaBackOfficeMarca');
 })-> name('backoffice.marca');
 
-Route::get('marca-modelo', function(){
-    return view('vistaBackOfficeModelo');
-})-> name('marca.modelo');
-
-
 Route::get('moneda', function(){
     return view('vistaBackOfficeMoneda');
 })-> name('backoffice.moneda');
+
+Route::get('marca-modelo', function(){
+    return view('vistaBackOfficeModelo');
+})-> name('marca.modelo');
 
 Route::get('/Productos', [productoController::class, 'cargarDatos'])->name('producto.cargarDatos');
 Route::post('/productos', [productoController::class, 'realizarAccion'])->name('producto.realizarAccion');
@@ -139,4 +138,6 @@ Route::post('/Modelo', [modelosController::class, 'recuperar'])->name('modelos.r
 Route::get('/Moneda', [monedaController::class, 'cargarDatos'])->name('moneda.cargarDatos');
 Route::post('/moneda', [monedaController::class, 'realizarAccion'])->name('moneda.realizarAccion');
 Route::post('/Moneda', [monedaController::class, 'recuperar'])->name('moneda.recuperar');
+
+
 

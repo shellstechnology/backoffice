@@ -4,10 +4,13 @@
      <meta charset="UTF-8">
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <title>BackOffice:Almacenes</title>
-     <link rel="stylesheet" href="{{ asset('css/style.css') }}"> 
-     <meta name="csrf-token" content="{{ csrf_token() }}">
-     <script src="{{asset('js/funciones.js')}}"> </script>
-
+      <link rel="stylesheet" href="{{ asset('css/style.css') }}"> 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{asset('js/funciones.js')}}"> </script>
+    <script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+  <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
   </head>
   <body>
      <div class="barraDeNavegacion">

@@ -9,9 +9,7 @@
     <script src="{{asset('js/funciones.js')}}"> </script>
     <script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
-  <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 </head>
   <body>
@@ -62,12 +60,12 @@
          </div>
          <div class="campo">
             <input type="text" id="latitud" name="latitud" onkeydown="filtro(event)" 
-                pattern="[0-9]*[.,]?[0-9]+" maxlength="16" >
+            pattern="-?[0-9]*[.,]?[0-9]+" maxlength="16" >
           <label for="latitud" >Latitud</label>
             </div>
             <div class="campo">
             <input type="text" id="longitud" name="longitud" onkeydown="filtro(event)" 
-                pattern="[0-9]*[.,]?[0-9]+" maxlength="16" >
+            pattern="-?[0-9]*[.,]?[0-9]+" maxlength="16" >
           <label for="longitud" >Longitud</label>
           </div>
           <div id="map">

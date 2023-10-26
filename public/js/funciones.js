@@ -33,16 +33,39 @@ document.addEventListener("DOMContentLoaded", function () {
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
             attribution: "&copy; OpenStreetMap contributors"
         }).addTo(map);
-        map.on('click', function (e) {
-            var lat = e.latlng.lat;
-            var lon = e.latlng.lng;
-            if (ubicacionSeleccionada != null) {
-                ubicacionSeleccionada.remove();
-                ubicacionSeleccionada = null;
-            }
-            ubicacionSeleccionada = L.marker([lat, lon]).addTo(map);
-            document.getElementById('latitud').value = lat
-            document.getElementById('longitud').value = lon
-        });
+        var ubicacion = document.getElementById('latitud');
+        if (ubicacion) {
+            map.on('click', function (e) {
+                asignarValores(e);
+            });
+        }
+        var lugar = document.getElementById('idLugarEntrega');
+        if (lugar) {
+                asignarLugares(map);
+        }
     }
 });
+function asignarValores(e) {
+    var lat = e.latlng.lat.toString().slice(0, 16);
+    var lon = e.latlng.lng.toString().slice(0, 16);
+    if (ubicacionSeleccionada != null) {
+        ubicacionSeleccionada.remove();
+        ubicacionSeleccionada = null;
+    }
+    ubicacionSeleccionada = L.marker([lat, lon]).addTo(map);
+    document.getElementById('latitud').value = lat
+    document.getElementById('longitud').value = lon
+}
+
+function asignarLugares(map) {
+    lugarEntrega.forEach(function (lugar) {
+        var lat = lugar['Latitud'];
+        var lon = lugar['Longitud'];
+        var id = lugar['Id'];
+        var marker = L.marker([lat, lon]).addTo(map);
+        marker.on('click', function (e) {
+            console.log(id)
+            document.getElementById('idLugarEntrega').value = id;
+        });
+    });
+}
