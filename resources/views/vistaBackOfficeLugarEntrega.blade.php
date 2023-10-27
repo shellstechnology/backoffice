@@ -62,12 +62,12 @@
          </div>
          <div class="campo">
             <input type="text" id="latitud" name="latitud" onkeydown="filtro(event)" 
-                pattern="[0-9]*[.,]?[0-9]+" maxlength="16" >
+                pattern="-?[0-9]*[.,]?[0-9]+" maxlength="16" >
           <label for="latitud" >Latitud</label>
             </div>
             <div class="campo">
             <input type="text" id="longitud" name="longitud" onkeydown="filtro(event)" 
-                pattern="[0-9]*[.,]?[0-9]+" maxlength="16" >
+                pattern="-?[0-9]*[.,]?[0-9]+" maxlength="16" >
           <label for="longitud" >Longitud</label>
           </div>
           <div id="map">
