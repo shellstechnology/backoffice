@@ -1,5 +1,8 @@
 <?php
 
+namespace App\Http\Middleware;
+
+use Closure;
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\camionLlevaLoteController;
@@ -26,13 +29,17 @@ use App\Http\Controllers\monedaController;
 |
 */
 
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
 Route::get('/', function () {
     return view('vistaBackOffice');
-});
+})->middleware(Autenticacion::class);
 
 Route::get('backoffice', function(){
     return view('vistaBackOffice');
-})-> name('backoffice');
+})-> name('backoffice')->middleware(Autenticacion::class);
 
 Route::get('usuarios', function(){
     return view('vistaBackOfficeUsuarios');
