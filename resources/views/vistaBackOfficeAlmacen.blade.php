@@ -30,7 +30,7 @@
        <div> 
        <a href="{{ route('almacen.lugarEntrega') }}">Luares de entrega-></a>
         <div class="cajaDatos"> 
-         <form  action="{{route('almacen.realizarAccion')}}" method="POST"> 
+         <form  action="{{route('redireccion.almacen')}}" method="POST"> 
             @csrf
             <fieldset>
                <legend>Selecciona una accion:</legend>
