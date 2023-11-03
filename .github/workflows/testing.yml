@@ -31,7 +31,7 @@ jobs:
       - name: Create Database
         env:
           DB_HOST: mysql
-        run: mysql --host 127.0.0.1 --user laravel --database fast_tracker_db < fast_tracker_db_v1.3.sql
+        run: mysql --user laravel --database fast_tracker_db < fast_tracker_db_v1.3.sql
       - name: Seed Database
         env:
           DB_HOST: mysql
