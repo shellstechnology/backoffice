@@ -13,15 +13,12 @@ jobs:
         env:
           MYSQL_DATABASE: fast_tracker_db
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_USER: laravel
         ports:
-          - 3306/tcp
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=10s --health-retries=10
+    container:
+      image: ggmartinez/laravel:php-82
     steps:
-      - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
-        with:
-          php-version: "8.2"
       - uses: actions/checkout@v3
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
@@ -32,7 +29,7 @@ jobs:
       - name: Create Database
         env:
           DB_HOST: mysql
-        run: mysql --host mysql --user laravel fast_tracker_db < fast_tracker_db_v1.3.sql
+        run: mysql -h mysql -u laravel fast_tracker_db < fast_tracker_db_v1.3.sql
       - name: Seed Database
         env:
           DB_HOST: mysql
