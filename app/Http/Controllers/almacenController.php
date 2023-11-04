@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Almacenes;
+use App\Models\almacenes;
 use App\Models\Lugares_Entrega;
 use Exception;
 use Illuminate\Http\Request;
