@@ -14,13 +14,13 @@ class AlmacenerosSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\Almaceneros::factory(1)->create([
+        \App\Models\almaceneros::factory(1)->create([
             "id_usuarios"=>"47",
         ]);
-        \App\Models\Almaceneros::factory(1)->create([
+        \App\Models\almaceneros::factory(1)->create([
             "id_usuarios"=>"42",
         ]);
-        \App\Models\Almaceneros::factory(1)->create([
+        \App\Models\almaceneros::factory(1)->create([
             "id_usuarios"=>"74",
         ]);
     }
