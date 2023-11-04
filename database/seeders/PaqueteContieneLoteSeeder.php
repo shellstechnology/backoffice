@@ -51,7 +51,7 @@ class PaqueteContieneLoteSeeder extends Seeder
             "id_lote" => "100",
             "id_almacen" => "47",
         ]);
-        \App\Models\ppaquete_contiene_lote::factory(1)->create([
+        \App\Models\paquete_contiene_lote::factory(1)->create([
             "id_paquete" => "102",
             "id_lote" => "100",
             "id_almacen" => "47",
