@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Estados_C>
  */
-class Estados_CFactory extends Factory
+class Estados_cFactory extends Factory
 {
     /**
      * Define the model's default state.
