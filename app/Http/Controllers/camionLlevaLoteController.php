@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Camion_Lleva_Lote;
-use App\Models\Camiones;
-use App\Models\Lotes;
+use App\Models\camion_lleva_lote;
+use App\Models\camiones;
+use App\Models\lotes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;

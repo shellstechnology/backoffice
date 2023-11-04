@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Moneda;
-use App\Models\Producto;
+use App\Models\moneda;
+use App\Models\producto;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;

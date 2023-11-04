@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Telefonos_Usuarios;
-use App\Models\Usuarios;
+use App\Models\telefonos_usuarios;
+use App\Models\usuarios;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;

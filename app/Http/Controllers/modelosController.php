@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Marcas;
-use App\Models\Modelos;
+use App\Models\marcas;
+use App\Models\modelos;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;

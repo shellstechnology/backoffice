@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Almacenes;
-use App\Models\Lotes;
-use App\Models\Paquetes;
-use App\Models\Paquete_Contiene_Lote;
+use App\Models\almacenes;
+use App\Models\lotes;
+use App\Models\paquetes;
+use App\Models\paquete_contiene_lote;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
