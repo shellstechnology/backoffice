@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MonedasSeeder::class);
         $this->call(ProductoSeeder::class); 
         $this->call(Descripcion_Caracteristica_PaqueteSeeder::class);
-        $this->call(Estados_PSeeder::class);
+        $this->call(Estados_pSeeder::class);
         $this->call(lugarEntregaSeeder::class);
         $this->call(PaqueteSeeder::class);
         $this->call(LotesSeeder::class);
