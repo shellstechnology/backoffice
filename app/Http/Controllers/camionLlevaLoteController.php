@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\camion_lleva_lote;
+use App\Models\camion_Lleva_Lote;
 use App\Models\camiones;
 use App\Models\lotes;
 use Illuminate\Http\Request;
