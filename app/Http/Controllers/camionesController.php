@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Camion_Lleva_Lote;
-use App\Models\Camiones;
-use App\Models\Chofer_Conduce_Camion;
-use App\Models\Choferes;
-use App\Models\Estados_c;
-use App\Models\Marcas;
-use App\Models\Modelos;
-use App\Models\Usuarios;
+use App\Models\camion_lleva_lote;
+use App\Models\camiones;
+use App\Models\chofer_conduce_camion;
+use App\Models\choferes;
+use App\Models\estados_c;
+use App\Models\marcas;
+use App\Models\modelos;
+use App\Models\usuarios;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;

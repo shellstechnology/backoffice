@@ -4,8 +4,8 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Models\Almacenes;
-use App\Models\Lugares_Entrega;
+use App\Models\almacenes;
+use App\Models\lugares_entrega;
 use Tests\TestCase;
 
 class AlmacenesTest extends TestCase
@@ -17,7 +17,7 @@ class AlmacenesTest extends TestCase
             "accion" => "agregar",
             "idLugarEntrega" => "1",
         ]);
-        $ultimoAlmacen= Almacenes::latest('created_at')->first();
+        $ultimoAlmacen= almacenes::latest('created_at')->first();
         $idAlmacen = $ultimoAlmacen['id'];
         $ultimaDireccion = Lugares_Entrega::latest('created_at')->first();
         $idDireccion = $ultimaDireccion['id'];
@@ -25,7 +25,7 @@ class AlmacenesTest extends TestCase
         $this->assertDatabaseHas('almacenes', [
             'id' => $idAlmacen,
         ]);
-        Almacenes::withTrashed()->where('id',$idAlmacen)->forceDelete();
+        almacenes::withTrashed()->where('id',$idAlmacen)->forceDelete();
        }
     
 
