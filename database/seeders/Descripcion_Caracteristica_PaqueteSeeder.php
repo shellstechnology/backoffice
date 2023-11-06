@@ -14,16 +14,16 @@ class Descripcion_Caracteristica_PaqueteSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\Caracteristicas::factory(1)->create([
+        \App\Models\caracteristicas::factory(1)->create([
             "descripcion_caracteristica" => "comestible",
         ]);
-        \App\Models\Caracteristicas::factory(1)->create([
+        \App\Models\caracteristicas::factory(1)->create([
             "descripcion_caracteristica" => "electronicos",
         ]);
-        \App\Models\Caracteristicas::factory(1)->create([
+        \App\Models\caracteristicas::factory(1)->create([
             "descripcion_caracteristica" => "inflamable",
         ]);
-        \App\Models\Caracteristicas::factory(1)->create([
+        \App\Models\caracteristicas::factory(1)->create([
             "descripcion_caracteristica" => "explosivo",
         ]);
     }

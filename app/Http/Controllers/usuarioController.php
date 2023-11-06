@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Administradores;
-use App\Models\Almaceneros;
-use App\Models\Choferes;
-use App\Models\Clientes;
-use App\Models\Telefonos_Usuarios;
-use App\Models\Usuarios;
-use App\Models\Mail_Usuarios;
+use App\Models\administradores;
+use App\Models\almaceneros;
+use App\Models\choferes;
+use App\Models\clientes;
+use App\Models\telefonos_usuarios;
+use App\Models\usuarios;
+use App\Models\mail_usuarios;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;

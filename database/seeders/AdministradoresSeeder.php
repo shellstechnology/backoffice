@@ -14,13 +14,13 @@ class AdministradoresSeeder extends Seeder
      */
     public function run()
     {
-            \App\Models\Administradores::factory(1)->create([
+            \App\Models\administradores::factory(1)->create([
             "id_usuarios"=>"47",
         ]);
-        \App\Models\Administradores::factory(1)->create([
+        \App\Models\administradores::factory(1)->create([
             "id_usuarios"=>"42",
         ]);
-        \App\Models\Administradores::factory(1)->create([
+        \App\Models\administradores::factory(1)->create([
             "id_usuarios"=>"74",
         ]);
     }

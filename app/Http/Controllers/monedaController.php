@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Moneda;
+use App\Models\moneda;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Caracteristicas;
-use App\Models\Estados_p;
-use App\Models\Lugares_Entrega;
-use App\Models\Paquetes;
-use App\Models\Producto;
+use App\Models\caracteristicas;
+use App\Models\estados_p;
+use App\Models\lugares_entrega;
+use App\Models\paquetes;
+use App\Models\producto;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;

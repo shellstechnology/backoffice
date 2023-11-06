@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Almacenes;
-use App\Models\Lugares_Entrega;
+use App\Models\almacenes;
+use App\Models\lugares_entrega;
 use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;

@@ -14,13 +14,13 @@ class ClientesSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\Clientes::factory(1)->create([
+        \App\Models\clientes::factory(1)->create([
             "id_usuarios"=>"47",
         ]);
-        \App\Models\Clientes::factory(1)->create([
+        \App\Models\clientes::factory(1)->create([
             "id_usuarios"=>"42",
         ]);
-        \App\Models\Clientes::factory(1)->create([
+        \App\Models\clientes::factory(1)->create([
             "id_usuarios"=>"74",
         ]);
     }
