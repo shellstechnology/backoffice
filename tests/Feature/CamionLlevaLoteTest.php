@@ -11,7 +11,7 @@ use App\Models\Lotes;
 
 class CamionLlevaLoteTest extends TestCase
 {
-    public function test_agregarUnCamionAUnLote(){
+    public function test_agregarUnLoteAUnCamion(){
 
         $response = $this->followingRedirects()->post('/camion-lote',
         [
