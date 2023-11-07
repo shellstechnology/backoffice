@@ -11,7 +11,7 @@ use App\Models\Lotes;
 
 class CamionLlevaLoteTest extends TestCase
 {
-    public function test_agregarUnCamionAUnLote(){
+    public function test_agregarUnLoteAUnCamion(){
 
         $response = $this->followingRedirects()->post('/camion-lote',
         [
@@ -28,7 +28,7 @@ class CamionLlevaLoteTest extends TestCase
         Camion_Lleva_Lote::withTrashed()->where('matricula','a20a')->forceDelete();
        }
 
-       public function test_ModificarUnCamionEnLote(){
+       public function test_ModificarUnLoteEnUnCamion(){
 
         $response = $this->followingRedirects()->post('/camion-lote',
         [
