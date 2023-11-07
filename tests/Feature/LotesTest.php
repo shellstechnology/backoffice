@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Models\Lotes;
+use App\Models\User;
 use Tests\TestCase;
 
 class LotesTest extends TestCase
@@ -12,8 +13,8 @@ class LotesTest extends TestCase
 
 
     public function test_agregarUnLote(){
-
-        $response = $this->followingRedirects()->post('/lotes',
+        $user = User::factory()->create();
+        $response = $this->followingRedirects()->actingAs($user)->post('/lotes',
         [
             "accion" => "agregar",
             "identificador" => "101",
@@ -31,7 +32,8 @@ class LotesTest extends TestCase
        }
 
        public function test_EliminarUnLote(){
-        $response = $this->followingRedirects()->post('/lotes',[
+        $user = User::factory()->create();
+        $response = $this->followingRedirects()->actingAs($user)->post('/lotes',[
             "accion" => "eliminar",
             "identificador" => "74"
         ]);
@@ -41,13 +43,14 @@ class LotesTest extends TestCase
 
 
        public function test_RecuprarUnLote(){
-        $response1 = $this->followingRedirects()->post('/lotes',[
+        $user = User::factory()->create();
+        $response1 = $this->followingRedirects()->actingAs($user)->post('/lotes',[
             "accion" => "eliminar",
             "identificador" => "74"
         ]);
         $response1->assertStatus(200);
     
-        $response2 = $this->followingRedirects()->post('/lotes',[
+        $response2 = $this->followingRedirects()->actingAs($user)->post('/lotes',[
             "accion" => "recuperar",
             "identificador" => "74"
         ]);

@@ -12,14 +12,15 @@ use App\Models\Clientes;
 use App\Models\Telefonos_Usuarios;
 use App\Models\Usuarios;
 use App\Models\Mail_Usuarios;
+use App\Models\User;
 
 class UsuariosTest extends TestCase
 {
  
 
     public function test_agregarUnUsuario(){
-
-        $response = $this->followingRedirects()->post('/usuarios',
+        $user = User::factory()->create();
+        $response = $this->followingRedirects()->actingAs($user)->post('/usuarios',
         [
             "accion" => "agregar",
             "identificador" => "444",
@@ -49,8 +50,8 @@ class UsuariosTest extends TestCase
        }
 
        public function test_ModificarUnUsuario(){
-    
-        $response = $this->followingRedirects()->post('/usuarios',
+        $user = User::factory()->create();
+        $response = $this->followingRedirects()->actingAs($user)->post('/usuarios',
         [
             "accion" => "modificar",
             "identificador" => "42",
@@ -74,7 +75,8 @@ class UsuariosTest extends TestCase
 
        
        public function test_EliminarUnUsuario(){
-        $response = $this->followingRedirects()->post('/usuarios',[
+        $user = User::factory()->create();
+        $response = $this->followingRedirects()->actingAs($user)->post('/usuarios',[
             "accion" => "eliminar",
             "identificador" => "74",
             "nombre" => "usuario a eliminar",
@@ -90,7 +92,8 @@ class UsuariosTest extends TestCase
        }
 
        public function test_RecuperarUnUsuario(){
-        $response1 = $this->followingRedirects()->post('/usuarios',[
+        $user = User::factory()->create();
+        $response1 = $this->followingRedirects()->actingAs($user)->post('/usuarios',[
             "accion" => "eliminar",
             "identificador" => "74",
             "nombre" => "usuario a eliminar",
@@ -103,7 +106,7 @@ class UsuariosTest extends TestCase
         ]);
         $response1->assertStatus(200);
     
-        $response2 = $this->followingRedirects()->post('/usuarios',[
+        $response2 = $this->followingRedirects()->actingAs($user)->post('/usuarios',[
             "accion" => "recuperar",
             "identificador" => "74",
             "nombre" => "usuario a eliminar",

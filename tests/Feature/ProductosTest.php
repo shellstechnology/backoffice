@@ -8,6 +8,7 @@ use Tests\TestCase;
 use App\Models\Moneda;
 use App\Models\Producto;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 
 class ProductosTest extends TestCase
 {
@@ -18,8 +19,8 @@ class ProductosTest extends TestCase
      */
 
      public function test_agregarUnProducto(){
-
-        $response = $this->followingRedirects()->post('/productos',
+        $user = User::factory()->create();
+        $response = $this->followingRedirects()->actingAs($user)->post('/productos',
         [
             "accion" => "agregar",
             "identificador" => "444",
@@ -37,8 +38,8 @@ class ProductosTest extends TestCase
        }
     
        public function test_ModificarUnProducto(){
-    
-        $response = $this->followingRedirects()->post('/productos',
+        $user = User::factory()->create();
+        $response = $this->followingRedirects()->actingAs($user)->post('/productos',
         [
             "accion" => "modificar",
             "identificador" => "42",
@@ -55,7 +56,8 @@ class ProductosTest extends TestCase
        }
     
        public function test_EliminarUnProducto(){
-        $response = $this->followingRedirects()->post('/productos',[
+        $user = User::factory()->create();
+        $response = $this->followingRedirects()->actingAs($user)->post('/productos',[
             "accion" => "eliminar",
             "identificador" => "74",
             "nombre"=> "proyecto 2",
@@ -68,7 +70,8 @@ class ProductosTest extends TestCase
        }
     
        public function test_RecuperarUnProductos(){
-        $response1 = $this->followingRedirects()->post('/productos',[
+        $user = User::factory()->create();
+        $response1 = $this->followingRedirects()->actingAs($user)->post('/productos',[
             "accion" => "eliminar",
             "identificador" => "74",
            "nombre" => "proyecto 2",
@@ -78,7 +81,7 @@ class ProductosTest extends TestCase
         ]);
         $response1->assertStatus(200);
     
-        $response2 = $this->followingRedirects()->post('/productos',[
+        $response2 = $this->followingRedirects()->actingAs($user)->post('/productos',[
             "accion" => "recuperar",
             "identificador" => "74",
             "nombre" => "proyecto 2",
