@@ -18,6 +18,7 @@ use App\Http\Controllers\camionesController;
 use App\Http\Controllers\marcasController;
 use App\Http\Controllers\modelosController;
 use App\Http\Controllers\monedaController;
+use App\Http\Controllers\loginController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -32,6 +33,12 @@ use App\Http\Controllers\monedaController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/login', function () {
+    return view('login');
+});
+
+Route::post('/login1', [loginController::class, 'iniciarSesion'])->name('login');
 
 Route::get('/', function () {
     return view('vistaBackOffice');
