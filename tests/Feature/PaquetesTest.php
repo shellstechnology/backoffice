@@ -10,14 +10,15 @@ use App\Models\Estados_p;
 use App\Models\Lugares_Entrega;
 use App\Models\Paquetes;
 use App\Models\Producto;
+use App\Models\User;
 
 class PaquetesTest extends TestCase
 {
 
 
     public function test_agregarUnPaquete(){
-
-        $response = $this->followingRedirects()->post('/paquetes',
+        $user = User::factory()->create();
+        $response = $this->followingRedirects()->actingAs($user)->post('/paquetes',
         [
             "accion" => "agregar",
             "identificador" => "99",
@@ -43,8 +44,8 @@ class PaquetesTest extends TestCase
     
 
        public function test_ModificarUnPaquete(){
-    
-        $response = $this->followingRedirects()->post('/paquetes',
+        $user = User::factory()->create();
+        $response = $this->followingRedirects()->actingAs($user)->post('/paquetes',
         [
             "accion" => "modificar",
             "identificador" => "42",
@@ -70,7 +71,8 @@ class PaquetesTest extends TestCase
 
 
        public function test_EliminarUnPaquete(){
-        $response = $this->followingRedirects()->post('/paquetes',[
+        $user = User::factory()->create();
+        $response = $this->followingRedirects()->actingAs($user)->post('/paquetes',[
             "accion" => "eliminar",
             "identificador" => "74",
             "nombrePaquete" => "paquete a eliminar",
@@ -92,7 +94,8 @@ class PaquetesTest extends TestCase
       
       
        public function test_RecuperarUnPaquete(){
-        $response1 = $this->followingRedirects()->post('/paquetes',[
+        $user = User::factory()->create();
+        $response1 = $this->followingRedirects()->actingAs($user)->post('/paquetes',[
             "accion" => "eliminar",
             "identificador" => "74",
             "nombrePaquete" => "paquete a eliminar",
@@ -110,7 +113,7 @@ class PaquetesTest extends TestCase
         ]);
         $response1->assertStatus(200);
     
-        $response2 = $this->followingRedirects()->post('/paquetes',[
+        $response2 = $this->followingRedirects()->actingAs($user)->post('/paquetes',[
             "accion" => "recuperar",
             "identificador" => "74",
             "nombrePaquete" => "paquete a eliminar",

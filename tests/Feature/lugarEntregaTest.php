@@ -6,13 +6,14 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Lugares_Entrega;
+use App\Models\User;
 
 class lugarEntregaTest extends TestCase
 {
   
     public function test_agregarUnLugarDeEntrega(){
- 
-     $response = $this->followingRedirects()->post('/destinos',
+        $user = User::factory()->create();
+     $response = $this->followingRedirects()->actingAs($user)->post('/destinos',
      [
         "accion" => "agregar",
          "identificador" => "6",
@@ -29,8 +30,8 @@ class lugarEntregaTest extends TestCase
     }
 
     public function test_ModificarUnLugarDeEntrega(){
-
-        $response = $this->followingRedirects()->post('/destinos',
+        $user = User::factory()->create();
+        $response = $this->followingRedirects()->actingAs($user)->post('/destinos',
         [
             "accion" => "modificar",
             "identificador" => "4",
@@ -46,7 +47,8 @@ class lugarEntregaTest extends TestCase
 
        }
        public function test_EliminarUnLugarDeEntrega(){
-        $response = $this->followingRedirects()->post('/destinos',[
+        $user = User::factory()->create();
+        $response = $this->followingRedirects()->actingAs($user)->post('/destinos',[
             "accion" => "eliminar",
             "identificador" => "5",
             "direccion" => "almacen 74 eliminar",
@@ -59,7 +61,8 @@ class lugarEntregaTest extends TestCase
     
 
        public function test_RecuprarUnLugarDeEntrega(){
-        $response1 = $this->followingRedirects()->post('/destinos',[
+        $user = User::factory()->create();
+        $response1 = $this->followingRedirects()->actingAs($user)->post('/destinos',[
             "accion" => "eliminar",
             "identificador" => "5",
             "direccion" => "almacen 74 eliminar",
@@ -68,7 +71,7 @@ class lugarEntregaTest extends TestCase
         ]);
         $response1->assertStatus(200);
     
-        $response2 = $this->followingRedirects()->post('/destinos',[
+        $response2 = $this->followingRedirects()->actingAs($user)->post('/destinos',[
             "accion" => "recuperar",
             "identificador" => "5",
             "direccion" => "almacen 74 eliminar",

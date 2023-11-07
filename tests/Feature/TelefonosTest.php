@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Telefonos_Usuarios;
+use App\Models\User;
 
 class TelefonosTest extends TestCase
 {
@@ -15,8 +16,8 @@ class TelefonosTest extends TestCase
      * @return void
      */
    public function test_agregarUnTelefono(){
-
-    $response = $this->followingRedirects()->post('/telefonos',
+    $user = User::factory()->create();
+    $response = $this->followingRedirects()->actingAs($user)->post('/telefonos',
     [
         "accion" => "agregar",
         "datoUsuario" => "42",
@@ -31,8 +32,8 @@ class TelefonosTest extends TestCase
    }
 
    public function test_ModificarUnTelefono(){
-
-    $response = $this->followingRedirects()->post('/telefonos',
+    $user = User::factory()->create();
+    $response = $this->followingRedirects()->actingAs($user)->post('/telefonos',
     [
         "accion" => "modificar",
         "identificadorId" => "42",
@@ -48,7 +49,8 @@ class TelefonosTest extends TestCase
    }
 
    public function test_EliminarUnTelefono(){
-    $response = $this->followingRedirects()->post('/telefonos',[
+    $user = User::factory()->create();
+    $response = $this->followingRedirects()->actingAs($user)->post('/telefonos',[
         "accion" => "eliminar",
         "datoUsuario" => "74",
         "identificadorId" => "74",
@@ -60,7 +62,8 @@ class TelefonosTest extends TestCase
    }
 
    public function test_RecuprarUnTelefono(){
-    $response1 = $this->followingRedirects()->post('/telefonos',[
+    $user = User::factory()->create();
+    $response1 = $this->followingRedirects()->actingAs($user)->post('/telefonos',[
         "accion" => "eliminar",
         "datoUsuario" => "74",
         "identificadorId" => "74",
@@ -69,7 +72,7 @@ class TelefonosTest extends TestCase
     ]);
     $response1->assertStatus(200);
 
-    $response2 = $this->followingRedirects()->post('/telefonos',[
+    $response2 = $this->followingRedirects()->actingAs($user)->post('/telefonos',[
         "accion" => "recuperar",
         "datoUsuario" => "74",
         "identificadorId" => "74",

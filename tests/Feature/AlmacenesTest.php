@@ -6,13 +6,14 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Models\almacenes;
 use App\Models\lugares_entrega;
+use App\Models\User;
 use Tests\TestCase;
 
 class AlmacenesTest extends TestCase
 {
     public function test_agregarUnAlmacen(){
-
-        $response = $this->followingRedirects()->post('/Almacenes',
+        $user = User::factory()->create();
+        $response = $this->followingRedirects()->actingAs($user)->post('/Almacenes',
         [
             "accion" => "agregar",
             "idLugarEntrega" => "1",
@@ -30,8 +31,8 @@ class AlmacenesTest extends TestCase
     
 
        public function test_ModificarUnAlmacen(){
-
-        $response = $this->followingRedirects()->post('/Almacenes',
+        $user = User::factory()->create();
+        $response = $this->followingRedirects()->actingAs($user)->post('/Almacenes',
         [
             "accion" => "modificar",
             "identificador" => "42",
@@ -47,7 +48,8 @@ class AlmacenesTest extends TestCase
 
 
        public function test_EliminarUnAlmacen(){
-        $response = $this->followingRedirects()->post('/Almacenes',[
+        $user = User::factory()->create();
+        $response = $this->followingRedirects()->actingAs($user)->post('/Almacenes',[
             "accion" => "eliminar",
             "identificador" => "5",
 
@@ -59,14 +61,15 @@ class AlmacenesTest extends TestCase
 
 
        public function test_RecuprarUnAlmacen(){
-        $response1 = $this->followingRedirects()->post('/Almacenes',[
+        $user = User::factory()->create();
+        $response1 = $this->followingRedirects()->actingAs($user)->post('/Almacenes',[
             "accion" => "eliminar",
             "identificador" => "5",
 
         ]);
         $response1->assertStatus(200);
     
-        $response2 = $this->followingRedirects()->post('/Almacenes',[
+        $response2 = $this->followingRedirects()->actingAs($user)->post('/Almacenes',[
             "accion" => "recuperar",
             "identificador" => "5",
         ]);

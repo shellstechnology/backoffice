@@ -13,12 +13,13 @@ use App\Models\Estados_c;
 use App\Models\Marcas;
 use App\Models\Modelos;
 use App\Models\Usuarios;
+use App\Models\User;
 
 class CamionesTest extends TestCase
 {
     public function test_agregarUnCamion(){
-
-        $response = $this->followingRedirects()->post('/camiones',
+        $user = User::factory()->create();
+        $response = $this->followingRedirects()->actingAs($user)->post('/camiones',
         [
             "accion" => "agregar",
             "identificador" => "abcd",
@@ -39,8 +40,8 @@ class CamionesTest extends TestCase
 
 
        public function test_ModificarUnCamion(){
-
-        $response = $this->followingRedirects()->post('/camiones',
+        $user = User::factory()->create();
+        $response = $this->followingRedirects()->actingAs($user)->post('/camiones',
         [
             "accion" => "modificar",
             "identificador" => "a42a",
@@ -59,7 +60,8 @@ class CamionesTest extends TestCase
     
 
        public function test_EliminarUnCamion(){
-        $response = $this->followingRedirects()->post('/camiones',[
+        $user = User::factory()->create();
+        $response = $this->followingRedirects()->actingAs($user)->post('/camiones',[
             "accion" => "eliminar",
             "identificador" => "a47a",
             "matricula" => "a74a",
@@ -75,7 +77,8 @@ class CamionesTest extends TestCase
     
 
        public function test_RecuprarUnCamion(){
-        $response1 = $this->followingRedirects()->post('/camiones',[
+        $user = User::factory()->create();
+        $response1 = $this->followingRedirects()->actingAs($user)->post('/camiones',[
             "accion" => "eliminar",
             "identificador" => "a47a",
             "matricula" => "a74a",
@@ -87,7 +90,7 @@ class CamionesTest extends TestCase
         ]);
         $response1->assertStatus(200);
     
-        $response2 = $this->followingRedirects()->post('/camiones',[
+        $response2 = $this->followingRedirects()->actingAs($user)->post('/camiones',[
             "accion" => "recuperar",
             "identificador" => "a47a",
             "matricula" => "a74a",

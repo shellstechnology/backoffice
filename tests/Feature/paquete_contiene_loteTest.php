@@ -9,6 +9,7 @@ use App\Models\Almacenes;
 use App\Models\Lotes;
 use App\Models\Paquetes;
 use App\Models\Paquete_Contiene_Lote;
+use App\Models\User;
 
 class paquete_contiene_loteTest extends TestCase
 {
@@ -18,8 +19,8 @@ class paquete_contiene_loteTest extends TestCase
      * @return void
      */
     public function test_agregarUnPaqueteAUnLote(){
-
-        $response = $this->followingRedirects()->post('/paquetes-lote',
+        $user = User::factory()->create();
+        $response = $this->followingRedirects()->actingAs($user)->post('/paquetes-lote',
         [
             "accion" => "agregar",
             "identificador" => "42",
@@ -36,8 +37,8 @@ class paquete_contiene_loteTest extends TestCase
        }
     
        public function test_ModificarUnPaqueteEnUnlote(){
-
-        $response = $this->followingRedirects()->post('/paquetes-lote',
+        $user = User::factory()->create();
+        $response = $this->followingRedirects()->actingAs($user)->post('/paquetes-lote',
         [
             "accion" => "modificar",
             "identificador" => "42",
@@ -53,7 +54,8 @@ class paquete_contiene_loteTest extends TestCase
        }
 
        public function test_EliminarUnPaqueteEnUnlote(){
-        $response = $this->followingRedirects()->post('/paquetes-lote',[
+        $user = User::factory()->create();
+        $response = $this->followingRedirects()->actingAs($user)->post('/paquetes-lote',[
             "accion" => "eliminar",
             "identificador" => "74",
             "idPaquete" => "74",
@@ -66,7 +68,8 @@ class paquete_contiene_loteTest extends TestCase
 
 
        public function test_RecuprarUnPaqueteEnUnLote(){
-        $response1 = $this->followingRedirects()->post('/paquetes-lote',[
+        $user = User::factory()->create();
+        $response1 = $this->followingRedirects()->actingAs($user)->post('/paquetes-lote',[
             "accion" => "eliminar",
             "identificador" => "74",
             "idPaquete" => "74",
@@ -75,7 +78,7 @@ class paquete_contiene_loteTest extends TestCase
         ]);
         $response1->assertStatus(200);
     
-        $response2 = $this->followingRedirects()->post('/paquetes-lote',[
+        $response2 = $this->followingRedirects()->actingAs($user)->post('/paquetes-lote',[
             "accion" => "recuperar",
             "identificador" => "74",
             "idPaquete" => "74",
