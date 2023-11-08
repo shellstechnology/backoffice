@@ -15,7 +15,6 @@ use App\Http\Controllers\camionesController;
 use App\Http\Controllers\marcasController;
 use App\Http\Controllers\modelosController;
 use App\Http\Controllers\monedaController;
-use App\Http\Controllers\redireccionController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -31,141 +30,141 @@ Route::get('/', function () {
     return view('vistaBackOffice');
 });
 
-Route::get('backoffice', function () {
+Route::get('backoffice', function(){
     return view('vistaBackOffice');
-})->name('backoffice');
+})-> name('backoffice');
 
-Route::get('usuarios', function () {
+Route::get('usuarios', function(){
     return view('vistaBackOfficeUsuarios');
-})->name('backoffice.usuarios');
+})-> name('backoffice.usuarios');
 
-Route::get('telefonos', function () {
+Route::get('telefonos', function(){
     return view('vistaBackOfficeTelefonosUsuario');
-})->name('usuarios.telefonosUsuario');
+})-> name('usuarios.telefonosUsuario');
 
-Route::get('camiones', function () {
+Route::get('camiones', function(){
     return view('vistaBackOfficeCamiones');
-})->name('backoffice.camiones');
+})-> name('backoffice.camiones');
 
-Route::get('camion-lote', function () {
+Route::get('camion-lote', function(){
     return view('vistaBackOfficeCamionLlevaLote');
-})->name('camion.camionLlevaLote');
+})-> name('camion.camionLlevaLote');
 
-Route::get('almacenes', function () {
+Route::get('almacenes', function(){
     return view('vistaBackOfficeAlmacen');
-})->name('backoffice.almacen');
+})-> name('backoffice.almacen');
 
-Route::get('destinos', function () {
+Route::get('destinos', function(){
     return view('vistaBackOfficeLugarEntrega');
-})->name('almacen.lugarEntrega');
+})-> name('almacen.lugarEntrega');
 
-Route::get('paquetes', function () {
+Route::get('paquetes', function(){
     return view('vistaBackOfficePaquete');
-})->name('backoffice.paquete');
+})-> name('backoffice.paquete');
 
-Route::get('productos', function () {
+Route::get('productos', function(){
     return view('vistaBackOfficeProducto');
-})->name('backoffice.producto');
+})-> name('backoffice.producto');
 
-Route::get('lotes', function () {
+Route::get('lotes', function(){
     return view('vistaBackOfficeLote');
-})->name('backoffice.lote');
+})-> name('backoffice.lote');
 
-Route::get('paquete-lote', function () {
+Route::get('paquete-lote', function(){
     return view('vistaBackOfficePaqueteContieneLote');
-})->name('lote.paqueteContieneLote');
+})-> name('lote.paqueteContieneLote');
 
-Route::get('marca', function () {
+Route::get('marca', function(){
     return view('vistaBackOfficeMarca');
 
-})->name('backoffice.marca');
-Route::get('marca-modelo', function () {
+})-> name('backoffice.marca');
+Route::get('marca-modelo', function(){
     return view('vistaBackOfficeModelo');
-})->name('marca.modelo');
-Route::get('moneda', function () {
+})-> name('marca.modelo');
+Route::get('moneda', function(){
     return view('vistaBackOfficeMoneda');
-})->name('backoffice.moneda');
+})-> name('backoffice.moneda');
 
 Route::get('/Productos', [productoController::class, 'cargarDatos'])->name('producto.cargarDatos');
-Route::post('/productos', [productoController::class, 'verificarDatosAgregar'])->name('producto.Agregar');
+// Route::post('/productos', [productoController::class, 'verificarDatosAgregar'])->name('producto.Agregar');
 Route::put('/productos', [productoController::class, 'verificarDatosModificar'])->name('producto.Modificar');
 Route::delete('/productos', [productoController::class, 'eliminarProducto'])->name('producto.Eliminar');
 Route::put('/productosr', [productoController::class, 'recuperarProducto'])->name('producto.Recuperar');
+Route::post('/productos', [productoController::class, 'realizarAccion'])->name('producto.realizarAccion');
 
-
-
-Route::get('/almacen1', [almacenController::class, 'cargarDatos'])->name('almacen.cargarDatos');
-
-Route::post('/almacen', [almacenController::class, 'verificarDatosAAgregar'])->name('almacen.Agregar');
-Route::put('/almacen', [almacenController::class, 'verificarDatosAModificar'])->name('almacen.Modificar');
-Route::delete('/almacen', [almacenController::class, 'eliminarAlmacen'])->name('almacen.Eliminar');
-Route::patch('/almacen', [almacenController::class, 'recuperarAlmacen'])->name('almacen.Recuperar');
-
-Route::post('/almacen/{data}', [almacenController::class, 'verificarDatosAAgregar'])->name('almacen.Agregar');
-Route::put('/almacen', [almacenController::class, 'verificarDatosAModificar'])->name('almacen.Modificar');
-Route::delete('/almacen', [almacenController::class, 'eliminarAlmacen'])->name('almacen.Eliminar');
-Route::patch('/almacen', [almacenController::class, 'recuperarAlmacen'])->name('almacen.Recuperar');
-
+Route::get('/Almacenes', [almacenController::class, 'cargarDatos'])->name('almacen.cargarDatos');
+// Route::post('/almacenes', [almacenController::class, 'verificarDatosAAgregar'])->name('almacen.Agregar');
+Route::put('/almacenes', [almacenController::class, 'verificarDatosAModificar'])->name('almacen.Modificar');
+Route::delete('/almacenes', [almacenController::class, 'eliminarAlmacen'])->name('almacen.Eliminar');
+Route::put('/almacenesr', [almacenController::class, 'recuperarAlmacen'])->name('almacen.Recuperar');
+Route::post('/almacenes', [almacenController::class, 'realizarAccion'])->name('almacen.realizarAccion');
 
 Route::get('/Destinos', [LugarEntregaController::class, 'cargarDatos'])->name('lugarEntrega.cargarDatos');
-Route::post('/destinos', [LugarEntregaController::class, 'verificarDatosAgregar'])->name('lugarEntrega.Agregar');
+// Route::post('/destinos', [LugarEntregaController::class, 'verificarDatosAgregar'])->name('lugarEntrega.Agregar');
 Route::put('/destinos', [LugarEntregaController::class, ' verificarDatosModificar'])->name('lugarEntrega.Modificar');
 Route::delete('/destinos', [LugarEntregaController::class, 'eliminarLugarEntrega'])->name('lugarEntrega.Eliminar');
 Route::put('/destinosr', [LugarEntregaController::class, 'recuperarLugarEntrega'])->name('lugarEntrega.Recuperar');
-
+Route::post('/destinos', [LugarEntregaController::class, 'realizarAccion'])->name('lugarEntrega.realizarAccion');
 
 Route::get('/Paquetes', [paqueteController::class, 'cargarDatos'])->name('paquete.cargarDatos');
-Route::post('/paquetes', [paqueteController::class, ' verificarDatosAgregar'])->name('paquete.Agregar');
+// Route::post('/paquetes', [paqueteController::class, ' verificarDatosAgregar'])->name('paquete.Agregar');
 Route::put('/paquetes', [paqueteController::class, "verificarDatosModificar"])->name('paquete.Modificar');
 Route::delete('/paquetes', [paqueteController::class, "eliminarPaquete"])->name('paquetes.Eliminar');
 Route::put('/paquetesr', [paqueteController::class, "recuperarPaquete"])->name('paquete.Recuperar');
+Route::post('/paquetes', [paqueteController::class, 'realizarAccion'])->name('paquete.realizarAccion');
 
 Route::get('/Lotes', [loteController::class, 'cargarDatos'])->name('lote.cargarDatos');
-Route::post('/lotes', [loteController::class, 'agregarLote'])->name('lote.Agregar');
+// Route::post('/lotes', [loteController::class, 'agregarLote'])->name('lote.Agregar');
 Route::delete('/lotes', [loteController::class, 'eliminarLote'])->name('lote.Eliminar');
 Route::put('/lotesr', [loteController::class, "recuperarLote"])->name('lote.Recuperar');
-
+Route::post('/lotes', [loteController::class, 'realizarAccion'])->name('lote.realizarAccion');
 
 Route::get('/Paquetes-lote', [paqueteContieneLoteController::class, 'cargarDatos'])->name('paqueteContieneLote.cargarDatos');
-Route::post('/paquetes-lote', [paqueteContieneLoteController::class, 'verificarDatosAgregar'])->name('paqueteContieneLote.Agregar');
+// Route::post('/paquetes-lote', [paqueteContieneLoteController::class, 'verificarDatosAgregar'])->name('paqueteContieneLote.Agregar');
 Route::put('/paquetes-lote', [paqueteContieneLoteController::class, 'verificarDatosModificar'])->name('paqueteContienLote.Modificar');
 Route::delete('/paquetes-lote', [paqueteContieneLoteController::class, 'eliminarPaqueteContieneLote'])->name('paqueteContieneLote.Eliminar');
 Route::put('/paquetes-loter', [paqueteContieneLoteController::class, 'recuperarPaqueteContieneLote'])->name('paqueteContienLote.Recuperar');
-
+Route::post('/paquetes-lote', [paqueteContieneLoteController::class, 'realizarAccion'])->name('paqueteContienLote.realizarAccion');
 
 Route::get('/Camion-lote', [camionLlevaLoteController::class, 'cargarDatos'])->name('camionLlevaLote.cargarDatos');
-Route::post('/camion-lote', [camionLlevaLoteController::class, 'verificarDatosAgregar'])->name('camionLlevaLote.Agregar');
+// Route::post('/camion-lote', [camionLlevaLoteController::class, 'verificarDatosAgregar'])->name('camionLlevaLote.Agregar');
 Route::put('/camion-lote', [camionLlevaLoteController::class, 'verificarDatosModificar'])->name('camionLlevaLote.Modificar');
 Route::delete('/camion-lote', [camionLlevaLoteController::class, 'eliminarCamionLlevaLote'])->name('camionLlevaLote.Eliminar');
 Route::put('/camion-loter', [camionLlevaLoteController::class, 'recuperarCamionLlevaLote'])->name('camionLlevaLote.Recuperar');
-
+Route::post('/camion-lote', [camionLlevaLoteController::class, 'realizarAccion'])->name('camionLlevaLote.realizarAccion');
 
 Route::get('/Usuarios', [usuarioController::class, 'cargarDatos'])->name('usuario.cargarDatos');
-Route::post('/usuarios', [usuarioController::class, 'verificarDatosAgregar'])->name('usuario.Agregar');
+// Route::post('/usuarios', [usuarioController::class, 'verificarDatosAgregar'])->name('usuario.Agregar');
 Route::put('/usuarios', [usuarioController::class, 'verificarDatosModificar'])->name('usuario.Modificar');
 Route::delete('/usuarios', [usuarioController::class, 'eliminarUsuario'])->name('usuario.Eliminar');
 Route::put('/usuariosr', [usuarioController::class, 'recuperarUsuario'])->name('usuario.Recuperar');
-
+Route::post('/usuarios', [usuarioController::class, 'realizarAccion'])->name('usuario.realizarAccion');
 
 Route::get('/Telefonos', [telefonosUsuarioController::class, 'cargarDatos'])->name('telefonosUsuario.cargarDatos');
-Route::post('/telefonos', [telefonosUsuarioController::class, 'verificarDatosAgregar'])->name('telefonosUsuario.Agregar');
-Route::put('/telefonos', [telefonosUsuarioController::class, 'verificarDatosModificar'])->name('telefonosUsuario.Modificar');
-Route::delete('/telefonos', [telefonosUsuarioController::class, 'eliminarTelefonosUsuario'])->name('telefonosUsuario.Eliminar');
-Route::put('/telefonosr', [telefonosUsuarioController::class, 'recuperarTelefonosUsuario'])->name('telefonosUsuario.Recuperar');
-
+// Route::post('/telefonos', [Controller::class, 'verificarDatosAgregar'])->name('telefonosUsuario.Agregar');
+Route::put('/telefonos', [Controller::class, 'verificarDatosModificar'])->name('telefonosUsuario.Modificar');
+Route::delete('/telefonos', [Controller::class, 'eliminarTelefonosUsuario'])->name('telefonosUsuario.Eliminar');
+Route::put('/telefonosr', [Controller::class, 'recuperarTelefonosUsuario'])->name('telefonosUsuario.Recuperar');
+Route::post('/telefonos', [telefonosUsuarioController::class, 'realizarAccion'])->name('telefonosUsuario.realizarAccion');
 
 Route::get('/Camiones', [camionesController::class, 'cargarDatos'])->name('camiones.cargarDatos');
-Route::post('/camiones', [camionesController::class, 'verificarDatosAgregar'])->name('camiones.Agregar');
-Route::put('/camiones', [camionesController::class, 'verificarDatosModificar'])->name('camiones.Modificar');
-Route::delete('/camiones', [camionesController::class, 'eliminarCamion'])->name('camiones.Eliminar');
-Route::put('/camionesr', [camionesController::class, 'recuperarCamion'])->name('camiones.Recuperar');
-
+// Route::post('/camiones', [Controller::class, 'verificarDatosAgregar'])->name('camiones.Agregar');
+Route::put('/camiones', [Controller::class, 'verificarDatosModificar'])->name('camiones.Modificar');
+Route::delete('/camiones', [Controller::class, 'eliminarCamion'])->name('camiones.Eliminar');
+Route::put('/camiones', [Controller::class, 'recuperarCamion'])->name('camiones.Recuperar');
+Route::post('/camiones', [camionesController::class, 'realizarAccion'])->name('camiones.realizarAccion');
 
 Route::get('/Modelo', [modelosController::class, 'cargarDatos'])->name('modelos.cargarDatos');
 Route::post('/modelo', [modelosController::class, 'verificarDatosAAgregar'])->name('modelo.Agregar');
 Route::put('/modelo', [modelosController::class, 'verificarDatosAModificar'])->name('modelo.Modificar');
 Route::delete('/modelo', [modelosController::class, 'eliminarModelo'])->name('modelo.Eliminar');
-Route::put('/modelor', [modelosController::class, 'recuperarModelo'])->name('modelo.Recuperar');
+Route::put('/modelor', [modeloController::class, 'recuperarModelo'])->name('modelo.Recuperar');
+Route::post('/modelo', [modelosController::class, 'realizarAccion'])->name('modelo.realizarAccion');
+
+Route::get('/Moneda', [monedaController::class, 'cargarDatos'])->name('moneda.cargarDatos');
+Route::post('/moneda', [monedaController::class, 'realizarAccion'])->name('moneda.realizarAccion');
+Route::post('/Moneda', [monedaController::class, 'recuperar'])->name('moneda.recuperar');
+
 
 
 Route::get('/Marca', [marcasController::class, 'cargarDatos'])->name('marcas.cargarDatos');
@@ -173,12 +172,4 @@ Route::post('/marca', [marcasController::class, 'verificarDatosAAgregar'])->name
 Route::put('/marca', [marcasController::class, 'verificarDatosAModificar'])->name('marcas.Modificar');
 Route::delete('/marca', [marcasController::class, 'eliminarMarca'])->name('marcas.Eliminar');
 Route::put('/marcar', [marcasController::class, 'recuperarMarca'])->name('marcas.Recuperar');
-
-Route::get('/Moneda', [monedaController::class, 'cargarDatos'])->name('moneda.cargarDatos');
-Route::post('/moneda', [monedaController::class, 'verificarDatosAAgregar'])->name('moneda.Agregar');
-Route::put('/moneda', [monedaController::class, 'verificarDatosAModificar'])->name('moneda.Modificar');
-Route::delete('/moneda', [monedaController::class, 'eliminarMoneda'])->name('moneda.Eliminar');
-Route::put('/monedar', [monedaController::class, 'recuperarMoneda'])->name('marca.Recuperar');
-
-
-Route::post('/redireccionAlmacen', [redireccionController::class,'redireccionAlmacenes'])->name('redireccion.almacen');
+Route::post('/marca', [marcasController::class, 'realizarAccion'])->name('marcas.realizarAccion');
