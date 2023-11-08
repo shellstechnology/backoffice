@@ -1,0 +1,63 @@
+:root {
+    --colorFondoClaro: rgb(240, 240, 240);
+    --colorBordesClaro: #3A4138;
+    --colorFondosOscuros: #FFFFFF;
+    --colorLetrasOscuras: #FFFFFF;
+    --pruebaColorFondo: #f3dcbe;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Roboto;
+}
+
+.principalBody {
+    background-color: var(--pruebaColorFondo);
+    height: calc(100%);
+    width: calc(100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.formulario {
+    height: 500px;
+    width: 500px;
+    background: linear-gradient(#a06f6f, #af8f65);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin-bottom: 75px;
+    margin-top: 75px;
+}
+
+.imagenLogo {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.campoTexto {
+    width: 300px;
+    height: 25px;
+    margin-left: calc(50% - 160px);
+    margin-top: 20px;
+    border-radius: 5px;
+    border: none;
+}
+
+.botonSubmit {
+    margin-top: 75px;
+    margin-left: calc(50% - 75px);
+    width: 125px;
+    height: 25px;
+    border: none;
+}
+
+.botonSubmit:hover {
+    cursor: pointer;
+    background-color: rgb(180, 194, 206);
+
+}
