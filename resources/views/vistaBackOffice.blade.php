@@ -4,28 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BackOffice:Menu Principal</title>
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}"> 
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <script src="{{asset('js/funciones.js')}}"> </script>
 </head>
-@include('header')
 <body>
-<div class="barraDeNavegacion">
-<a href="{{ route('backoffice') }}" class="itemSeleccionado">Menu Principal</a>
-     <a href="{{ route('backoffice.almacen') }}" class="item">Almacenes</a>
-     <a href="{{ route('backoffice.camiones') }}" class="item">Camiones</a>
-     <a href="{{ route('backoffice.marca') }}" class="item">Marcas(Camiones)</a>
-     <a href="{{ route('backoffice.moneda') }}" class="item">Moneda</a>
-     <a href="{{ route('backoffice.paquete') }}" class="item">Paquetes</a>
-     <a href="{{ route('backoffice.producto') }}" class="item">Productos</a>
-     <a href="{{ route('backoffice.lote') }}" class="item">Lotes</a>
-</div>
-<a href="{{ route('backoffice.usuarios') }}" class="enlaceCajaUsuario">
-<div class="cajaUsuario">
-<div class="head"></div>
-<div class="body"></div>
-</div>
-</a>
-<header>
+    <div class="barraDeNavegacion">
+        <a href="{{ route('backoffice') }}" class="itemSeleccionado">Menu Principal</a>
+        <a href="{{ route('backoffice.almacen') }}" class="item">Almacenes</a>
+        <a href="{{ route('backoffice.camiones') }}" class="item">Camiones</a>
+        <a href="{{ route('backoffice.marca') }}" class="item">Marcas(Camiones)</a>
+        <a href="{{ route('backoffice.moneda') }}" class="item">Moneda</a>
+        <a href="{{ route('backoffice.paquete') }}" class="item">Paquetes</a>
+        <a href="{{ route('backoffice.producto') }}" class="item">Productos</a>
+        <a href="{{ route('backoffice.lote') }}" class="item">Lotes</a>
+    </div>
+    <a href="{{ route('backoffice.usuarios') }}" class="enlaceCajaUsuario">
+        <div class="cajaUsuario">
+            <div class="head"></div>
+            <div class="body"></div>
+        </div>
+    </a>
+    <header>
         <h1>Instrucciones de uso</h1>
     </header>
     <main>
@@ -62,5 +61,4 @@
         </section>
     </main>
 </body>
-@include('footer')
 </html>
