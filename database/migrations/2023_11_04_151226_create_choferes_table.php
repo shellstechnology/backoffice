@@ -18,7 +18,7 @@ class CreateChoferesTable extends Migration
             $table->string('licencia_de_conducir', 10)->unique();
             $table->timestamps();
             $table->softDeletes();
-            $table->foreign('id_usuarios')->references('id')->on('usuarios');
+            $table->foreign('id_usuarios')->references('id')->on('users');
         });
     }
 

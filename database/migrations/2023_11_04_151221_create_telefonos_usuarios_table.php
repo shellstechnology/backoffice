@@ -19,7 +19,7 @@ class CreateTelefonosUsuariosTable extends Migration
             $table->timestamps();
             $table->softDeletes();
             $table->primary(['id_usuarios', 'telefono']);
-            $table->foreign('id_usuarios')->references('id')->on('usuarios');
+            $table->foreign('id_usuarios')->references('id')->on('users');
         });
     }
 

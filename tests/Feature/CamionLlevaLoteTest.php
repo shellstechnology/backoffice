@@ -8,10 +8,11 @@ use Tests\TestCase;
 use App\Models\Camion_Lleva_Lote;
 use App\Models\Camiones;
 use App\Models\Lotes;
+use App\Models\User;
 
 class CamionLlevaLoteTest extends TestCase
 {
-    public function test_agregarUnLoteAUnCamion(){
+    public function test_agregarUnCamionAUnLote(){
 
         $response = $this->followingRedirects()->post('/camion-lote',
         [
@@ -28,9 +29,9 @@ class CamionLlevaLoteTest extends TestCase
         Camion_Lleva_Lote::withTrashed()->where('matricula','a20a')->forceDelete();
        }
 
-       public function test_ModificarUnCamionEnLote(){
-
-        $response = $this->followingRedirects()->post('/camion-lote',
+       public function test_ModificarUnLoteEnUnCamion(){
+        $user = User::factory()->create();
+        $response = $this->followingRedirects()->actingAs($user)->post('/camion-lote',
         [
             "accion" => "modificar",
             "identificador" => "42",
@@ -45,7 +46,8 @@ class CamionLlevaLoteTest extends TestCase
 
        
        public function test_EliminarUnCamionEnLote(){
-        $response = $this->followingRedirects()->post('/camion-lote',[
+        $user = User::factory()->create();
+        $response = $this->followingRedirects()->actingAs($user)->post('/camion-lote',[
             "accion" => "eliminar",
             "identificador" => "47",
             "idCamion" => "a47a",
@@ -57,7 +59,8 @@ class CamionLlevaLoteTest extends TestCase
     
 
        public function test_RecuprarUnLoteEnCamion(){
-        $response1 = $this->followingRedirects()->post('/camion-lote',[
+        $user = User::factory()->create();
+        $response1 = $this->followingRedirects()->actingAs($user)->post('/camion-lote',[
             "accion" => "eliminar",
             "identificador" => "47",
             "idCamion" => "a47a",
@@ -65,7 +68,7 @@ class CamionLlevaLoteTest extends TestCase
         ]);
         $response1->assertStatus(200);
     
-        $response2 = $this->followingRedirects()->post('/camion-lote',[
+        $response2 = $this->followingRedirects()->actingAs($user)->post('/camion-lote',[
             "accion" => "recuperar",
             "identificador" => "47",
             "idCamion" => "a47a",

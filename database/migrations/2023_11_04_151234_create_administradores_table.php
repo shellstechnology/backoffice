@@ -17,7 +17,7 @@ class CreateAdministradoresTable extends Migration
             $table->unsignedBigInteger('id_usuarios')->primary();
             $table->timestamps();
             $table->softDeletes();
-            $table->foreign('id_usuarios')->references('id')->on('usuarios');
+            $table->foreign('id_usuarios')->references('id')->on('users');
         });
     }
 
