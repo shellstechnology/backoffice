@@ -9,8 +9,8 @@ use App\Models\choferes;
 use App\Models\clientes;
 use App\Models\telefonos_usuarios;
 use App\Models\usuarios;
-use App\Models\mail_usuarios;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
@@ -95,7 +95,6 @@ class usuarioController extends Controller
     {
         try {
             $id = $datosRequest['identificador'];
-            Mail_Usuarios::where('id_usuarios', $id)->delete();
             Usuarios::where('id', $id)->delete();
             $mensajeConfirmacion = 'Usuario eliminado exitosamente';
             Session::put('respuesta', $mensajeConfirmacion);
@@ -114,7 +113,6 @@ class usuarioController extends Controller
             $usuario = Usuarios::onlyTrashed()->where('id',$id)->first();
             if ($usuario) {
                 Usuarios::where('id', $id)->restore();
-                Mail_Usuarios::where('id_usuarios', $id)->restore();
                 $mensajeConfirmacion = 'Usuario restaurado exitosamente';
                 Session::put('respuesta', $mensajeConfirmacion);
             }
@@ -128,31 +126,19 @@ class usuarioController extends Controller
     private function obtenerUsuarios($usuario)
     {
         try {
-            $mail = $this->obtenerMails($usuario);
             $telefono = $this->obtenerTelefonos($usuario);
             $tipoUsuario = $this->obtenerTipoUsuario($usuario);
             return ([
                 'Id Usuario' => $usuario['id'],
-                'Nombre de Usuario' => $usuario['nombre_de_usuario'],
-                'contrasenia' => $usuario['contrasenia'],
-                'Mail' => $mail,
+                'Nombre de Usuario' => $usuario['name'],
+                'contrasenia' => $usuario['password'],
+                'Mail' => $usuario['email'],
                 'Telefono/s' => $telefono,
                 'Tipo de Usuario' => $tipoUsuario,
                 'created_at' => $usuario['created_at'],
                 'updated_at' => $usuario['updated_at'],
                 'deleted_at' => $usuario['deleted_at']
             ]);
-        } catch (\Exception $e) {
-            $mensajeDeError = 'Error: ';
-            Session::put('respuesta', $mensajeDeError);
-        }
-    }
-
-    private function obtenerMails($usuario)
-    {
-        try {
-            $mail = Mail_Usuarios::withTrashed()->where('id_usuarios', $usuario['id'])->first();
-            return $mail['mail'];
         } catch (\Exception $e) {
             $mensajeDeError = 'Error: ';
             Session::put('respuesta', $mensajeDeError);
@@ -226,37 +212,20 @@ class usuarioController extends Controller
             if ($checkboxSeleccionada != true) {
                 return;
             }
-            $mailExistente = Mail_Usuarios::withTrashed()->where('mail', $datosUsuario['mail'])->first();
-            $contraseniaExistente = Usuarios::withTrashed()->where('contrasenia', $datosUsuario['contrasenia'])->first();
-            if ($mailExistente != null) {
-                return;
-            }
+            $contraseniaExistente = Usuarios::withTrashed()->where('contrasenia', $datosUsuario['password'])->first();
             if ($contraseniaExistente != null) {
                 return;
             }
 
-            $usuario = new Usuarios;
-            $usuario->nombre_de_usuario = $datosUsuario['nombre'];
-            $usuario->contrasenia = $datosUsuario['contrasenia'];
-            $usuario->save();
-            $idUsuario = $usuario->getKey();
-            $this->crearMailUsuario($datosUsuario, $idUsuario);
-            $this->establecerTipoUsuario($datosUsuario, $idUsuario);
+            $user = new usuarios();
+            $user->name = $datosUsuario['nombre'];
+            $user->email = $datosUsuario['mail'];
+            $user->password = Hash::make($datosUsuario['contrasenia']);
+            $user->save();
+            $this->establecerTipoUsuario($datosUsuario, $user);
             $mensajeConfirmacion = 'Usuario creado exitosamente';
             Session::put('respuesta', $mensajeConfirmacion);
             $this->cargarDatos();
-        } catch (\Exception $e) {
-            $mensajeDeError = 'Error: ';
-            Session::put('respuesta', $mensajeDeError);
-        }
-    }
-    private function crearMailUsuario($usuario, $idUsuario)
-    {
-        try {
-            $mailUsuario = new Mail_Usuarios;
-            $mailUsuario->id_usuarios = $idUsuario;
-            $mailUsuario->mail = $usuario['mail'];
-            $mailUsuario->save();
         } catch (\Exception $e) {
             $mensajeDeError = 'Error: ';
             Session::put('respuesta', $mensajeDeError);
@@ -300,24 +269,13 @@ class usuarioController extends Controller
                 return;
             }
             Usuarios::withTrashed()->where('Id', $datosUsuario['identificador'])->update([
-                'nombre_de_usuario' => $datosUsuario['nombre'],
-                'contrasenia' => $datosUsuario['contrasenia'],
+                'name' => $datosUsuario['nombre'],
+                'email'=>$datosUsuario['mail'],
+                'password' => Hash::make($datosUsuario['contrasenia']),
             ]);
-            $this->modificarMailUsuario($datosUsuario);
             $this->seleccionarTipoUsuario($datosUsuario);
             $mensajeConfirmacion = 'Usuario modificado exitosamente';
             Session::put('respuesta', $mensajeConfirmacion);
-        } catch (\Exception $e) {
-            $mensajeDeError = 'Error: ';
-            Session::put('respuesta', $mensajeDeError);
-        }
-    }
-    private function modificarMailUsuario($usuario)
-    {
-        try {
-            Mail_Usuarios::withTrashed()->where('id_usuarios', $usuario['identificador'])->update([
-                'mail' => $usuario['mail'],
-            ]);
         } catch (\Exception $e) {
             $mensajeDeError = 'Error: ';
             Session::put('respuesta', $mensajeDeError);
@@ -355,10 +313,11 @@ class usuarioController extends Controller
         try {
             switch ($administrador) {
                 case 'crear':
-                    $datoAdministardor = Administradores::withTrashed()->updateOrCreate(['id_usuarios' => $datoUsuario['identificador']]);
-
-                    if ($datoAdministardor->trashed()) {
-                        $datoAdministardor->restore();
+                    $datoAdministador = Administradores::withTrashed()->updateOrCreate(['id_usuarios' => $datoUsuario['identificador']]);
+                    dd($datoUsuario['identificador']);
+                    $datoAdministador->save();
+                    if ($datoAdministador->trashed()) {
+                        $datoAdministador->restore();
                     }
                     break;
                 default:
@@ -395,7 +354,6 @@ class usuarioController extends Controller
             switch ($cliente) {
                 case 'crear':
                     $datoCliente = Clientes::withTrashed()->updateOrCreate(['id_usuarios' => $datoUsuario['identificador']]);
-
                     if ($datoCliente->trashed()) {
                         $datoCliente->restore();
                     }

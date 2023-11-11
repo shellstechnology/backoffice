@@ -15,7 +15,7 @@ $datos = session('usuarios', []);
         <th>Fecha de borrado</th>
     </tr>
     @foreach ($datos as $usuario)
-    <tr onclick="seleccionarFila('{{ $usuario['Id Usuario'] }}', '{{ $usuario['Nombre de Usuario'] }}', '{{ $usuario['contrasenia'] }}', '{{ $usuario['Mail'] }}', '{{ $usuario['Tipo de Usuario'] }}')">
+    <tr onclick="seleccionarFila('{{ $usuario['Id Usuario'] }}', '{{ $usuario['Nombre de Usuario'] }}', '{{ $usuario['Mail'] }}', '{{ $usuario['Tipo de Usuario'] }}')">
     <td>{{ $usuario['Id Usuario'] }}</td>
     <td>{{ $usuario['Nombre de Usuario'] }}</td>
     <td>{{ $usuario['contrasenia'] }}</td>
@@ -32,10 +32,9 @@ $datos = session('usuarios', []);
 @endif
 
 <script>
-    function seleccionarFila(id,nombre,contrasenia,mail,tipoUsuario) {
+    function seleccionarFila(id,nombre,mail,tipoUsuario) {
         document.getElementById('identificador').value =id ;
     document.getElementById('nombre').value = nombre;
-    document.getElementById('contrasenia').value = contrasenia;
     document.getElementById('mail').value = mail;
     obtenerTipoUsuario(tipoUsuario);
 

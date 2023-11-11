@@ -55,7 +55,7 @@
           <label for="nombre" >Nombre de Usuario</label>
         </div>
         <div class="campo">
-          <input type="text" name="contrasenia" id="contrasenia" maxlength="25" required></input>
+          <input type="text" name="contrasenia" id="contrasenia" maxlength="25"></input>
           <label for="contrasenia" >Contraseña</label>
         </div>
         <div class="campo">

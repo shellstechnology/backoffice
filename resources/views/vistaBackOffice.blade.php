@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}"> 
     <script src="{{asset('js/funciones.js')}}"> </script>
 </head>
-@include('header')
 <body>
 <div class="barraDeNavegacion">
 <a href="{{ route('backoffice') }}" class="itemSeleccionado">Menu Principal</a>
@@ -62,5 +61,4 @@
         </section>
     </main>
 </body>
-@include('footer')
 </html>

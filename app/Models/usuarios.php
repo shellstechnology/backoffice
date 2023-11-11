@@ -9,7 +9,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class Usuarios extends Model
 {
-    protected $table = 'usuarios';
+    protected $table = 'users';
     use HasFactory;
 
     use SoftDeletes;
