@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class UsuariosSeeder extends Seeder
 {
@@ -16,28 +17,33 @@ class UsuariosSeeder extends Seeder
     {
         \App\Models\usuarios::factory(1)->create([
             "id" => "10",
-            "nombre_de_usuario"=>"toreto",
-            "contrasenia" => "ee",
+            "name"=>"toreto",
+            "email"=>"toreto@familia.com",
+            "password" => Hash::make("ee"),
         ]);
         \App\Models\usuarios::factory(1)->create([
             "id" => "20",
-            "nombre_de_usuario"=>"choferpreba",
-            "contrasenia" => "dd",
+            "name"=>"choferpreba",
+            "email"=>"mail@prueba.com",
+            "password" => Hash::make("dd"),
         ]);
         \App\Models\usuarios::factory(1)->create([
             "id" => "47",
-            "nombre_de_usuario"=>"usuario a listar",
-            "contrasenia" => "aaa",
+            "name"=>"usuario a listar",
+            "email"=> "usuario@listar.com",
+            "password" => Hash::make("aa"),
         ]);
         \App\Models\usuarios::factory(1)->create([
             "id" => "42",
-            "nombre_de_usuario"=>"usuario a modificar",
-            "contrasenia" => "bb",
+            "name"=>"usuario a modificar",
+            "email"=> "usuario@modificar.com",
+            "password" => Hash::make("bb"),
         ]);
         \App\Models\usuarios::factory(1)->create([
             "id" => "74",
-            "nombre_de_usuario"=>"usuario a eliminar",
-            "contrasenia" => "cc",
+            "name"=>"usuario a eliminar",
+            "email"=> "usuario@eliminar.com",
+            "password" => Hash::make("cc"),
         ]);
     }
 }

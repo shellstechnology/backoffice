@@ -212,7 +212,7 @@ class usuarioController extends Controller
             if ($checkboxSeleccionada != true) {
                 return;
             }
-            $contraseniaExistente = Usuarios::withTrashed()->where('contrasenia', $datosUsuario['password'])->first();
+            $contraseniaExistente = Usuarios::withTrashed()->where('password', $datosUsuario['contrasenia'])->first();
             if ($contraseniaExistente != null) {
                 return;
             }
@@ -314,7 +314,6 @@ class usuarioController extends Controller
             switch ($administrador) {
                 case 'crear':
                     $datoAdministador = Administradores::withTrashed()->updateOrCreate(['id_usuarios' => $datoUsuario['identificador']]);
-                    dd($datoUsuario['identificador']);
                     $datoAdministador->save();
                     if ($datoAdministador->trashed()) {
                         $datoAdministador->restore();
