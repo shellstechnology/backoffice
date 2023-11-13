@@ -199,7 +199,7 @@ class camionesController extends Controller
             $nuevoCamion = new Camiones;
             list($marca, $modelo) = explode(':', $camion['marcaModeloCamion']);
             $idModelo = Modelos::withTrashed()->where('modelo', $modelo)->first();
-            $idUsuario = Usuarios::withTrashed()->where('nombre_de_usuario', $camion['chofer'])->first();
+            $idUsuario = Usuarios::withTrashed()->where('name', $camion['chofer'])->first();
             $estado = Estados_c::withTrashed()->where('descripcion_estado_c', $camion['estadoCamion'])->first();
             $nuevoCamion->matricula = $camion['matricula'];
             $nuevoCamion->id_modelo_marca = $idModelo['id'];
