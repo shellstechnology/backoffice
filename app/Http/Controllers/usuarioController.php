@@ -34,6 +34,7 @@ class usuarioController extends Controller
                 $this->recuperarUsuario($datosRequest);
                 break;
         }
+        $this->cargarDatos();
         return redirect()->route('backoffice.usuarios');
 
     }
