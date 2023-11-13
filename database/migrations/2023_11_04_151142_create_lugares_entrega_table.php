@@ -15,13 +15,13 @@ class CreateLugaresEntregaTable extends Migration
     {
         Schema::create('lugares_entrega', function (Blueprint $table) {
             $table->id();
-            $table->float('longitud', 16)->notnull();
-            $table->float('latitud', 16)->notnull();
+            $table->double('longitud', 16, 8)->notnull();
+            $table->double('latitud', 16, 8)->notnull();
             $table->string('direccion', 100);
             $table->timestamps();
             $table->softDeletes();
         });
-    }
+    }        
 
     /**
      * Reverse the migrations.

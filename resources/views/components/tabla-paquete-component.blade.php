@@ -6,9 +6,9 @@ $datos = session('paquete', []);
     <tr>
         <th>Id Paquete</th>
         <th>Nombre del Paquete</th>
-        <th>Fecha de Entrega</th>
-        <th>Id Lugar Entrega</th>
         <th>Direccion</th>
+        <th>Latitud</th>
+        <th>Longitud</th>
         <th>Estado</th>
         <th>Caracteristicas</th>
         <th>Nombre del Remitente</th>
@@ -21,17 +21,17 @@ $datos = session('paquete', []);
         <th>Ultima actualizacion</th>
         <th>Fecha de borrado</th>
     </tr>
+    @if($datos)
     @foreach ($datos as $paquete)
-    <tr onclick="seleccionarFila('{{ $paquete['Id Paquete'] }}','{{ $paquete['Nombre del Paquete'] }}',
-    '{{ $paquete['Fecha de Entrega'] }}','{{ $paquete['Id Lugar Entrega'] }}','{{ $paquete['Estado'] }}',
+    <tr onclick="seleccionarFila('{{ $paquete['Id Paquete'] }}','{{ $paquete['Nombre del Paquete'] }}','{{ $paquete['Direccion'] }}','{{ $paquete['Latitud'] }}','{{ $paquete['Longitud'] }}','{{ $paquete['Estado'] }}',
     '{{ $paquete['Caracteristicas'] }}','{{ $paquete['Nombre del Remitente'] }}','{{ $paquete['Nombre del Destinatario'] }}',
     '{{ $paquete['Id del Producto'] }}','{{ $paquete['Volumen(L)'] }}','{{ $paquete['Peso(Kg)'] }}'
 )">
             <td>{{ $paquete['Id Paquete'] }}</td>
             <td>{{ $paquete['Nombre del Paquete'] }}</td>
-            <td>{{ $paquete['Fecha de Entrega'] }}</td>
-            <td>{{ $paquete['Id Lugar Entrega'] }}</td>
             <td>{{ $paquete['Direccion'] }}</td>
+            <td>{{ $paquete['Longitud'] }}</td>
+            <td>{{ $paquete['Latitud'] }}</td>
             <td>{{ $paquete['Estado'] }}</td>
             <td>{{ $paquete['Caracteristicas'] }}</td>
             <td>{{ $paquete['Nombre del Remitente'] }}</td>
@@ -45,18 +45,17 @@ $datos = session('paquete', []);
             <td>{{ $paquete['deleted_at'] }}</td>
         </tr>
     @endforeach
+    @endif
 </table>
 
 <script>
-    function seleccionarFila(id, nombre,fecha,lugarEntrega,estado,caracteristica,nombreRemitente,
+    function seleccionarFila(id, nombre,direccion,latitud,longitud,estado,caracteristica,nombreRemitente,
                                 nombreDestinatario,producto,volumen,peso) {
     document.getElementById('identificador').value = id;
     document.getElementById('nombrePaquete').value = nombre;
-    var arrayFecha = fecha.split('-');
-    document.getElementById('anio').value = parseInt(arrayFecha[0], 10);
-    document.getElementById('mes').value = parseInt(arrayFecha[1], 10);
-    document.getElementById('dia').value = parseInt(arrayFecha[2], 10);
-    document.getElementById('idLugarEntrega').value = lugarEntrega;
+    document.getElementById('direccion').value = direccion;
+    document.getElementById('latitud').value = latitud;
+    document.getElementById('longitud').value = longitud;
     document.getElementById('estadoPaquete').value = estado;
     document.getElementById('caracteristica').value = caracteristica;
     document.getElementById('nombreRemitente').value = nombreRemitente;

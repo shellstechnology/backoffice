@@ -145,24 +145,25 @@ class paqueteController extends Controller
             $producto = Producto::withTrashed()->where('id', $paquete['id_producto'])->first();
             if ($producto && $lugarEntrega && $caracteristica) {
                 return (
-                    [
-                        'Id Paquete' => $paquete['id'],
-                        'Nombre del Paquete' => $paquete['nombre'],
-                        'Fecha de Entrega' => $paquete['fecha_de_entrega'],
-                        'Id Lugar Entrega' => $lugarEntrega['id'],
-                        'Direccion' => $lugarEntrega['direccion'],
-                        'Estado' => $estado['descripcion_estado_p'],
-                        'Caracteristicas' => $caracteristica['descripcion_caracteristica'],
-                        'Nombre del Remitente' => $paquete['nombre_remitente'],
-                        'Nombre del Destinatario' => $paquete['nombre_destinatario'],
-                        'Id del Producto' => $producto['id'],
-                        'Producto' => $producto['nombre'],
-                        'Volumen(L)' => $paquete['volumen_l'],
-                        'Peso(Kg)' => $paquete['peso_kg'],
-                        'created_at' => $paquete['created_at'],
-                        'updated_at' => $paquete['updated_at'],
-                        'deleted_at' => $paquete['deleted_at'],
-                    ]);
+                        [
+                            'Id Paquete' => $paquete['id'],
+                            'Nombre del Paquete' => $paquete['nombre'],
+                            'Fecha de Entrega' => $paquete['fecha_de_entrega'],
+                            'Direccion' => $lugarEntrega['direccion'],
+                            'Latitud'=> $lugarEntrega['latitud'],
+                            'Longitud'=> $lugarEntrega['longitud'],
+                            'Estado' => $estado['descripcion_estado_p'],
+                            'Caracteristicas' => $caracteristica['descripcion_caracteristica'],
+                            'Nombre del Remitente' => $paquete['nombre_remitente'],
+                            'Nombre del Destinatario' => $paquete['nombre_destinatario'],
+                            'Id del Producto' => $producto['id'],
+                            'Producto' => $producto['nombre'],
+                            'Volumen(L)' => $paquete['volumen_l'],
+                            'Peso(Kg)' => $paquete['peso_kg'],
+                            'created_at' => $paquete['created_at'],
+                            'updated_at' => $paquete['updated_at'],
+                            'deleted_at' => $paquete['deleted_at'],
+                        ]);
             }
         } catch (\Exception $e) {
             $mensajeDeError = 'Error: ';
@@ -188,10 +189,6 @@ class paqueteController extends Controller
     {
         $reglas = [
             'nombrePaquete' => 'required|string|max:50',
-            'dia' => 'required|numeric|min:1|max:31',
-            'mes' => 'required|numeric|min:1|max:12|',
-            'anio' => 'required|numeric|min:2023|max:2050',
-            'idLugarEntrega' => 'required|numeric',
             'estadoPaquete' => 'required|string|max:100',
             'caracteristica' => 'required|string|max:100',
             'nombreRemitente' => 'required|string|max:40',
@@ -199,35 +196,35 @@ class paqueteController extends Controller
             'idProducto' => 'required|integer',
             'volumen' => 'required|numeric|min:1|max:99999',
             'peso' => 'required|numeric|min:1|max:99999',
+            'direccion'=>'required|regex:/(^[A-Za-z0-9 ]+$)+/|max:100|min:1',
+            'latitud'=>'required|numeric|max:200|min:-200',
+            'longitud'=>'required|numeric|max:200|min:-200',
         ];
         return Validator::make([
             'nombrePaquete' => $paquete['nombrePaquete'],
-            'dia' => $paquete['dia'],
-            'mes' => $paquete['mes'],
-            'anio' => $paquete['anio'],
-            'idLugarEntrega' => $paquete['idLugarEntrega'],
             'estadoPaquete' => $paquete['estadoPaquete'],
             'nombreRemitente' => $paquete['nombreRemitente'],
             'nombreDestinatario' => $paquete['nombreDestinatario'],
             'caracteristica' => $paquete['caracteristica'],
             'idProducto' => $paquete['idProducto'],
             'volumen' => $paquete['volumen'],
-            'peso' => $paquete['peso']
+            'peso' => $paquete['peso'],
+            'direccion'=>$paquete['direccion'],
+            'latitud'=>$paquete['latitud'],
+            'longitud'=>$paquete['longitud']
         ], $reglas);
     }
 
     private function crearPaquete($paquete)
     {
         try {
+            $this -> IngresarDireccion($paquete);
+            $ultimaDireccion = Lugares_Entrega::latest('created_at')->first();
+            $idUltimaDireccion = $ultimaDireccion['id'];
             $caracteristica = $this->obtenerIdCaracteristica($paquete);
             $estado = $this->obtenerIdEstado($paquete);
-            $dia = $paquete['dia'];
-            $mes = $paquete['mes'];
-            $anio = $paquete['anio'];
-            $fechaEntrega = sprintf('%04d-%02d-%02d', $anio, $mes, $dia);
             $nuevoPaquete = new Paquetes;
-            $nuevoPaquete->fecha_de_entrega = $fechaEntrega;
-            $nuevoPaquete->id_lugar_entrega = $paquete['idLugarEntrega'];
+            $nuevoPaquete->id_lugar_entrega = $idUltimaDireccion;
             $nuevoPaquete->nombre = $paquete['nombrePaquete'];
             $nuevoPaquete->id_estado_p = $estado;
             $nuevoPaquete->id_caracteristica_paquete = $caracteristica;
@@ -244,23 +241,29 @@ class paqueteController extends Controller
             $mensajeDeError = 'Error: no se pudieron cargar los datos';
             Session::put('respuesta', $mensajeDeError);
         }
+    }
 
+    public function IngresarDireccion($paquete){
+        $lugarEntrega = new Lugares_Entrega;
+        $lugarEntrega->latitud = $paquete['latitud'];
+        $lugarEntrega->longitud = $paquete['longitud'];
+        $lugarEntrega->direccion = $paquete['direccion'];
+        $lugarEntrega->save();
+        return $lugarEntrega;
     }
 
     private function modificarPaquete($paquete)
     {
         try {
+            $this -> IngresarDireccion($paquete);
+            $ultimaDireccion = Lugares_Entrega::latest('created_at')->first();
+            $idUltimaDireccion = $ultimaDireccion['id'];
             $caracteristica = $this->obtenerIdCaracteristica($paquete);
             $estado = $this->obtenerIdEstado($paquete);
-            $dia = $paquete['dia'];
-            $mes = $paquete['mes'];
-            $anio = $paquete['anio'];
-            $fechaEntrega = sprintf('%04d-%02d-%02d', $anio, $mes, $dia);
             Paquetes::where('id', $paquete['identificador'])->update([
                 'nombre' => $paquete['nombrePaquete'],
-                'fecha_de_entrega' => $fechaEntrega,
                 'nombre_remitente' => $paquete['nombreRemitente'],
-                'id_lugar_entrega' => $paquete['idLugarEntrega'],
+                'id_lugar_entrega' => $idUltimaDireccion,
                 'nombre_destinatario' => $paquete['nombreDestinatario'],
                 'id_estado_p' => $estado,
                 'id_caracteristica_paquete' => $caracteristica,
