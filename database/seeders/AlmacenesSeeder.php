@@ -21,6 +21,10 @@ class AlmacenesSeeder extends Seeder
     public function run()
     {
         \App\Models\almacenes::factory(1)->create([
+            "id" => "42",
+            "id_lugar_entrega" => "3",
+        ]);
+        \App\Models\almacenes::factory(1)->create([
             "id" => "47",
             "id_lugar_entrega" => "3",
         ]);
@@ -29,7 +33,7 @@ class AlmacenesSeeder extends Seeder
             "id_lugar_entrega" => "3",
         ]);
         \App\Models\almacenes::factory(1)->create([
-            "id" => "42",
+            "id" => "45",
             "id_lugar_entrega" => "3",
         ]);
     }
