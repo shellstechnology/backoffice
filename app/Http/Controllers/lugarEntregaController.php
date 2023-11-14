@@ -12,20 +12,23 @@ class lugarEntregaController extends Controller
 {
     public function realizarAccion(Request $request)
     {
-        $datosRequest = $request->all();
-        switch ($request->input('accion')) {
-            case 'agregar':
-                $this->verificarDatosAgregar($datosRequest);
-                break;
-            case 'modificar':
-                $this->verificarDatosModificar($datosRequest);
-                break;
-            case 'eliminar':
-                $this->eliminarLugarEntrega($datosRequest);
-                break;
-            case 'recuperar':
-                $this->recuperarLugarEntrega($datosRequest);
-                break;
+        try {
+            $datosRequest = $request->all();
+            $accion=$request->input('accion');
+            if($accion=="agregar")
+            $this->verificarDatosAgregar($datosRequest);
+            
+            if($accion=="modificar")
+            $this->verificarDatosModificar($datosRequest);
+    
+            if($accion=="eliminar")
+            $this->eliminarLugarEntrega($datosRequest);
+    
+            if($accion=="recuperar")
+            $this->recuperarLugarEntrega($datosRequest);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error,no se pudo  procesar la accion';
+            Session::put('respuesta', $mensajeDeError);
         }
         return redirect()->route('almacen.lugarEntrega');
     }

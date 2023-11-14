@@ -63,6 +63,10 @@
           <label for="mail" >Correo electronico</label>
         </div>
         <div class="campo">
+        <input type="text" name="licencia" id="licencia" maxlength="10" required></input>
+          <label for="licencia" >Licencia de conducir</label>
+        </div>
+        <div class="campo">
           <input type="checkbox" name="usuarioAdministrador" id="usuarioAdministrador">Administrador</input>
           <input type="checkbox" name="usuarioAlmacenero" id="usuarioAlmacenero">Almacenero</input>
           <input type="checkbox" name="usuarioChofer" id="usuarioChofer">Chofer</input>

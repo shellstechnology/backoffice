@@ -19,20 +19,23 @@ class usuarioController extends Controller
 
     public function realizarAccion(Request $request)
     {
-        $datosRequest = $request->all();
-        switch ($request->input('accion')) {
-            case 'agregar':
+        try {
+            $datosRequest = $request->all();
+            $accion = $request->input('accion');
+            if ($accion == "agregar")
                 $this->verificarDatosAgregar($datosRequest);
-                break;
-            case 'modificar':
+
+            if ($accion == "modificar")
                 $this->verificarDatosModificar($datosRequest);
-                break;
-            case 'eliminar':
+
+            if ($accion == "eliminar")
                 $this->eliminarUsuario($datosRequest);
-                break;
-            case 'recuperar':
+
+            if ($accion == "recuperar")
                 $this->recuperarUsuario($datosRequest);
-                break;
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error,no se pudo  procesar la accion';
+            Session::put('respuesta', $mensajeDeError);
         }
         $this->cargarDatos();
         return redirect()->route('backoffice.usuarios');
@@ -101,7 +104,7 @@ class usuarioController extends Controller
             Session::put('respuesta', $mensajeConfirmacion);
             $this->cargarDatos();
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: ';
+            $mensajeDeError = 'Error:No se pudo eliminar el usuario';
             Session::put('respuesta', $mensajeDeError);
         }
 
@@ -111,7 +114,7 @@ class usuarioController extends Controller
     {
         try {
             $id = $datosRequest['identificador'];
-            $usuario = Usuarios::onlyTrashed()->where('id',$id)->first();
+            $usuario = Usuarios::onlyTrashed()->where('id', $id)->first();
             if ($usuario) {
                 Usuarios::where('id', $id)->restore();
                 $mensajeConfirmacion = 'Usuario restaurado exitosamente';
@@ -119,7 +122,7 @@ class usuarioController extends Controller
             }
             $this->cargarDatos();
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: ';
+            $mensajeDeError = 'Error:No se pudo recuperar el usuario';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -129,19 +132,24 @@ class usuarioController extends Controller
         try {
             $telefono = $this->obtenerTelefonos($usuario);
             $tipoUsuario = $this->obtenerTipoUsuario($usuario);
+            $licencia=null;
+            if($tipoUsuario[1]!=null){
+                $licencia=$this->obtenerLicencia($usuario);
+            }
             return ([
                 'Id Usuario' => $usuario['id'],
                 'Nombre de Usuario' => $usuario['name'],
                 'contrasenia' => $usuario['password'],
                 'Mail' => $usuario['email'],
                 'Telefono/s' => $telefono,
-                'Tipo de Usuario' => $tipoUsuario,
+                'Tipo de Usuario' => $tipoUsuario[0],
+                'Licencia'=>$licencia,
                 'created_at' => $usuario['created_at'],
                 'updated_at' => $usuario['updated_at'],
                 'deleted_at' => $usuario['deleted_at']
             ]);
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: ';
+            $mensajeDeError = 'Error:No se pudo obtener los datos de uno o mas usuarios';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -156,7 +164,7 @@ class usuarioController extends Controller
             }
             return implode('/', $listaTelefonos);
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: ';
+            $mensajeDeError = 'Error:No se pudoobtener los datos de los telefonos de uno o mas usuarios';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -182,12 +190,21 @@ class usuarioController extends Controller
             if ($cliente) {
                 $tiposUsuario[] = 'Cliente';
             }
-
-            return implode('/', $tiposUsuario);
+            $tiposConcatenados = implode('/', $tiposUsuario);
+            $usuarioChofer=null;
+            if (in_array('Chofer', $tiposUsuario)) {
+                $usuarioChofer = 'Si';
+            }
+            return [$tiposConcatenados,$usuarioChofer];
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: ';
+            $mensajeDeError = 'Error:No se pudo prosesar los tipos de usuarios asignados';
             Session::put('respuesta', $mensajeDeError);
         }
+    }
+
+    private function obtenerLicencia($usuario){
+        $chofer=choferes::where('id_usuarios', $usuario['id'])->first();
+        return $chofer['licencia_de_conducir'];
     }
 
 
@@ -211,10 +228,14 @@ class usuarioController extends Controller
         try {
             $checkboxSeleccionada = $this->verificarCheckboxTipoUsuario($datosUsuario);
             if ($checkboxSeleccionada != true) {
+                $mensajeDeError = 'Error:Debe ingresar un tipo de usuario';
+                Session::put('respuesta', $mensajeDeError);
                 return;
             }
             $contraseniaExistente = Usuarios::withTrashed()->where('password', $datosUsuario['contrasenia'])->first();
             if ($contraseniaExistente != null) {
+                $mensajeDeError = 'Error:La contraseña ya esta en uso para otro usuario';
+                Session::put('respuesta', $mensajeDeError);
                 return;
             }
 
@@ -223,12 +244,12 @@ class usuarioController extends Controller
             $user->email = $datosUsuario['mail'];
             $user->password = Hash::make($datosUsuario['contrasenia']);
             $user->save();
-            $this->establecerTipoUsuario($datosUsuario, $user);
+            $this->establecerTipoUsuario($datosUsuario, $user['id']);
             $mensajeConfirmacion = 'Usuario creado exitosamente';
             Session::put('respuesta', $mensajeConfirmacion);
             $this->cargarDatos();
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: ';
+            $mensajeDeError = 'Error:No se pudo crear el usuario';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -249,6 +270,7 @@ class usuarioController extends Controller
             if (isset($datoUsuario['usuarioChofer'])) {
                 $choferes = new Choferes;
                 $choferes->id_usuarios = $idUsuario;
+                $choferes->licencia_de_conducir = $datoUsuario['licencia'];
                 $choferes->save();
             }
             if (isset($datoUsuario['usuarioCliente'])) {
@@ -257,7 +279,7 @@ class usuarioController extends Controller
                 $cliente->save();
             }
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: ';
+            $mensajeDeError = 'Error:No se pudo asignar los tipos de usuario asignados';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -267,18 +289,20 @@ class usuarioController extends Controller
         try {
             $checkboxSeleccionada = $this->verificarCheckboxTipoUsuario($datosUsuario);
             if ($checkboxSeleccionada != true) {
+                $mensajeDeError = 'Error:Debe ingresar un tipo de usuario';
+                Session::put('respuesta', $mensajeDeError);
                 return;
             }
             Usuarios::withTrashed()->where('Id', $datosUsuario['identificador'])->update([
                 'name' => $datosUsuario['nombre'],
-                'email'=>$datosUsuario['mail'],
+                'email' => $datosUsuario['mail'],
                 'password' => Hash::make($datosUsuario['contrasenia']),
             ]);
             $this->seleccionarTipoUsuario($datosUsuario);
             $mensajeConfirmacion = 'Usuario modificado exitosamente';
             Session::put('respuesta', $mensajeConfirmacion);
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: ';
+            $mensajeDeError = 'Error:No se pudo modificar los datos del usuario';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -304,7 +328,7 @@ class usuarioController extends Controller
             }
             $this->modificarTipoUsuario($datoUsuario, $administrador, $almacenero, $chofer, $cliente);
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: ';
+            $mensajeDeError = 'Error:No se pudo prosesar los usuarios asignados correctamente';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -328,7 +352,6 @@ class usuarioController extends Controller
             switch ($almacenero) {
                 case 'crear':
                     $datoAlmacenero = Almaceneros::withTrashed()->updateOrCreate(['id_usuarios' => $datoUsuario['identificador']]);
-
                     if ($datoAlmacenero->trashed()) {
                         $datoAlmacenero->restore();
                     }
@@ -340,8 +363,10 @@ class usuarioController extends Controller
 
             switch ($chofer) {
                 case 'crear':
-                    $datoChofer = Choferes::withTrashed()->updateOrCreate(['id_usuarios' => $datoUsuario['identificador']]);
-
+                    $datoChofer = Choferes::withTrashed()->updateOrCreate([
+                        'id_usuarios' => $datoUsuario['identificador'],
+                        'licencia_de_conducir' => $datoUsuario['licencia']
+                    ]);
                     if ($datoChofer->trashed()) {
                         $datoChofer->restore();
                     }
@@ -363,7 +388,7 @@ class usuarioController extends Controller
 
             }
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: ';
+            $mensajeDeError = 'Error:No se pudo manipular los datos del tipo de usuario';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -376,7 +401,7 @@ class usuarioController extends Controller
                 $admnistrador->delete();
             }
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: ';
+            $mensajeDeError = 'Error:No se pudo revocar el rol de administrador';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -389,7 +414,7 @@ class usuarioController extends Controller
                 $almacenero->delete();
             }
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: ';
+            $mensajeDeError = 'Error:No se pudo revocar el rol de almacenero';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -402,7 +427,7 @@ class usuarioController extends Controller
                 $cliente->delete();
             }
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: ';
+            $mensajeDeError = 'Error:No se pudo revocar el rol de cliente';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -415,7 +440,7 @@ class usuarioController extends Controller
                 $chofer->delete();
             }
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: ';
+            $mensajeDeError = 'Error:No se pudo revocar el rol de chofer';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -431,7 +456,7 @@ class usuarioController extends Controller
             }
             return false;
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: ';
+            $mensajeDeError = 'Error:No se pudo validar los tipos de usuarios ingresados';
             Session::put('respuesta', $mensajeDeError);
         }
     }

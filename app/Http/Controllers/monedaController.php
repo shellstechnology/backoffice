@@ -11,26 +11,29 @@ class monedaController extends Controller
 {
     public function realizarAccion(Request $request)
     {
-        $datosRequest = $request->all();
-        switch ($request->input('accion')) {
-            case 'agregar':
-                $this->verificarDatosAgregar($datosRequest);
-                break;
-            case 'modificar':
-                $this->verificarDatosModificar($datosRequest);
-                break;
-            case 'eliminar':
-                $this->eliminarMoneda($datosRequest);
-                break;
-            case 'recuperar':
-                $this->recuperarMoneda($datosRequest);
-                break;
-        };
+        try {
+            $datosRequest = $request->all();
+            $accion=$request->input('accion');
+            if($accion=="agregar")
+            $this->verificarDatosAgregar($datosRequest);
+            
+            if($accion=="modificar")
+            $this->verificarDatosModificar($datosRequest);
+    
+            if($accion=="eliminar")
+            $this->eliminarMoneda($datosRequest);
+    
+            if($accion=="recuperar")
+            $this->recuperarMoneda($datosRequest);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error,no se pudo  procesar la accion';
+            Session::put('respuesta', $mensajeDeError);
+        }
         return redirect()->route('backoffice.moneda');
     }
     public function cargarDatos()
     {
-        try{
+        try {
             $datoMoneda = Moneda::withTrashed()->get();
             $infoMoneda = [];
             if ($datoMoneda) {
@@ -40,8 +43,8 @@ class monedaController extends Controller
             }
             Session::put('datosMonedas', $infoMoneda);
             return redirect()->route('backoffice.moneda');
-        } catch (\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:No se pudo cargar los datos';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -80,7 +83,7 @@ class monedaController extends Controller
 
     public function eliminarMoneda($datosRequest)
     {
-        try{
+        try {
             $moneda = Moneda::withoutTrashed()->where('id', $datosRequest['identificador'])->first();
             if ($moneda) {
                 $moneda->delete();
@@ -88,15 +91,15 @@ class monedaController extends Controller
                 Session::put('respuesta', $mensajeConfirmacion);
             }
             $this->cargarDatos();
-        } catch (\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:No se pudo eliminar esta moneda';
             Session::put('respuesta', $mensajeDeError);
         }
     }
 
     public function recuperarMoneda($datosRequest)
     {
-        try{
+        try {
             $moneda = Moneda::onlyTrashed()->where('id', $datosRequest['identificador'])->first();
             if ($moneda) {
                 $moneda->restore();
@@ -104,8 +107,8 @@ class monedaController extends Controller
                 Session::put('respuesta', $mensajeConfirmacion);
             }
             $this->cargarDatos();
-        }catch (\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:No se pudo recuperar esta moneda';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -120,8 +123,8 @@ class monedaController extends Controller
                 'updated_at' => $moneda['updated_at'],
                 'deleted_at' => $moneda['deleted_at']
             ]);
-        } catch (\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:No se pudo obtener los datos de una o mas monedas';
             Session::put('respuesta', $mensajeDeError);
         }
 
@@ -129,7 +132,7 @@ class monedaController extends Controller
 
     private function obtenerMonedas()
     {
-        try{
+        try {
             $infoMonedas = [];
             $monedas = moneda::withTrashed()->get();
             if ($monedas) {
@@ -138,8 +141,8 @@ class monedaController extends Controller
                 }
             }
             return $infoMonedas;
-        } catch (\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:Ocurrio un error al intentar acceder a los datos de la base de datos';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -163,23 +166,23 @@ class monedaController extends Controller
             $mensajeConfirmacion = 'Moneda creada exitosamente';
             Session::put('respuesta', $mensajeConfirmacion);
             $this->cargarDatos();
-        } catch (\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:No se pudo crear esta moneda';
             Session::put('respuesta', $mensajeDeError);
         }
     }
 
     private function modificarMoneda($moneda)
     {
-        try{
+        try {
             Moneda::where('id', $moneda['identificador'])->update([
                 'moneda' => $moneda['nombre'],
             ]);
             $mensajeConfirmacion = 'Moneda modificada exitosamente';
             Session::put('respuesta', $mensajeConfirmacion);
             $this->cargarDatos();
-        } catch (\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:No se pudo modificar esta moneda';
             Session::put('respuesta', $mensajeDeError);
         }
     }

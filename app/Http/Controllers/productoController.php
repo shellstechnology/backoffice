@@ -13,26 +13,30 @@ class productoController extends Controller
 {
     public function realizarAccion(Request $request)
     {
-        $datosRequest = $request->all();
-        switch ($request->input('accion')) {
-            case 'agregar':
-                $this->verificarDatosAgregar($datosRequest);
-                break;
-            case 'modificar':
-                $this->verificarDatosModificar($datosRequest);
-                break;
-            case 'eliminar':
-                $this->eliminarProducto($datosRequest);
-                break;
-            case 'recuperar':
-                $this->recuperarProducto($datosRequest);
-                break;
-        };
+        try {
+            $datosRequest = $request->all();
+            $accion=$request->input('accion');
+            if($accion=="agregar")
+            $this->verificarDatosAgregar($datosRequest);
+            
+            if($accion=="modificar")
+            $this->verificarDatosModificar($datosRequest);
+    
+            if($accion=="eliminar")
+            $this->eliminarProducto($datosRequest);
+    
+            if($accion=="recuperar")
+            $this->recuperarProducto($datosRequest);
+           
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error,no se pudo  procesar la accion';
+            Session::put('respuesta', $mensajeDeError);
+        }
         return redirect()->route('backoffice.producto');
     }
     public function cargarDatos()
     {
-        try{
+        try {
             $datoProducto = Producto::withTrashed()->get();
             $infoProducto = [];
             $infoMonedas = [];
@@ -45,8 +49,8 @@ class productoController extends Controller
             Session::put('monedas', $infoMonedas);
             Session::put('producto', $infoProducto);
             return redirect()->route('backoffice.producto');
-        } catch (\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:No se pudo cargar los datos';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -85,7 +89,7 @@ class productoController extends Controller
 
     public function eliminarProducto($datosRequest)
     {
-        try{
+        try {
             $producto = Producto::withoutTrashed()->where('id', $datosRequest['identificador'])->first();
             if ($producto) {
                 $producto->delete();
@@ -93,15 +97,15 @@ class productoController extends Controller
                 Session::put('respuesta', $mensajeConfirmacion);
             }
             $this->cargarDatos();
-        } catch (\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:No se pudo eliminar el producto';
             Session::put('respuesta', $mensajeDeError);
         }
     }
 
     public function recuperarProducto($datosRequest)
     {
-        try{
+        try {
             $producto = Producto::onlyTrashed()->where('id', $datosRequest['identificador'])->first();
             if ($producto) {
                 $producto->restore();
@@ -109,8 +113,8 @@ class productoController extends Controller
                 Session::put('respuesta', $mensajeConfirmacion);
             }
             $this->cargarDatos();
-        }catch (\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:No se pudo recuperar el producto';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -129,8 +133,8 @@ class productoController extends Controller
                 'updated_at' => $producto['updated_at'],
                 'deleted_at' => $producto['deleted_at']
             ]);
-        } catch (\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:No se pudo obtener los datos de uno o mas productos';
             Session::put('respuesta', $mensajeDeError);
         }
 
@@ -138,7 +142,7 @@ class productoController extends Controller
 
     private function obtenerMonedas()
     {
-        try{
+        try {
             $infoMonedas = [];
             $monedas = moneda::withTrashed()->get();
             if ($monedas) {
@@ -147,8 +151,8 @@ class productoController extends Controller
                 }
             }
             return $infoMonedas;
-        } catch (\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:No se pudo obtener los datos de una o mas monedas';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -182,27 +186,27 @@ class productoController extends Controller
             $mensajeConfirmacion = 'Producto creado exitosamente';
             Session::put('respuesta', $mensajeConfirmacion);
             $this->cargarDatos();
-        } catch (\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:No se pudo crear el producto';
             Session::put('respuesta', $mensajeDeError);
         }
     }
 
     private function obtenerMoneda($producto)
     {
-        try{
+        try {
             $datosMoneda = Moneda::withTrashed()->where('moneda', $producto)->first();
             $moneda = $datosMoneda['id'];
             return $moneda;
-        } catch (\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:No se reconoce la moneda ingresada';
             Session::put('respuesta', $mensajeDeError);
         }
     }
 
     private function modificarProducto($producto)
     {
-        try{
+        try {
             $moneda = $this->obtenerMoneda($producto['tipoMoneda']);
             Producto::where('id', $producto['identificador'])->update([
                 'nombre' => $producto['nombre'],
@@ -213,8 +217,8 @@ class productoController extends Controller
             $mensajeConfirmacion = 'Producto modificado exitosamente';
             Session::put('respuesta', $mensajeConfirmacion);
             $this->cargarDatos();
-        } catch (\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:No se pudo modificar el producto';
             Session::put('respuesta', $mensajeDeError);
         }
     }

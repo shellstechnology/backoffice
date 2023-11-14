@@ -12,20 +12,23 @@ class modelosController extends Controller
 {
     public function realizarAccion(Request $request)
     {
-        $datosRequest = $request->all();
-        switch ($request->input('accion')) {
-            case 'agregar':
-                $this->verificarDatosAAgregar($datosRequest);
-                break;
-            case 'modificar':
-                $this->verificarDatosAModificar($datosRequest);
-                break;
-            case 'eliminar':
-                $this->eliminarModelo($datosRequest);
-                break;
-            case 'recuperar':
-                $this->recuperarModelo($datosRequest);
-                break;
+        try {
+            $datosRequest = $request->all();
+            $accion=$request->input('accion');
+            if($accion=="agregar")
+            $this->verificarDatosAAgregar($datosRequest);
+            
+            if($accion=="modificar")
+            $this->verificarDatosAModificar($datosRequest);
+    
+            if($accion=="eliminar")
+            $this->eliminarModelo($datosRequest);
+    
+            if($accion=="recuperar")
+            $this->eliminarModelo($datosRequest);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error,no se pudo  procesar la accion';
+            Session::put('respuesta', $mensajeDeError);
         }
         return redirect()->route('marca.modelo');
     }
@@ -47,7 +50,7 @@ class modelosController extends Controller
                 Session::put('respuesta', $mensajeDeError);
             }
             return redirect()->route('marca.modelo');
-            
+
         }
     }
 
@@ -114,7 +117,7 @@ class modelosController extends Controller
                 $mensajeConfirmacion = 'Modelo eliminado exitosamente';
                 Session::put('respuesta', $mensajeConfirmacion);
                 $this->cargarDatos();
-            } catch (\Exception) {
+            } catch (\Exception $e) {
                 $mensajeDeError = 'Error,no se pudo eliminar el almacen';
                 Session::put('respuesta', $mensajeDeError);
             }
@@ -154,7 +157,7 @@ class modelosController extends Controller
                     'updated_at' => $modelo['updated_at'],
                     'deleted_at' => $modelo['deleted_at'],
                 ];
-            } catch (\Exception) {
+            } catch (\Exception $e) {
                 $mensajeDeError = 'Error: No se pudieron cargar los datos del modelo ' . $modelo['id'];
                 Session::put('respuesta', $mensajeDeError);
             }
@@ -177,7 +180,7 @@ class modelosController extends Controller
     private function crearModelo($modelo)
     { {
             try {
-                $marca=$this->obtenerIdMarca($modelo['marcaCamion']);
+                $marca = $this->obtenerIdMarca($modelo['marcaCamion']);
                 $nuevoModelo = new Modelos;
                 $nuevoModelo->modelo = $modelo['modelo'];
                 $nuevoModelo->id_marca = $marca;
@@ -192,21 +195,22 @@ class modelosController extends Controller
         }
         return redirect()->route('marca.modelo');
     }
-    private function obtenerIdMarca($marcaModelo){
-        try{
-        $marca=Marcas::withTrashed()->where('marca',$marcaModelo)->first();
-        return $marca['id'];
-        }catch(\Exception $e){
-            
+    private function obtenerIdMarca($marcaModelo)
+    {
+        try {
+            $marca = Marcas::withTrashed()->where('marca', $marcaModelo)->first();
+            return $marca['id'];
+        } catch (\Exception $e) {
+
         }
     }
     private function modificarModelo($modelo)
     { {
             try {
-                $marca=$this->obtenerIdMarca($modelo['marcaCamion']);
+                $marca = $this->obtenerIdMarca($modelo['marcaCamion']);
                 Modelos::where('id', $modelo['identificador'])->update([
                     'modelo' => $modelo['modelo'],
-                    'id_marca'=>$marca
+                    'id_marca' => $marca
                 ]);
                 $mensajeConfirmacion = 'Modelo modificado exitosamente';
                 Session::put('respuesta', $mensajeConfirmacion);

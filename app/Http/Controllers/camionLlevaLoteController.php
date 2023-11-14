@@ -13,21 +13,24 @@ class camionLlevaLoteController extends Controller
 {
     public function realizarAccion(Request $request)
     {
-        $datosRequest = $request->all();
-
-        switch ($request->input('accion')) {
-            case 'agregar':
-                $this->verificarDatosAgregar($datosRequest);
-                break;
-            case 'modificar':
-                $this->verificarDatosModificar($datosRequest);
-                break;
-            case 'eliminar':
-                $this->eliminarCamionLlevaLote($datosRequest);
-                break;
-            case 'recuperar':
-                $this->recuperarCamionLlevaLote($datosRequest);
-                break;
+        try {
+            $datosRequest = $request->all();
+            $accion=$request->input('accion');
+            if($accion=="agregar")
+            $this->verificarDatosAgregar($datosRequest);
+            
+            if($accion=="modificar")
+            $this->verificarDatosModificar($datosRequest);
+    
+            if($accion=="eliminar")
+            $this->eliminarCamionLlevaLote($datosRequest);
+    
+            if($accion=="recuperar")
+            $this->recuperarCamionLlevaLote($datosRequest);
+    
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error,no se pudo procesar la accion';
+            Session::put('respuesta', $mensajeDeError);
         }
         return redirect()->route('camion.camionLlevaLote');
     }
@@ -62,17 +65,23 @@ class camionLlevaLoteController extends Controller
 
     public function verificarDatosAgregar($datosRequest)
     {
+        try {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
             $errores = $validador->getMessageBag();
             Session::put('respuesta', json_encode($errores->messages()));
             return;
         }
-        try {
+
             $camionLlevaLoteExistente = Camion_Lleva_Lote::where('id_lote', $datosRequest['idLote'])->first();
             if (!$camionLlevaLoteExistente) {
+                $valoresLote=$this->comprobarValoresDelLote($datosRequest);
+                if($valoresLote==true)
                 $this->crearCamionLlevaLote($datosRequest);
+               return;
             }
+            $mensajeDeError = 'Error:Ese lote ya esta asignado a otro camion';
+            Session::put('respuesta', $mensajeDeError);
         } catch (\Exception $e) {
             $mensajeDeError = 'Error:Debe ingresar datos para realizar esta accion';
             Session::put('respuesta', $mensajeDeError);
@@ -101,18 +110,60 @@ class camionLlevaLoteController extends Controller
 
     public function verificarDatosModificar($datosRequest)
     {
+        try {
         $validador = $this->validarDatos($datosRequest);
         if ($validador->fails()) {
             $errores = $validador->getMessageBag();
             Session::put('respuesta', json_encode($errores->messages()));
             return;
         }
-        try {
-            $this->modificarCamionLlevaLote($datosRequest);
+        $valoresLote=$this->comprobarValoresDelLote($datosRequest);
+        if($valoresLote==true)
+        $this->modificarCamionLlevaLote($datosRequest);
         } catch (\Exception $e) {
             $mensajeDeError = 'Error:Debe ingresar datos para realizar esta accion';
             Session::put('respuesta', $mensajeDeError);
         }
+    }
+
+    public function comprobarValoresDelLote($datosRequest){
+        $lote=Lotes::where('id',$datosRequest['idLote'])->first();
+        $camion=camiones::where('matricula',$datosRequest['idCamion'])->first();
+        $volumenTotal=$this->obtenerVolumenTotal($camion,$lote);
+        $pesoTotal=$this->obtenerPesoTotal($camion,$lote);
+        if($volumenTotal>$camion['volumen_max_l']){
+            $mensajeDeError = 'El lote que esta intentando ingresar sobrepasa el volumen maximo que puede transportar el camion';
+            Session::put('respuesta', $mensajeDeError);
+            return false;
+        }
+        if($pesoTotal>$camion['peso_max_kg']){
+            $mensajeDeError = 'El lote que esta intentando ingresar sobrepasa el peso maximo que puede transportar el camion';
+            Session::put('respuesta', $mensajeDeError);
+            return false;
+        }
+        return true;
+    }  
+
+    public function obtenerVolumenTotal($camion,$lote){
+        $volumenTotal= 0;
+        $lotesCamion=camion_Lleva_Lote::where('matricula',$camion)->get();
+        foreach($lotesCamion as $datoLote){
+            $loteEnCamion=lotes::where('id',$datoLote->id_lote)->first();
+            $volumenTotal+=$loteEnCamion['volumen_l'];
+        }
+        $volumenTotal+=$lote['volumen_l'];
+        return $volumenTotal;
+    }
+
+    public function obtenerPesoTotal($camion,$lote){
+        $pesoTotal= 0;
+        $lotesCamion=camion_Lleva_Lote::where('matricula',$camion)->get();
+        foreach($lotesCamion as $datoLote){
+            $loteEnCamion=lotes::where('id',$datoLote->id_lote)->first();
+            $pesoTotal+=$loteEnCamion['peso_kg'];
+        }
+        $pesoTotal+=$lote['peso_kg'];
+        return $pesoTotal;
     }
 
     public function eliminarCamionLlevaLote($datosRequest)
