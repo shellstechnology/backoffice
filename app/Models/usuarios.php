@@ -11,7 +11,6 @@ class Usuarios extends Model
 {
     protected $table = 'users';
     use HasFactory;
-
     use SoftDeletes;
     use ValidatesRequests;
     public $timestamps = true;

@@ -10,8 +10,6 @@ use App\Models\Almaceneros;
 use App\Models\Choferes;
 use App\Models\Clientes;
 use App\Models\Telefonos_Usuarios;
-use App\Models\Usuarios;
-use App\Models\Mail_Usuarios;
 use App\Models\User;
 
 class UsuariosTest extends TestCase
@@ -26,27 +24,22 @@ class UsuariosTest extends TestCase
             "identificador" => "444",
             "nombre" => "multiusos",
             "contrasenia" =>"4",
-            "mail" => "mail@mail",
+            "mail" => "mail123@mail",
             "usuarioAdministrador"=> "on",
-            "usuarioChofer" => "on",
-            "usuarioCliente"=> "on",
-            "usuarioAlmacenero" =>"on",
 
         ]);
         $response->assertStatus(200);
-        $this->assertDatabaseHas('usuarios', [
-            'nombre_de_usuario' => 'multiusos',
-            'contrasenia' => '4',
+        $this->assertDatabaseHas('users', [
+            'name' => 'multiusos',
         ]);
         
-        $usuario =  Usuarios::where('contrasenia', '4')->first();
+        $usuario =  User::where('name', 'multiusos')->first();
         $usuarioId = $usuario->getkey();
-        Mail_Usuarios::withTrashed()->where('id_usuarios',$usuarioId)->forceDelete();
         Administradores::withTrashed()->where('id_usuarios', $usuarioId)->forceDelete();
         Choferes::withTrashed()->where('id_usuarios', $usuarioId)->forceDelete();
         Clientes::withTrashed()->where('id_usuarios', $usuarioId)->forceDelete();
         Almaceneros::withTrashed()->where('id_usuarios', $usuarioId)->forceDelete();
-        Usuarios::withTrashed()->where('nombre_de_usuario','multiusos')->where('contrasenia', '4')->forceDelete();
+        User::withTrashed()->where('name','multiusos')->where('email', 'mail123@mail')->forceDelete();
        }
 
        public function test_ModificarUnUsuario(){
@@ -66,9 +59,9 @@ class UsuariosTest extends TestCase
      
         ]);
         $response->assertStatus(200);
-        $this->assertDatabaseHas('usuarios',[
+        $this->assertDatabaseHas('users',[
             'id' => '42',
-            'nombre_de_usuario' => 'usuario a modificar'
+            'name' => 'usuario a modificar'
         ]);
        }
 
@@ -88,7 +81,7 @@ class UsuariosTest extends TestCase
             "usuarioAlmacenero" =>"on",
         ]);
         $response->assertStatus(200);
-        Usuarios::withTrashed()->where("id",74)->restore();
+        User::withTrashed()->where("id",74)->restore();
        }
 
        public function test_RecuperarUnUsuario(){

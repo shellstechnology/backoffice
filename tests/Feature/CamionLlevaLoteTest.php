@@ -13,8 +13,8 @@ use App\Models\User;
 class CamionLlevaLoteTest extends TestCase
 {
     public function test_agregarUnCamionAUnLote(){
-
-        $response = $this->followingRedirects()->post('/camion-lote',
+        $user = User::factory()->create();
+        $response = $this->followingRedirects()->actingAs($user)->post('/camion-lote',
         [
             "accion" => "agregar",
             "identificador" => "20",
@@ -30,6 +30,7 @@ class CamionLlevaLoteTest extends TestCase
        }
 
        public function test_ModificarUnLoteEnUnCamion(){
+
         $user = User::factory()->create();
         $response = $this->followingRedirects()->actingAs($user)->post('/camion-lote',
         [

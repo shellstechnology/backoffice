@@ -31,7 +31,7 @@ class CamionesTest extends TestCase
             "peso"=> "10"
         ]);
         $response->assertStatus(200);
-        $this->assertDatabaseHas('camiones', [
+        $this->actingAs($user)->assertDatabaseHas('camiones', [
             'matricula' => 'abcd',
         ]);
         Chofer_Conduce_Camion::withTrashed()->where('matricula_camion','abcd')->forceDelete();
@@ -53,7 +53,7 @@ class CamionesTest extends TestCase
             "peso"=> "99"
         ]);
         $response->assertStatus(200);
-        $this->assertDatabaseHas('camiones',[
+        $this->actingAs($user)->assertDatabaseHas('camiones',[
             "matricula"=> "a42a"
         ]);
        }
