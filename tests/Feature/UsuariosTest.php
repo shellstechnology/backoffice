@@ -22,13 +22,10 @@ class UsuariosTest extends TestCase
         [
             "accion" => "agregar",
             "identificador" => "444",
-            "name" => "multiusos",
-            "password" =>"4",
-            "email" => "mail@mail",
+            "nombre" => "multiusos",
+            "contrasenia" =>"4",
+            "mail" => "mail123@mail",
             "usuarioAdministrador"=> "on",
-            "usuarioChofer" => "on",
-            "usuarioCliente"=> "on",
-            "usuarioAlmacenero" =>"on",
 
         ]);
         $response->assertStatus(200);
@@ -42,7 +39,7 @@ class UsuariosTest extends TestCase
         Choferes::withTrashed()->where('id_usuarios', $usuarioId)->forceDelete();
         Clientes::withTrashed()->where('id_usuarios', $usuarioId)->forceDelete();
         Almaceneros::withTrashed()->where('id_usuarios', $usuarioId)->forceDelete();
-        User::withTrashed()->where('name','multiusos')->where('email', 'mail@mail')->forceDelete();
+        User::withTrashed()->where('name','multiusos')->where('email', 'mail123@mail')->forceDelete();
        }
 
        public function test_ModificarUnUsuario(){
@@ -51,9 +48,9 @@ class UsuariosTest extends TestCase
         [
             "accion" => "modificar",
             "identificador" => "42",
-            "name" => "usuario a modificar",
-            "password" =>"bb",
-            "email" => "modificar@mail",
+            "nombre" => "usuario a modificar",
+            "contrasenia" =>"bb",
+            "mail" => "modificar@mail",
             "usuarioAdministrador"=> "on",
             "usuarioChofer" => "on",
             "usuarioCliente"=> "on",
@@ -92,9 +89,9 @@ class UsuariosTest extends TestCase
         $response1 = $this->followingRedirects()->actingAs($user)->post('/usuarios',[
             "accion" => "eliminar",
             "identificador" => "74",
-            "name" => "usuario a eliminar",
-            "password" =>"cc",
-            "email" => "eliminar@mail",
+            "nombre" => "usuario a eliminar",
+            "contrasenia" =>"cc",
+            "mail" => "eliminar@mail",
             "usuarioAdministrador"=> "on",
             "usuarioChofer" => "on",
             "usuarioCliente"=> "on",
@@ -105,9 +102,9 @@ class UsuariosTest extends TestCase
         $response2 = $this->followingRedirects()->actingAs($user)->post('/usuarios',[
             "accion" => "recuperar",
             "identificador" => "74",
-            "name" => "usuario a eliminar",
-            "password" =>"cc",
-            "email" => "eliminar@mail",
+            "nombre" => "usuario a eliminar",
+            "contrasenia" =>"cc",
+            "mail" => "eliminar@mail",
             "usuarioAdministrador"=> "on",
             "usuarioChofer" => "on",
             "usuarioCliente"=> "on",
