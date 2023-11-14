@@ -19,23 +19,26 @@ class camionesController extends Controller
 {
     public function realizarAccion(Request $request)
     {
+        try{
         $datosRequest = $request->all();
-        switch ($request->input('accion')) {
-            case 'agregar':
-                $this->verificarDatosAgregar($datosRequest);
-                break;
-            case 'modificar':
-                $this->verificarDatosModificar($datosRequest);
-                break;
-            case 'eliminar':
-                $this->eliminarCamion($datosRequest);
-                break;
-            case 'recuperar':
-                $this->recuperarCamion($datosRequest);
-                break;
-        }
-        return redirect()->route('backoffice.camiones');
+        $accion=$request->input('accion');
+        if($accion=="agregar")
+        $this->verificarDatosAgregar($datosRequest);
+        
+        if($accion=="modificar")
+        $this->verificarDatosModificar($datosRequest);
+
+        if($accion=="eliminar")
+        $this->eliminarCamion($datosRequest);
+
+        if($accion=="recuperar")
+        $this->recuperarCamion($datosRequest);
+    }catch(\Exception $e){
+        $mensajeDeError = 'Error,no se pudo procesar la accion';
+        Session::put('respuesta', $mensajeDeError);
     }
+    return redirect()->route('backoffice.camiones');
+}
 
 
     public function cargarDatos()
@@ -86,7 +89,7 @@ class camionesController extends Controller
                 'Matricula' => $camion['matricula'],
                 'Marca y Modelo' => $marcaModelo,
                 'Estado' => $estado['descripcion_estado_c'],
-                'Chofer' => $chofer['nombre_de_usuario'],
+                'Chofer' => $chofer['name'],
                 'Volumen Maximo' => $camion['volumen_max_l'],
                 'Peso Maximo' => $camion['peso_max_kg'],
                 'created_at' => $camion['created_at'],
@@ -115,7 +118,7 @@ class camionesController extends Controller
     {
         try {
             $usuario = Usuarios::withTrashed()->where('id', $chofer['id_usuarios'])->first();
-            return $usuario['nombre_de_usuario'];
+            return $usuario['name'];
         } catch (\Exception $e) {
             $mensajeDeError = 'Error: no se pudo obtener el chofer de uno de los camiones';
             Session::put('respuesta', $mensajeDeError);

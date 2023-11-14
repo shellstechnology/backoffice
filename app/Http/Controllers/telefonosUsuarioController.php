@@ -12,47 +12,48 @@ class telefonosUsuarioController extends Controller
 {
     public function realizarAccion(Request $request)
     {
-
-        $datosRequest = $request->all();
-        switch ($request->input('accion')) {
-            case 'agregar':
+        try {
+            $datosRequest = $request->all();
+            $accion = $request->input('accion');
+            if ($accion == "agregar")
                 $this->verificarDatosAgregar($datosRequest);
-                break;
-            case 'modificar':
+
+            if ($accion == "modificar")
                 $this->verificarDatosModificar($datosRequest);
-                break;
-            case 'eliminar':
+
+            if ($accion == "eliminar")
                 $this->eliminarTelefonosUsuario($datosRequest);
-                break;
-            case 'recuperar':
+
+            if ($accion == "recuperar")
                 $this->recuperarTelefonosUsuario($datosRequest);
-                break;
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error,no se pudo  procesar la accion';
+            Session::put('respuesta', $mensajeDeError);
         }
-        ;
         return redirect()->route('usuarios.telefonosUsuario');
     }
 
     public function cargarDatos()
     {
-        try{
+        try {
             $infoTelefonos = [];
             $listaTelefonos = Telefonos_Usuarios::withTrashed()->get();
-                foreach ($listaTelefonos as $datoTelefono) {
+            foreach ($listaTelefonos as $datoTelefono) {
                 $usuario = Usuarios::withTrashed()->where('id', $datoTelefono['id_usuarios'])->get();
                 foreach ($usuario as $datoUsuario) {
                     $infoTelefonos[] = $this->obtenerDatosTelefonos($datoTelefono, $datoUsuario);
                 }
             }
-        $infoUsuarios = [];
-        $listaUsuarios = Usuarios::withoutTrashed()->get();
-        foreach ($listaUsuarios as $usuario) {
-            $infoUsuarios[] = $this->obtenerDatosUsuario($usuario);
+            $infoUsuarios = [];
+            $listaUsuarios = Usuarios::withoutTrashed()->get();
+            foreach ($listaUsuarios as $usuario) {
+                $infoUsuarios[] = $this->obtenerDatosUsuario($usuario);
 
-        }
-        Session::put('idUsuarios', $infoUsuarios);
-        Session::put('telefonosUsuario', $infoTelefonos);
-        return redirect()->route('usuarios.telefonosUsuario');
-        } catch (\Exception $e){
+            }
+            Session::put('idUsuarios', $infoUsuarios);
+            Session::put('telefonosUsuario', $infoTelefonos);
+            return redirect()->route('usuarios.telefonosUsuario');
+        } catch (\Exception $e) {
             $mensajeDeError = 'Error: no se pudieron cargar los datos';
             Session::put('respuesta', $mensajeDeError);
         }
@@ -60,7 +61,7 @@ class telefonosUsuarioController extends Controller
 
     private function obtenerDatosTelefonos($datoTelefono, $datoUsuario)
     {
-        try{
+        try {
             return ([
                 'Id del Usuario' => $datoUsuario['id'],
                 'Nombre de Usuario' => $datoUsuario['nombre_de_usuario'],
@@ -69,8 +70,8 @@ class telefonosUsuarioController extends Controller
                 'updated_at' => $datoTelefono['updated_at'],
                 'deleted_at' => $datoTelefono['deleted_at']
             ]);
-        } catch (\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:No se pudo obtener los datos de uno o mas telefonos';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -110,7 +111,7 @@ class telefonosUsuarioController extends Controller
 
     private function crearTelefonoUsuario($datosTelefono)
     {
-        try{
+        try {
             $telefono = new Telefonos_Usuarios;
             $telefono->id_usuarios = $datosTelefono['datoUsuario'];
             $telefono->telefono = $datosTelefono['telefono'];
@@ -118,8 +119,8 @@ class telefonosUsuarioController extends Controller
             $mensajeConfirmacion = 'Telefono creado exitosamente';
             Session::put('respuesta', $mensajeConfirmacion);
             $this->cargarDatos();
-        } catch (\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:No se pudo asignar este telefono al usuario';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -142,25 +143,25 @@ class telefonosUsuarioController extends Controller
 
     private function modificarTelefonoUsuario($datosTelefono)
     {
-        try{
+        try {
             Telefonos_Usuarios::withTrashed()->where('id_usuarios', $datosTelefono['identificadorId'])
-            ->where('telefono', $datosTelefono['identificadorTelefono'])
-            ->update([
-                'id_usuarios' => $datosTelefono['datoUsuario'],
-                'telefono' => $datosTelefono['telefono']
-            ]);
+                ->where('telefono', $datosTelefono['identificadorTelefono'])
+                ->update([
+                    'id_usuarios' => $datosTelefono['datoUsuario'],
+                    'telefono' => $datosTelefono['telefono']
+                ]);
             $mensajeConfirmacion = 'Telefono modificado exitosamente';
             Session::put('respuesta', $mensajeConfirmacion);
             $this->cargarDatos();
-        } catch (\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:No se pudieron modificar los datos de este telefono';
             Session::put('respuesta', $mensajeDeError);
         }
     }
 
     public function eliminarTelefonosUsuario($datosRequest)
     {
-        try{
+        try {
             $telefono = Telefonos_Usuarios::withoutTrashed()->where('telefono', $datosRequest['identificadorTelefono'])->first();
             if ($telefono) {
                 $telefono->delete();
@@ -168,8 +169,8 @@ class telefonosUsuarioController extends Controller
                 Session::put('respuesta', $mensajeConfirmacion);
             }
             $this->cargarDatos();
-        } catch (\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:No se pudo eliminar este telefono';
             Session::put('respuesta', $mensajeDeError);
         }
 
@@ -177,7 +178,7 @@ class telefonosUsuarioController extends Controller
 
     public function recuperarTelefonosUsuario($datosRequest)
     {
-        try{
+        try {
             $telefono = Telefonos_Usuarios::onlyTrashed()->where('telefono', $datosRequest['identificadorTelefono'])->first();
             if ($telefono) {
                 $telefono->restore();
@@ -185,8 +186,8 @@ class telefonosUsuarioController extends Controller
                 Session::put('respuesta', $mensajeConfirmacion);
             }
             $this->cargarDatos();
-        } catch(\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:No se pudo modificar los datos de este telefono';
             Session::put('respuesta', $mensajeDeError);
         }
     }

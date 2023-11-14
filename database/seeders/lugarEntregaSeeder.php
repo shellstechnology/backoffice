@@ -19,13 +19,13 @@ class lugarEntregaSeeder extends Seeder
     public function run()
     {
         \App\Models\lugares_entrega::factory(1)->create([
-            "longitud" => "99",
-            "latitud" => "99",
+            "longitud" => "34.767",
+            "latitud" => "56.2054",
             "direccion" => "La vieja china",
         ]);
         \App\Models\lugares_entrega::factory(1)->create([
-            "longitud" => "120",
-            "latitud" => "30",
+            "longitud" => "-34.7811",
+            "latitud" => "-55.9823",
             "direccion" => "mi casita",
         ]);
         \App\Models\lugares_entrega::factory(1)->create([

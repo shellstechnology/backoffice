@@ -10,18 +10,20 @@ $datos = session('usuarios', []);
         <th>Mail</th>
         <th>Telefono/s</th>
         <th>Tipo de Usuario</th>
+        <th>Licencia</th>
         <th>Fecha de creacion</th>
         <th>Ultima actualizacion</th>
         <th>Fecha de borrado</th>
     </tr>
     @foreach ($datos as $usuario)
-    <tr onclick="seleccionarFila('{{ $usuario['Id Usuario'] }}', '{{ $usuario['Nombre de Usuario'] }}', '{{ $usuario['Mail'] }}', '{{ $usuario['Tipo de Usuario'] }}')">
+    <tr onclick="seleccionarFila('{{ $usuario['Id Usuario'] }}', '{{ $usuario['Nombre de Usuario'] }}', '{{ $usuario['Mail'] }}', '{{ $usuario['Tipo de Usuario'] }}','{{ $usuario['Licencia'] }}')">
     <td>{{ $usuario['Id Usuario'] }}</td>
     <td>{{ $usuario['Nombre de Usuario'] }}</td>
     <td>{{ $usuario['contrasenia'] }}</td>
     <td>{{ $usuario['Mail'] }}</td>
     <td>{{ $usuario['Telefono/s'] }}</td>
     <td>{{ $usuario['Tipo de Usuario'] }}</td>
+    <td>{{ $usuario['Licencia'] }}</td>
     <td>{{ $usuario['created_at'] }}</td>
     <td>{{ $usuario['updated_at'] }}</td>
     <td>{{ $usuario['deleted_at'] }}</td>
@@ -32,10 +34,11 @@ $datos = session('usuarios', []);
 @endif
 
 <script>
-    function seleccionarFila(id,nombre,mail,tipoUsuario) {
+    function seleccionarFila(id,nombre,mail,tipoUsuario,licencia) {
         document.getElementById('identificador').value =id ;
     document.getElementById('nombre').value = nombre;
     document.getElementById('mail').value = mail;
+    document.getElementById('licencia').value = licencia;
     obtenerTipoUsuario(tipoUsuario);
 
     }

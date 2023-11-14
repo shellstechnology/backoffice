@@ -16,23 +16,25 @@ class paqueteController extends Controller
 {
     public function realizarAccion(Request $request)
     {
-        $datosRequest = $request->all();
-        switch ($request->input('accion')) {
-            case 'agregar':
-                $this->verificarDatosAgregar($datosRequest);
-                break;
-            case 'modificar':
-                $this->verificarDatosModificar($datosRequest);
-                break;
-            case 'eliminar':
-                $this->eliminarPaquete($datosRequest);
-                break;
-            case 'recuperar':
-                $this->recuperarPaquete($datosRequest);
-                break;
+        try {
+            $datosRequest = $request->all();
+            $accion=$request->input('accion');
+            if($accion=="agregar")
+            $this->verificarDatosAgregar($datosRequest);
+            
+            if($accion=="modificar")
+            $this->verificarDatosModificar($datosRequest);
+    
+            if($accion=="eliminar")
+            $this->eliminarPaquete($datosRequest);
+    
+            if($accion=="recuperar")
+            $this->recuperarPaquete($datosRequest);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error,no se pudo  procesar la accion';
+            Session::put('respuesta', $mensajeDeError);
         }
         return redirect()->route('backoffice.paquete');
-
     }
 
     public function cargarDatos()
@@ -82,7 +84,7 @@ class paqueteController extends Controller
             }
             $this->crearPaquete($datosRequest);
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: ';
+            $mensajeDeError = 'Error: Debe ingresar datos para realizar esta accion';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -114,7 +116,7 @@ class paqueteController extends Controller
             }
             $this->cargarDatos();
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: ';
+            $mensajeDeError = 'Error:No se pudo eliminar este paquete';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -131,7 +133,7 @@ class paqueteController extends Controller
             }
             $this->cargarDatos();
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: ';
+            $mensajeDeError = 'Error:No se pudo recuperar este paquete';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -145,28 +147,28 @@ class paqueteController extends Controller
             $producto = Producto::withTrashed()->where('id', $paquete['id_producto'])->first();
             if ($producto && $lugarEntrega && $caracteristica) {
                 return (
-                        [
-                            'Id Paquete' => $paquete['id'],
-                            'Nombre del Paquete' => $paquete['nombre'],
-                            'Fecha de Entrega' => $paquete['fecha_de_entrega'],
-                            'Direccion' => $lugarEntrega['direccion'],
-                            'Latitud'=> $lugarEntrega['latitud'],
-                            'Longitud'=> $lugarEntrega['longitud'],
-                            'Estado' => $estado['descripcion_estado_p'],
-                            'Caracteristicas' => $caracteristica['descripcion_caracteristica'],
-                            'Nombre del Remitente' => $paquete['nombre_remitente'],
-                            'Nombre del Destinatario' => $paquete['nombre_destinatario'],
-                            'Id del Producto' => $producto['id'],
-                            'Producto' => $producto['nombre'],
-                            'Volumen(L)' => $paquete['volumen_l'],
-                            'Peso(Kg)' => $paquete['peso_kg'],
-                            'created_at' => $paquete['created_at'],
-                            'updated_at' => $paquete['updated_at'],
-                            'deleted_at' => $paquete['deleted_at'],
-                        ]);
+                    [
+                        'Id Paquete' => $paquete['id'],
+                        'Nombre del Paquete' => $paquete['nombre'],
+                        'Fecha de Entrega' => $paquete['fecha_de_entrega'],
+                        'Direccion' => $lugarEntrega['direccion'],
+                        'Latitud' => $lugarEntrega['latitud'],
+                        'Longitud' => $lugarEntrega['longitud'],
+                        'Estado' => $estado['descripcion_estado_p'],
+                        'Caracteristicas' => $caracteristica['descripcion_caracteristica'],
+                        'Nombre del Remitente' => $paquete['nombre_remitente'],
+                        'Nombre del Destinatario' => $paquete['nombre_destinatario'],
+                        'Id del Producto' => $producto['id'],
+                        'Producto' => $producto['nombre'],
+                        'Volumen(L)' => $paquete['volumen_l'],
+                        'Peso(Kg)' => $paquete['peso_kg'],
+                        'created_at' => $paquete['created_at'],
+                        'updated_at' => $paquete['updated_at'],
+                        'deleted_at' => $paquete['deleted_at'],
+                    ]);
             }
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: ';
+            $mensajeDeError = 'Error:No se pudo obtener los datos de uno o mas paquetes';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -196,9 +198,9 @@ class paqueteController extends Controller
             'idProducto' => 'required|integer',
             'volumen' => 'required|numeric|min:1|max:99999',
             'peso' => 'required|numeric|min:1|max:99999',
-            'direccion'=>'required|regex:/(^[A-Za-z0-9 ]+$)+/|max:100|min:1',
-            'latitud'=>'required|numeric|max:200|min:-200',
-            'longitud'=>'required|numeric|max:200|min:-200',
+            'direccion' => 'required|regex:/(^[A-Za-z0-9 ]+$)+/|max:100|min:1',
+            'latitud' => 'required|numeric|max:200|min:-200',
+            'longitud' => 'required|numeric|max:200|min:-200',
         ];
         return Validator::make([
             'nombrePaquete' => $paquete['nombrePaquete'],
@@ -209,16 +211,16 @@ class paqueteController extends Controller
             'idProducto' => $paquete['idProducto'],
             'volumen' => $paquete['volumen'],
             'peso' => $paquete['peso'],
-            'direccion'=>$paquete['direccion'],
-            'latitud'=>$paquete['latitud'],
-            'longitud'=>$paquete['longitud']
+            'direccion' => $paquete['direccion'],
+            'latitud' => $paquete['latitud'],
+            'longitud' => $paquete['longitud']
         ], $reglas);
     }
 
     private function crearPaquete($paquete)
     {
         try {
-            $this -> IngresarDireccion($paquete);
+            $this->IngresarDireccion($paquete);
             $ultimaDireccion = Lugares_Entrega::latest('created_at')->first();
             $idUltimaDireccion = $ultimaDireccion['id'];
             $caracteristica = $this->obtenerIdCaracteristica($paquete);
@@ -243,19 +245,25 @@ class paqueteController extends Controller
         }
     }
 
-    public function IngresarDireccion($paquete){
-        $lugarEntrega = new Lugares_Entrega;
-        $lugarEntrega->latitud = $paquete['latitud'];
-        $lugarEntrega->longitud = $paquete['longitud'];
-        $lugarEntrega->direccion = $paquete['direccion'];
-        $lugarEntrega->save();
-        return $lugarEntrega;
+    public function IngresarDireccion($paquete)
+    {
+        try {
+            $lugarEntrega = new Lugares_Entrega;
+            $lugarEntrega->latitud = $paquete['latitud'];
+            $lugarEntrega->longitud = $paquete['longitud'];
+            $lugarEntrega->direccion = $paquete['direccion'];
+            $lugarEntrega->save();
+            return $lugarEntrega;
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error,no se pudo ingresar la direccion del paquete';
+            Session::put('respuesta', $mensajeDeError);
+        }
     }
 
     private function modificarPaquete($paquete)
     {
         try {
-            $this -> IngresarDireccion($paquete);
+            $this->IngresarDireccion($paquete);
             $ultimaDireccion = Lugares_Entrega::latest('created_at')->first();
             $idUltimaDireccion = $ultimaDireccion['id'];
             $caracteristica = $this->obtenerIdCaracteristica($paquete);
@@ -286,7 +294,7 @@ class paqueteController extends Controller
             $caracteristica = Caracteristicas::withoutTrashed()->where('descripcion_caracteristica', $paquete['caracteristica'])->first();
             return $caracteristica['id'];
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: ';
+            $mensajeDeError = 'Error:No se reconoce la caracteristica ingresada';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -297,7 +305,7 @@ class paqueteController extends Controller
             $estado = Estados_p::withTrashed()->where('descripcion_estado_p', $paquete['estadoPaquete'])->first();
             return $estado['id'];
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: ';
+            $mensajeDeError = 'Error:No se reconoce el estado ingresado';
             Session::put('respuesta', $mensajeDeError);
         }
     }

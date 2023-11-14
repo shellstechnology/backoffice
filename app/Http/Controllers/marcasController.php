@@ -11,26 +11,30 @@ class marcasController extends Controller
 {
     public function realizarAccion(Request $request)
     {
-        $datosRequest = $request->all();
-        switch ($request->input('accion')) {
-            case 'agregar':
-                $this->verificarDatosAgregar($datosRequest);
-                break;
-            case 'modificar':
-                $this->verificarDatosModificar($datosRequest);
-                break;
-            case 'eliminar':
-                $this->eliminarMarca($datosRequest);
-                break;
-            case 'recuperar':
-                $this->recuperarMarca($datosRequest);
-                break;
-        };
+        try {
+            $datosRequest = $request->all();
+            $accion=$request->input('accion');
+            if($accion=="agregar")
+            $this->verificarDatosAgregar($datosRequest);
+            
+            if($accion=="modificar")
+            $this->verificarDatosModificar($datosRequest);
+    
+            if($accion=="eliminar")
+            $this->eliminarMarca($datosRequest);
+    
+            if($accion=="recuperar")
+            $this->recuperarMarca($datosRequest);
+    
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error,no se pudo  procesar la accion';
+            Session::put('respuesta', $mensajeDeError);
+        }
         return redirect()->route('backoffice.marca');
     }
     public function cargarDatos()
     {
-        try{
+        try {
             $datoMarca = Marcas::withTrashed()->get();
             $infoMarca = [];
             if ($datoMarca) {
@@ -40,8 +44,8 @@ class marcasController extends Controller
             }
             Session::put('marca', $infoMarca);
             return redirect()->route('backoffice.marca');
-        } catch (\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:No se pudieron cargar los datos';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -80,7 +84,7 @@ class marcasController extends Controller
 
     public function eliminarMarca($datosRequest)
     {
-        try{
+        try {
             $marca = Marcas::withoutTrashed()->where('id', $datosRequest['identificador'])->first();
             if ($marca) {
                 $marca->delete();
@@ -88,15 +92,15 @@ class marcasController extends Controller
                 Session::put('respuesta', $mensajeConfirmacion);
             }
             $this->cargarDatos();
-        } catch (\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:No se pudo eliminar esta marca';
             Session::put('respuesta', $mensajeDeError);
         }
     }
 
     public function recuperarMarca($datosRequest)
     {
-        try{
+        try {
             $marca = Marcas::onlyTrashed()->where('id', $datosRequest['identificador'])->first();
             if ($marca) {
                 $marca->restore();
@@ -104,8 +108,8 @@ class marcasController extends Controller
                 Session::put('respuesta', $mensajeConfirmacion);
             }
             $this->cargarDatos();
-        }catch (\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:No se pudo recuperar esta marca';
             Session::put('respuesta', $mensajeDeError);
         }
     }
@@ -120,8 +124,8 @@ class marcasController extends Controller
                 'updated_at' => $marca['updated_at'],
                 'deleted_at' => $marca['deleted_at']
             ]);
-        } catch (\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:No se pudieron obtener los datos de una o mas marcas';
             Session::put('respuesta', $mensajeDeError);
         }
 
@@ -146,22 +150,22 @@ class marcasController extends Controller
             $mensajeConfirmacion = 'Marca creada exitosamente';
             Session::put('respuesta', $mensajeConfirmacion);
             $this->cargarDatos();
-        } catch (\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:No se pudo crear esta marca';
             Session::put('respuesta', $mensajeDeError);
         }
     }
     private function modificarMarca($producto)
     {
-        try{
+        try {
             Marcas::where('id', $producto['identificador'])->update([
                 'marca' => $producto['marca'],
             ]);
             $mensajeConfirmacion = 'Marca modificada exitosamente';
             Session::put('respuesta', $mensajeConfirmacion);
             $this->cargarDatos();
-        } catch (\Exception $e){
-            $mensajeDeError = 'Error: ';
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error:No se pudo modificar esta marca';
             Session::put('respuesta', $mensajeDeError);
         }
     }

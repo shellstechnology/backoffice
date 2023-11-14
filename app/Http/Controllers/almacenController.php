@@ -33,25 +33,27 @@ class almacenController extends Controller
             return redirect()->route('backoffice.almacen');
         }
     }
-    
+
     public function realizarAccion(Request $request)
     {
-        $datosRequest = $request->all();
-        switch ($request->input('accion')) {
-            case 'agregar':
-                $this->verificarDatosAAgregar($datosRequest);
-                break;
-            case 'modificar':
-                $this->verificarDatosAModificar($datosRequest);
-                break;
-            case 'eliminar':
-                $this->eliminarAlmacen($datosRequest);
-                break;
-            case 'recuperar':
-                $this->recuperarAlmacen($datosRequest);
-                break;
+        try {
+            $datosRequest = $request->all();
+            $accion=$request->input('accion');
+            if($accion=="agregar")
+            $this->verificarDatosAAgregar($datosRequest);
+            
+            if($accion=="modificar")
+            $this->verificarDatosAModificar($datosRequest);
+
+            if($accion=="eliminar")
+            $this->eliminarAlmacen($datosRequest);
+
+            if($accion=="recuperar")
+            $this->recuperarAlmacen($datosRequest);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error,no se pudo  procesar la accion';
+            Session::put('respuesta', $mensajeDeError);
         }
-        ;
         return redirect()->route('backoffice.almacen');
     }
 
@@ -116,7 +118,7 @@ class almacenController extends Controller
                 $mensajeConfirmacion = 'Almacen eliminado exitosamente';
                 Session::put('respuesta', $mensajeConfirmacion);
                 $this->cargarDatos();
-            } catch (\Exception) {
+            } catch (\Exception $e) {
                 $mensajeDeError = 'Error,no se pudo eliminar el almacen';
                 Session::put('respuesta', $mensajeDeError);
             }
@@ -156,7 +158,7 @@ class almacenController extends Controller
                     'updated_at' => $almacen['updated_at'],
                     'deleted_at' => $almacen['deleted_at'],
                 ];
-            } catch (\Exception) {
+            } catch (\Exception $e) {
                 $mensajeDeError = 'Error: No se pudieron cargar los datos del producto ' . $almacen['id'];
                 Session::put('respuesta', $mensajeDeError);
             }

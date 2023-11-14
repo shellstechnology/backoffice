@@ -11,18 +11,22 @@ class loteController extends Controller
 {
     public function realizarAccion(Request $request)
     {
+        try{
         $datosRequest = $request->all();
-        switch ($request->input('accion')) {
-            case 'agregar':
-                $this->agregarLote();
-                break;
-            case 'eliminar':
-                $this->eliminarLote($datosRequest);
-                break;
-            case 'recuperar':
-                $this->recuperarLote($datosRequest);
-                break;
-        };
+        $accion=$request->input('accion');
+        if($accion=="agregar")
+        $this->agregarLote();
+        
+        if($accion=="eliminar")
+        $this->eliminarLote($datosRequest);
+
+        if($accion=="recuperar")
+        $this->recuperarLote($datosRequest);
+        }catch(\Exception $e){
+            $mensajeDeError = 'Error,no se pudo procesar la accion';
+            Session::put('respuesta', $mensajeDeError);
+        }
+        $this->cargarDatos();
         return redirect()->route('backoffice.lote');
     }
 

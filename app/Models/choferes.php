@@ -11,8 +11,7 @@ class Choferes extends Model
 {
     protected $table = 'choferes';
     protected $primaryKey = 'id_usuarios';
-    
-    protected $fillable =['id_usuarios'];
+    protected $fillable =['id_usuarios','licencia_de_conducir'];
     use HasFactory;
     use SoftDeletes;
     use ValidatesRequests;

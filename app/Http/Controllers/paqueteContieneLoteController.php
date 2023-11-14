@@ -15,22 +15,24 @@ class paqueteContieneLoteController extends Controller
 
     public function realizarAccion(Request $request)
     {
-        $datosRequest = $request->all();
-
-        switch ($request->input('accion')) {
-            case 'agregar':
-                $this->verificarDatosAgregar($datosRequest);
-                break;
-            case 'modificar':
-                $this->verificarDatosModificar($datosRequest);
-                break;
-            case 'eliminar':
-                $this->eliminarPaqueteContieneLote($datosRequest);
-                break;
-            case 'recuperar':
-                $this->recuperarPaqueteContieneLote($datosRequest);
-                break;
-        };
+        try {
+            $datosRequest = $request->all();
+            $accion=$request->input('accion');
+            if($accion=="agregar")
+            $this->verificarDatosAgregar($datosRequest);
+            
+            if($accion=="modificar")
+            $this->verificarDatosModificar($datosRequest);
+    
+            if($accion=="eliminar")
+            $this->eliminarPaqueteContieneLote($datosRequest);
+    
+            if($accion=="recuperar")
+            $this->recuperarPaqueteContieneLote($datosRequest);
+        } catch (\Exception $e) {
+            $mensajeDeError = 'Error,no se pudo  procesar la accion';
+            Session::put('respuesta', $mensajeDeError);
+        }
         return redirect()->route('lote.paqueteContieneLote');
     }
     public function cargarDatos()
@@ -128,7 +130,7 @@ class paqueteContieneLoteController extends Controller
             }
             $this->cargarDatos();
         } catch (\Exception $e) {
-            $mensajeDeError = 'Error: ';
+            $mensajeDeError = 'Error:No se pudo eliminar este paquete';
             Session::put('respuesta', $mensajeDeError);
         }
     }
