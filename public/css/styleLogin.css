@@ -3,7 +3,7 @@
     --colorBordesClaro: #3A4138;
     --colorFondosOscuros: #FFFFFF;
     --colorLetrasOscuras: #FFFFFF;
-    --pruebaColorFondo: #f3dcbe;
+    --pruebaColorFondo: #D4E9F7;
 }
 
 body {
@@ -26,7 +26,7 @@ body {
 .formulario {
     height: 500px;
     width: 500px;
-    background: linear-gradient(#a06f6f, #af8f65);
+    background: linear-gradient(#aabcc9, #6b7881);
     background-attachment: fixed;
     background-repeat: no-repeat;
     background-size: cover;
