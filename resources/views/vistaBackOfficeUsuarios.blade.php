@@ -63,7 +63,7 @@
           <label for="mail" >Correo electronico</label>
         </div>
         <div class="campo">
-        <input type="text" name="licencia" id="licencia" maxlength="10" required></input>
+        <input type="text" name="licencia" id="licencia" maxlength="10" placeholder="obligatorio para choferes"></input>
           <label for="licencia" >Licencia de conducir</label>
         </div>
         <div class="campo">
