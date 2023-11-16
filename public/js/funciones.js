@@ -4,7 +4,7 @@ function filtro(event) {
         return;
     }
     var texto = event.key;
-    if (!/[\d.]/.test(texto)) {
+    if (!/[\d.-]/.test(texto)) {
         event.preventDefault();
     }
 }
