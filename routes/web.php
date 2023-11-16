@@ -39,6 +39,7 @@ Route::get('/login', function () {
 });
 
 Route::post('/login1', [loginController::class, 'iniciarSesion'])->name('login');
+Route::get('/login1', [loginController::class, 'Logout'])->name('logout');
 
 Route::get('/', function () {
     return view('vistaBackOffice');

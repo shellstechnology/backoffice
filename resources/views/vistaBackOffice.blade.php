@@ -17,12 +17,22 @@
      <a href="{{ route('backoffice.paquete') }}" class="item">Paquetes</a>
      <a href="{{ route('backoffice.producto') }}" class="item">Productos</a>
      <a href="{{ route('backoffice.lote') }}" class="item">Lotes</a>
+     <a href="{{ route('backoffice.usuarios') }}" class="item">Lotes</a>
 </div>
 <a href="{{ route('backoffice.usuarios') }}" class="enlaceCajaUsuario">
 <div class="cajaUsuario">
 <div class="head"></div>
 <div class="body"></div>
 </div>
+</a>
+<a href="{{ route('login') }}">
+<div class="contenedor">
+        <div class="rectangulo">
+            <div class="linea">
+                <div class="triangulo"></div>
+            </div>
+        </div>
+  </div>
 </a>
 <header>
         <h1>Instrucciones de uso</h1>
