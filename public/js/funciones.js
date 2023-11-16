@@ -1,7 +1,12 @@
 function filtro(event) {
+    var codigoTecla = event.keyCode || event.which;
+    if ([8, 37, 39, 46].includes(codigoTecla)) {
+        return;
+    }
     var texto = event.key;
-    if ([',', 'e', 'E'].includes(texto))
-        event.preventDefault()
+    if (!/[\d.-]/.test(texto)) {
+        event.preventDefault();
+    }
 }
 function limitarInput(input, maxLength) {
     if (input.value.length > maxLength) {

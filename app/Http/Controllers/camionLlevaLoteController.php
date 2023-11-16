@@ -233,7 +233,7 @@ class camionLlevaLoteController extends Controller
     private function modificarCamionLlevaLote($camionLlevaLote)
     {
         try {
-            Camion_Lleva_Lote::withTrashed()->where('id_lote', $camionLlevaLote['identificador'])->update([
+            Camion_Lleva_Lote::withTrashed()->where('id_lote', $camionLlevaLote['idLote'])->update([
                 'id_lote' => $camionLlevaLote['idLote'],
                 'matricula' => $camionLlevaLote['idCamion']
             ]);
