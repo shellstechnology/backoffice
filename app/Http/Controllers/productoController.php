@@ -161,7 +161,7 @@ class productoController extends Controller
     {
         $reglas = [
             'Nombre' => 'required|string|max:50',
-            'Precio' => 'required|integer|min:1|max:99999999',
+            'Precio' => 'required|numeric|min:1|max:99999999',
             'Moneda' => 'required|string|max:30',
             'Stock' => 'required|integer|min:0|max:999999',
         ];

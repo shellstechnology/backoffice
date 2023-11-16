@@ -55,12 +55,16 @@
           <label for="nombre" >Nombre de Usuario</label>
         </div>
         <div class="campo">
-          <input type="text" name="contrasenia" id="contrasenia" maxlength="25" required></input>
+          <input type="text" name="contrasenia" id="contrasenia" maxlength="25"></input>
           <label for="contrasenia" >Contraseña</label>
         </div>
         <div class="campo">
           <input type="text" name="mail" id="mail" maxlength="50" required></input>
           <label for="mail" >Correo electronico</label>
+        </div>
+        <div class="campo">
+        <input type="text" name="licencia" id="licencia" maxlength="10" required></input>
+          <label for="licencia" >Licencia de conducir</label>
         </div>
         <div class="campo">
           <input type="checkbox" name="usuarioAdministrador" id="usuarioAdministrador">Administrador</input>

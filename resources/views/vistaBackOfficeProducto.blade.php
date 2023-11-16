@@ -55,7 +55,7 @@
           </div>
           <div class="campo">
           <input type="text" id="precio" name="precio" onkeydown="filtro(event)" 
-                pattern="-?[0-9]*[.,]?[0-9]+" maxlength="16" >
+       pattern="-?[0-9]*[.,]?[0-9]+" inputmode="numeric" maxlength="16">
             <label for="precioProducto" >Precio </label>
           </div>
           <div class="campo">
